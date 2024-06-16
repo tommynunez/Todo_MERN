@@ -1,16 +1,17 @@
-import { Request, Response, Router } from "express";
-import TodoService from "../models/TodoService";
+import { Request, Response, Router } from 'express';
+import TodoService from '../models/TodoService';
 
 const router: Router = Router();
 const _todoService = new TodoService();
 
-router.get("/todo", async (_request: Request, _response: Response) => {
+router.get('/todo', async (_request: Request, _response: Response) => {
 	try {
 		console.log(_request.query.search);
+		const { search, pageIndex } = _request.query;
 
 		const response = await _todoService.getAllDocumentsAsync(
 			search,
-			(pageIndex = pageIndex ? parseInt(pageIndex) : null),
+			pageIndex,
 			_request.query.pageSize
 		);
 		response
@@ -21,14 +22,14 @@ router.get("/todo", async (_request: Request, _response: Response) => {
 	}
 });
 
-router.post("/todo", async (_request: Request, _response: Response) => {
+router.post('/todo', async (_request: Request, _response: Response) => {
 	const response = await _todoService.insertDocumentAsync(_request.body);
 	response
 		? _response.status(201).json({ response: response, status: 201 })
 		: _response.sendStatus(500);
 });
 
-router.put("/todo/:id", async (_request: Request, _response: Response) => {
+router.put('/todo/:id', async (_request: Request, _response: Response) => {
 	const response = await _todoService.updateDocumentAsync(
 		_request.body.name,
 		_request.body
@@ -38,7 +39,7 @@ router.put("/todo/:id", async (_request: Request, _response: Response) => {
 		: _response.sendStatus(500);
 });
 
-router.delete("/todo/:id", async (_request: Request, _response: Response) => {
+router.delete('/todo/:id', async (_request: Request, _response: Response) => {
 	const response = await _todoService.deleteDocumentAsync(
 		parseInt(_request.params.id)
 	);

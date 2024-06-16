@@ -5,8 +5,8 @@ import {
 	getDocumentsAsync,
 	insertDocumentAsync,
 	updateDocumentAsync,
-} from "./database/documents/todo";
-import { ITodo, ITodoService } from "./TodoInterfaces";
+} from './database/documents/todo';
+import { ITodo, ITodoService } from './TodoInterfaces';
 
 export default class TodoService implements ITodoService {
 	constructor() {}
@@ -35,9 +35,9 @@ export default class TodoService implements ITodoService {
 	};
 
 	getAllDocumentsAsync = async (
-		search?: string,
-		pageIndex?: number,
-		pageSize?: number
+		search: any,
+		pageIndex: any,
+		pageSize: any
 	): Promise<Array<ITodo> | null> => {
 		return await getDocumentsAsync(search, pageIndex, pageSize);
 	};

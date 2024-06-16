@@ -1,4 +1,4 @@
-import { ITodo } from "./TodoInterfaces";
+import { ITodo } from './TodoInterfaces';
 
 export type InsertFunction = (name: string) => Promise<boolean>;
 export type UpdateFunction = (
@@ -9,7 +9,7 @@ export type DeleteFunction = (id: number) => Promise<boolean>;
 export type GetByIdFunction = (id: string) => Promise<ITodo | null>;
 export type GetByNameFunction = (name: string) => Promise<ITodo | null>;
 export type GetAllFunction = (
-	search?: string,
-	pageIndex?: number,
-	pageSize?: number
+	search: any,
+	pageIndex: any,
+	pageSize: any
 ) => Promise<Array<ITodo> | null>;
