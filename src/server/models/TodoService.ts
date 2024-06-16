@@ -26,11 +26,11 @@ export default class TodoService implements ITodoService {
 		return await deleteDocumentAsync(id);
 	};
 
-	getByIdDocumentsAsync = async (id: string): Promise<ITodo | null> => {
+	getByIdDocumentsAsync = async (id?: string): Promise<ITodo | null> => {
 		return await getDocumentbyIdAsync(id);
 	};
 
-	getByNameDocumentsAsync = async (name: string): Promise<ITodo | null> => {
+	getByNameDocumentsAsync = async (name?: string): Promise<ITodo | null> => {
 		return await getDocumentbyNameAsync(name);
 	};
 

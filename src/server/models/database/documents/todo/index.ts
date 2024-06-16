@@ -62,11 +62,11 @@ export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
 };
 
 export const getDocumentbyIdAsync = async (
-	id: string
+	id?: string
 ): Promise<ITodo | null> => {
 	try {
 		const db = await mongoose.connect('mongodb://localhost:27017/test');
-		const response = await todoModel.findOne({ id });
+		const response = await todoModel.findById(id);
 		await db.disconnect();
 		return response;
 	} catch (error) {
@@ -76,7 +76,7 @@ export const getDocumentbyIdAsync = async (
 };
 
 export const getDocumentbyNameAsync = async (
-	name: string
+	name?: string
 ): Promise<ITodo | null> => {
 	try {
 		const db = await mongoose.connect('mongodb://localhost:27017/test');
@@ -96,14 +96,16 @@ export const getDocumentsAsync = async (
 ): Promise<Array<ITodo> | null> => {
 	try {
 		const db = await mongoose.connect('mongodb://localhost:27017/test');
-		console.log(search, pageIndex, pageSize);
+
+		pageSize = pageSize ?? 0;
+		pageIndex = pageIndex ?? 10;
+
 		const response = await todoModel
 			.find(search ? { name: search } : {})
-			.limit(pageSize ?? 1)
-			.skip(pageIndex ?? 10 * pageSize ?? 1)
+			.limit(pageSize)
+			.skip(pageIndex * pageSize)
 			.exec();
 
-		console.log(response);
 		await db.disconnect();
 		return response;
 	} catch (error) {
