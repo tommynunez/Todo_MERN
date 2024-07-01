@@ -14,9 +14,11 @@
     "database": "npx tsx ./src/server/models/database/index.ts"
   },
   "dependencies": {
+    "@rollup/plugin-replace": "^5.0.7",
     "@types/express-validator": "^3.0.0",
     "@types/mongoose": "^5.11.97",
     "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "express-query-parser": "^1.3.3",
     "express-validator": "^7.0.1",
@@ -25,7 +27,9 @@
     "nodemon": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tsconfig-paths": "^4.2.0"
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "vite-plugin-env-compatible": "^2.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

@@ -31,18 +31,6 @@ router.get('/todo/:id', async (_request: Request, _response: Response) => {
 		: _response.sendStatus(500);
 });
 
-router.get(
-	'/todo/name/:name',
-	async (_request: Request, _response: Response) => {
-		const response = await _todoService.getByNameDocumentsAsync(
-			_request.params.name?.toString()
-		);
-		response
-			? _response.status(200).json({ response, status: 2000 })
-			: _response.sendStatus(500);
-	}
-);
-
 router.post('/todo', async (_request: Request, _response: Response) => {
 	const response = await _todoService.insertDocumentAsync(_request.body.name);
 	response

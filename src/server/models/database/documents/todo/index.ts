@@ -13,7 +13,7 @@ export const insertDocumentAsync = async ({
 	name,
 }: ITodoAdd): Promise<boolean> => {
 	try {
-		const db = await mongoose.connect('mongodb://localhost:27017/test');
+		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		const todo = new todoModel({
 			name: name,
 			completed: false,
@@ -34,7 +34,7 @@ export const updateDocumentAsync = async ({
 	completed,
 }: ITodoUpdate): Promise<boolean> => {
 	try {
-		const db = await mongoose.connect('mongodb://localhost:27017/test');
+		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		const todo = new todoModel({
 			name,
 			completed,
@@ -51,7 +51,7 @@ export const updateDocumentAsync = async ({
 
 export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
 	try {
-		const db = await mongoose.connect('mongodb://localhost:27017/test');
+		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		await todoModel.findOneAndDelete({ id });
 		await db.disconnect();
 		return true;
@@ -65,22 +65,8 @@ export const getDocumentbyIdAsync = async (
 	id?: string
 ): Promise<ITodo | null> => {
 	try {
-		const db = await mongoose.connect('mongodb://localhost:27017/test');
+		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		const response = await todoModel.findById(id);
-		await db.disconnect();
-		return response;
-	} catch (error) {
-		console.log(error);
-		return null;
-	}
-};
-
-export const getDocumentbyNameAsync = async (
-	name?: string
-): Promise<ITodo | null> => {
-	try {
-		const db = await mongoose.connect('mongodb://localhost:27017/test');
-		const response = await todoModel.findOne({ name });
 		await db.disconnect();
 		return response;
 	} catch (error) {
@@ -95,7 +81,8 @@ export const getDocumentsAsync = async (
 	pageSize: number
 ): Promise<Array<ITodo> | null> => {
 	try {
-		const db = await mongoose.connect('mongodb://localhost:27017/test');
+		console.log('tt', process);
+		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 
 		pageSize = pageSize ?? 0;
 		pageIndex = pageIndex ?? 10;

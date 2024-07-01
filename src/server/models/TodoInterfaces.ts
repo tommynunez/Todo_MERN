@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import {
 	DeleteFunction,
 	GetAllFunction,
 	GetByIdFunction,
 	InsertFunction,
 	UpdateFunction,
-} from "./TodoTypes";
+} from './TodoTypes';
 
 export interface ITodo extends mongoose.Document {
 	name: string;
@@ -27,6 +27,5 @@ export interface ITodoService {
 	updateDocumentAsync: UpdateFunction;
 	deleteDocumentAsync: DeleteFunction;
 	getByIdDocumentsAsync: GetByIdFunction;
-	getByNameDocumentsAsync: GetByIdFunction;
 	getAllDocumentsAsync: GetAllFunction;
 }
