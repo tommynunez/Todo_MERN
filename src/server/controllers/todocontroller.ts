@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import TodoService from '../models/TodoService';
+import TodoService from '../models/todo/TodoService';
 
 const router: Router = Router();
 const _todoService = new TodoService();

@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from 'mongoose';
-import { ITodo, ITodoAdd, ITodoUpdate } from '../../../TodoInterfaces';
+import { ITodo, ITodoAdd, ITodoUpdate } from '../../../todo/TodoInterfaces';
 
 const todoSchema = new Schema<ITodo>({
 	name: { type: String, required: true, unique: false },
@@ -12,8 +12,8 @@ export const todoModel = model<ITodo>('Todo', todoSchema);
 export const insertDocumentAsync = async ({
 	name,
 }: ITodoAdd): Promise<boolean> => {
+	const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 	try {
-		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		const todo = new todoModel({
 			name: name,
 			completed: false,
@@ -25,6 +25,7 @@ export const insertDocumentAsync = async ({
 		return true;
 	} catch (error) {
 		console.error(error);
+		db.disconnect();
 		return false;
 	}
 };
@@ -33,8 +34,8 @@ export const updateDocumentAsync = async ({
 	name,
 	completed,
 }: ITodoUpdate): Promise<boolean> => {
+	const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 	try {
-		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		const todo = new todoModel({
 			name,
 			completed,
@@ -45,18 +46,20 @@ export const updateDocumentAsync = async ({
 		return true;
 	} catch (error) {
 		console.error(error);
+		db.disconnect();
 		return false;
 	}
 };
 
 export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
+	const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 	try {
-		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		await todoModel.findOneAndDelete({ id });
 		await db.disconnect();
 		return true;
 	} catch (error) {
 		console.error(error);
+		db.disconnect();
 		return false;
 	}
 };
@@ -64,13 +67,14 @@ export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
 export const getDocumentbyIdAsync = async (
 	id?: string
 ): Promise<ITodo | null> => {
+	const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 	try {
-		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 		const response = await todoModel.findById(id);
 		await db.disconnect();
 		return response;
 	} catch (error) {
 		console.log(error);
+		db.disconnect();
 		return null;
 	}
 };
@@ -80,10 +84,8 @@ export const getDocumentsAsync = async (
 	pageIndex: number,
 	pageSize: number
 ): Promise<Array<ITodo> | null> => {
+	const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 	try {
-		console.log('tt', process);
-		const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
-
 		pageSize = pageSize ?? 0;
 		pageIndex = pageIndex ?? 10;
 
@@ -97,6 +99,7 @@ export const getDocumentsAsync = async (
 		return response;
 	} catch (error) {
 		console.error(error);
+		db.disconnect();
 		return null;
 	}
 };

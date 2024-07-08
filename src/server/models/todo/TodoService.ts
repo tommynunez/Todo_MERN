@@ -4,7 +4,7 @@ import {
 	getDocumentsAsync,
 	insertDocumentAsync,
 	updateDocumentAsync,
-} from './database/documents/todo';
+} from '../database/documents/todo';
 import { ITodo, ITodoService } from './TodoInterfaces';
 
 export default class TodoService implements ITodoService {
