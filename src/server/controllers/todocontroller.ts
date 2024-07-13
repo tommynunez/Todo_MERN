@@ -22,7 +22,7 @@ router.get('/todo', async (_request: Request, _response: Response) => {
 });
 
 router.get('/todo/:id', async (_request: Request, _response: Response) => {
-	console.log(_request.params);
+	console.log(process.env);
 	const response = await _todoService.getByIdDocumentsAsync(
 		_request.params.id?.toString()
 	);
@@ -39,7 +39,7 @@ router.post('/todo', async (_request: Request, _response: Response) => {
 });
 
 router.put('/todo/:id', async (_request: Request, _response: Response) => {
-	console.log('reques!!', _request);
+	console.log('reques!!', import.meta.env);
 	const response = await _todoService.updateDocumentAsync(
 		_request.body.name,
 		_request.body

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import mongoose, { model } from 'mongoose';
+import { model } from 'mongoose';
 import { IUserAccount } from '../models/user/UserInterfaces';
 import * as crypto from 'crypto';
 import { insertUseraccountAsync } from '../models/database/documents/user';

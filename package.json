@@ -10,7 +10,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start-dev": "vite",
-    "start-backend": "npx tsx ./src/server/index.ts",
+    "start-backend": "NODE_ENV=development npx tsx ./src/server/index.ts",
     "database": "npx tsx ./src/server/models/database/index.ts"
   },
   "dependencies": {

@@ -11,7 +11,12 @@ const app: Express = express();
 const port: number = 3001;
 
 dotenv.config({
-	path: path.resolve(process.cwd(), '.env.development.local'),
+	path: path.resolve(
+		process.cwd(),
+		process.env.NODE_ENV === 'development'
+			? '.env.development.local'
+			: '.env.production.local'
+	),
 });
 
 app.use(
