@@ -22,7 +22,6 @@ router.get('/todo', async (_request: Request, _response: Response) => {
 });
 
 router.get('/todo/:id', async (_request: Request, _response: Response) => {
-	console.log(process.env);
 	const response = await _todoService.getByIdDocumentsAsync(
 		_request.params.id?.toString()
 	);

@@ -4,9 +4,10 @@ import { IUserAccount } from '../../../user/UserInterfaces';
 const userSchema = new Schema<IUserAccount>({
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true },
+	salt: { type: String, required: true },
 	createdDate: { type: Date, required: true },
 	updatedDate: { type: Date, required: true },
-	deletedDate: { type: Date, required: true },
+	deletedDate: { type: Date, required: false },
 });
 
 export const userModel = model<IUserAccount>('UserAccount', userSchema);
@@ -23,13 +24,18 @@ export const insertUseraccountAsync = async (
 			password: password,
 			salt: salt,
 			createdDate: Date.now(),
+			updatedDate: Date.now(),
 		});
+		await user.save();
+		db.disconnect();
+		return;
+	} catch (error: any) {
+		db.disconnect();
 
-		db.disconnect();
-		return await user.save();
-	} catch (error) {
-		console.log(error);
-		db.disconnect();
-		return undefined;
+		if (error.errorResponse.code === 11000) {
+			throw 'Please try a different username';
+		} else {
+			throw 'We could not create account. Please try again.';
+		}
 	}
 };

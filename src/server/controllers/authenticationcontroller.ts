@@ -9,26 +9,32 @@ const router: Router = Router();
 export const userAccountModel = model<IUserAccount>('UserAccount');
 
 router.post(
-	'/signup',
-	async (request: Request, response: Response, next: NextFunction) => {
+	'/authentication/signup',
+	async (_request: Request, _response: Response, next: NextFunction) => {
 		const salt = crypto.randomBytes(16);
-
 		crypto.pbkdf2(
-			request.body.password,
+			_request.body.password,
 			salt,
 			310000,
 			32,
 			'sha256',
-			async (error: any) => {
+			async (error: any, hashedPassword: Buffer) => {
 				if (error) {
 					return next(error);
 				}
-				await insertUseraccountAsync(
-					request.body.username,
-					request.body.password,
-					salt.toString()
-				);
+				try {
+					await insertUseraccountAsync(
+						_request.body.username,
+						hashedPassword.toString(),
+						salt.toString()
+					);
+					_response.sendStatus(201);
+				} catch (error) {
+					_response.status(500).json({ errmsg: error });
+				}
 			}
 		);
 	}
 );
+
+export default router;
