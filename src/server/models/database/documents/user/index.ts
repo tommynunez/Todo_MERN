@@ -39,3 +39,32 @@ export const insertUseraccountAsync = async (
 		}
 	}
 };
+
+export const doesUserbyUsernameAsync = async (
+	username: string
+): Promise<boolean> => {
+	try {
+		const document = await userModel.findOne({ username: username });
+		return document ? true : false;
+	} catch (error: any) {
+		return false;
+	}
+};
+
+export const getUserbyUsernameAsync = async (
+	username: string
+): Promise<
+	| (mongoose.Document<unknown, IUserAccount> &
+			IUserAccount &
+			Required<{
+				_id: unknown;
+			}>)
+	| null
+> => {
+	try {
+		const document = await userModel.findOne({ username: username });
+		return document;
+	} catch (error: any) {
+		return null;
+	}
+};

@@ -53,7 +53,7 @@ app.use('/', authenticationController);
 /**
  * Todo controller entrypoint using express router
  */
-app.use('/', todoController, authenticationController);
+app.use('/', todoController);
 
 /**
  * Starting the express server
