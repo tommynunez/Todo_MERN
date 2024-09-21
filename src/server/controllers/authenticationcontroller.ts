@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { model } from 'mongoose';
 import { IUserAccount } from '../models/user/UserInterfaces';
 import {
@@ -7,7 +7,7 @@ import {
 	getUserbyEmailAddressAsync,
 	updateLastLoggedInAsync,
 } from '../models/database/documents/user';
-import { encryptPassword } from '../helpers/encryptionHelper';
+import * as crypto from 'crypto';
 
 const router: Router = Router();
 
@@ -21,7 +21,7 @@ const passwordRegex =
 
 router.post(
 	'/authentication/signup',
-	async (_request: Request, _response: Response, next: NextFunction) => {
+	async (_request: Request, _response: Response) => {
 		if (!_request.body.emailAddress && _request.body.emailAddress.match()) {
 			_response.send(400).json({ errmsg: 'Please enter a username' });
 		}
@@ -59,36 +59,32 @@ router.post(
 		}
 
 		//validate password
-		encryptPassword(
+
+		const salt = crypto.randomBytes(64);
+		const hashedPassword = await crypto.pbkdf2Sync(
 			_request.body.password,
-			next,
-			async (
-				error: Error | null,
-				next: NextFunction,
-				hashedPassword: Buffer,
-				salt?: Buffer | string
-			): Promise<void> => {
-				try {
-					if (error) {
-						return next(error);
-					}
-					await insertUseraccountAsync(
-						_request.body.emailAddress,
-						hashedPassword.toString(),
-						salt as string
-					);
-					_response.sendStatus(201);
-				} catch (error) {
-					_response.status(500).json({ errmsg: error });
-				}
-			}
+			salt,
+			10000,
+			64,
+			'sha512'
 		);
+
+		try {
+			await insertUseraccountAsync(
+				_request.body.emailAddress,
+				hashedPassword.toString(),
+				salt.toString()
+			);
+			_response.sendStatus(201);
+		} catch (error) {
+			_response.status(500).json({ errmsg: error });
+		}
 	}
 );
 
 router.post(
 	'/authentication/signin',
-	async (_request: Request, _response: Response, next: NextFunction) => {
+	async (_request: Request, _response: Response) => {
 		try {
 			const user = await getUserbyEmailAddressAsync(_request.body.emailAddress);
 
@@ -99,43 +95,27 @@ router.post(
 						errmsg: 'Email address or password is incorrect!',
 					})
 					.end();
-				next();
 			}
-			console.log('todo');
-			encryptPassword(
-				_request.body.password,
-				next,
-				async (
-					error: Error | null,
-					next: NextFunction,
-					hashedPassword?: Buffer | string | null,
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
-					salt?: Buffer | string
-				): Promise<void> => {
-					try {
-						if (error) {
-							return next(error);
-						}
-						if (
-							_request.body.emailAddress == user?.emailAddress &&
-							hashedPassword == user.password
-						) {
-							await updateLastLoggedInAsync(user);
-							_response.sendStatus(200);
-						} else {
-							_response.status(401).json({
-								errmsg: 'Email address or password is incorrect!',
-							});
-						}
-					} catch (error) {
-						_response.status(500).json({ errmsg: error });
-					}
-					next();
-				},
-				user?.salt
-			);
 
-			_response.sendStatus(200);
+			const salt = crypto.randomBytes(64);
+			const hashedPassword = await crypto.pbkdf2Sync(
+				_request.body.password,
+				salt,
+				10000,
+				64,
+				'sha512'
+			);
+			if (
+				_request.body.emailAddress == user?.emailAddress &&
+				hashedPassword.toString() == user.password
+			) {
+				await updateLastLoggedInAsync(user);
+				_response.sendStatus(200);
+			} else {
+				_response.status(401).json({
+					errmsg: 'Email address or password is incorrect!',
+				});
+			}
 		} catch (error) {
 			_response.sendStatus(401);
 		}
