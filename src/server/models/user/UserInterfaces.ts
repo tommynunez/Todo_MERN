@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 
 export interface IUserAccount extends mongoose.Document {
-	username: string;
+	emailAddress: string;
 	password: string;
 	salt: string;
+	lastSignedIn: Date;
 	createdDate: Date;
 	updatedDate: Date;
 	deletedDate: Date;
