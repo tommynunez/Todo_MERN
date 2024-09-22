@@ -29,7 +29,7 @@ export const insertUseraccountAsync = async (
 		});
 		await user.save();
 		db.disconnect();
-		return;
+		return user;
 	} catch (error: any) {
 		db.disconnect();
 

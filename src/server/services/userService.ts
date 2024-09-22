@@ -65,42 +65,39 @@ export default class UserService implements IUserService {
 	};
 
 	// todo: make this a middleware for the signup route endpoint
-	validateSignupFields = (_request: Request, _response: Response): void => {
+	validateSignupFields = (_request: Request, _response: Response): boolean => {
 		if (!_request.body.emailAddress && _request.body.emailAddress.match()) {
-			_response.send(400).json({ errmsg: 'Please enter a username' }).end();
+			_response.status(400).json({ errmsg: 'Please enter a username' });
+			return true;
 		}
 
 		if (emailRegex.match(_request.body.emailAddress)) {
-			_response
-				.send(400)
-				.json({ errmsg: 'Please enter a valid username' })
-				.end();
+			_response.status(400).json({ errmsg: 'Please enter a valid username' });
+			return true;
 		}
 
 		if (!_request.body.password) {
-			_response.send(400).json({ errmsg: 'Please enter a password' }).end();
+			_response.status(400).json({ errmsg: 'Please enter a password' });
+			return true;
 		}
 
 		if (passwordRegex.match(_request.body.password)) {
-			_response
-				.send(400)
-				.json({ errmsg: 'Please enter a valid passwword' })
-				.end();
+			_response.status(400).json({ errmsg: 'Please enter a valid passwword' });
+			return true;
 		}
 
 		if (!_request.body.confirmPassword) {
+			_response.status(400).json({ errmsg: 'Please enter a confirm password' });
+			return true;
+		}
+		if (_request.body.password !== _request.body.confirmPassword) {
 			_response
-				.send(400)
-				.json({ errmsg: 'Please enter a confirm password' })
-				.end();
+				.status(400)
+				.json({ errmsg: 'Password and confirm password do not match' });
+			return true;
 		}
 
-		if (_request.body.password === _request.body.confirmPassword) {
-			_response
-				.send(400)
-				.json({ errmsg: 'Password and confirm password do not match' })
-				.end();
-		}
+		return false;
 	};
 
 	getUserbyEmailAddressAsync = async (

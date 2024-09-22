@@ -12,6 +12,7 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 const port: number = 3001;
@@ -42,21 +43,22 @@ app.use(bodyParser.json());
 
 app.use(helmet());
 
-const mongoString = 'mongo connection string';
+const mongoString = process.env.NODE_MONGO_DB_URL;
 mongoose.connect(mongoString);
-const db = mongoose.connection;
+
+app.use(cookieParser());
 
 app.use(
 	session({
 		secret: process.env.NODE_SESSION_SECRET,
 		resave: false,
 		saveUninitialized: true,
+		cookie: { secure: true, maxAge: 36000, httpOnly: true },
 		store: new MongoStore({
-			mongoUrl: db.getClient().options.metadata.env?.url,
+			mongoUrl: process.env.NODE_MONGO_DB_URL,
 		}),
 	})
 );
-
 app.use(passport.authenticate('session'));
 
 /**

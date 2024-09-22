@@ -14,8 +14,8 @@ router.get('/todo', async (_request: Request, _response: Response) => {
 			pageSize
 		);
 		response
-			? _response.status(200).json({ response, status: 200 }).end()
-			: _response.sendStatus(500).end();
+			? _response.status(200).json({ response, status: 200 })
+			: _response.sendStatus(500);
 	} catch (error) {
 		console.log(error);
 	}
