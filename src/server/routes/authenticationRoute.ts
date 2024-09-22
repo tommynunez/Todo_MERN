@@ -39,6 +39,18 @@ passport.use(
 	})
 );
 
+passport.serializeUser(function (user: any, cb) {
+	process.nextTick(function () {
+		cb(null, { id: user.id, username: user.username });
+	});
+});
+
+passport.deserializeUser(function (user: Express.User, cb) {
+	process.nextTick(function () {
+		return cb(null, user);
+	});
+});
+
 router.post(
 	'/authentication/signup',
 	async (_request: Request, _response: Response) => {
@@ -83,6 +95,18 @@ router.post(
 			)(request, response, next);
 		}
 	)
+);
+
+router.post(
+	'authentication/logout',
+	(_request: Request, _response: Response, next: NextFunction) => {
+		_request.logout(function (error: any) {
+			if (error) {
+				return next(error);
+			}
+			_response.redirect('/');
+		});
+	}
 );
 
 export default router;

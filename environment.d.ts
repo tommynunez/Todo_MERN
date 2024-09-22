@@ -3,6 +3,7 @@ declare global {
 		interface ProcessEnv {
 			NODE_MONGO_DB_URL: string;
 			NODE_ENV: 'development' | 'production';
+			NODE_SESSION_SECRET: string;
 		}
 	}
 }
