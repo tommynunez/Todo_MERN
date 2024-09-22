@@ -9,3 +9,12 @@ export interface IUserAccount extends mongoose.Document {
 	updatedDate: Date;
 	deletedDate: Date;
 }
+
+export interface IUserService {
+	signup: (emailAddress: string, password: string) => Promise<boolean>;
+	signin: (
+		emailAddress: string,
+		password: string,
+		user: any
+	) => Promise<boolean>;
+}
