@@ -1,12 +1,43 @@
-import { Request, Response, Router } from 'express';
-import { model } from 'mongoose';
-import { IUserAccount } from '../interfaces/userInterface';
+import { NextFunction, Request, Response, Router } from 'express';
 import UserService from '../services/userService';
+import passport from 'passport';
+import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
 
 const router: Router = Router();
 const userService = new UserService();
 
-export const userAccountModel = model<IUserAccount>('UserAccount');
+type PassPortCallBackFunction = (
+	error: any,
+	user?: Express.User | false,
+	options?: IVerifyOptions
+) => void;
+
+passport.use(
+	new LocalStrategy(async function verify(
+		username: string,
+		password: string,
+		cb: PassPortCallBackFunction
+	) {
+		const user = await userService.getUserbyEmailAddressAsync(username);
+		if (!user) {
+			return cb(null, false, { message: 'Incorrect username or password.' });
+		}
+
+		const isUserauthenticated = await userService.signin(
+			username,
+			password,
+			user
+		);
+
+		if (isUserauthenticated) {
+			cb(null, user);
+		} else {
+			cb(null, false, {
+				message: 'Email address or password is incorrect!',
+			});
+		}
+	})
+);
 
 router.post(
 	'/authentication/signup',
@@ -32,38 +63,26 @@ router.post(
 
 router.post(
 	'/authentication/signin',
-	async (_request: Request, _response: Response) => {
-		try {
-			const user = await userService.getUserbyEmailAddressAsync(
-				_request.body.emailAddress
-			);
-
-			if (!user) {
-				return _response
-					.status(401)
-					.json({
-						errmsg: 'Email address or password is incorrect!',
-					})
-					.end();
-			}
-
-			const isUserauthenticated = await userService.signin(
-				_request.body.emailAddress,
-				_request.body.password,
-				user
-			);
-
-			if (isUserauthenticated) {
-				_response.sendStatus(200);
-			} else {
-				_response.status(401).json({
-					errmsg: 'Email address or password is incorrect!',
-				});
-			}
-		} catch (error) {
-			_response.sendStatus(401);
+	passport.authenticate(
+		'local',
+		function (request: Request, response: Response, next: NextFunction) {
+			passport.authenticate(
+				'local',
+				function (error: any, user: any, info: any, status: any) {
+					if (error) {
+						return next(error);
+					}
+					if (!user) {
+						return response
+							.status(401)
+							.json({ errmsg: info, status: status })
+							.end();
+					}
+					response.status(200).end();
+				}
+			)(request, response, next);
 		}
-	}
+	)
 );
 
 export default router;
