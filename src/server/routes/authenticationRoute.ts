@@ -1,12 +1,12 @@
 import { Request, Response, Router } from 'express';
 import { model } from 'mongoose';
-import { IUserAccount } from '../models/user/UserInterfaces';
+import { IUserAccount } from '../interfaces/userInterface';
 import {
 	doesUserbyEmailAddressAsync,
 	insertUseraccountAsync,
 	getUserbyEmailAddressAsync,
 	updateLastLoggedInAsync,
-} from '../models/database/documents/user';
+} from '../models/userModel';
 import * as crypto from 'crypto';
 
 const router: Router = Router();

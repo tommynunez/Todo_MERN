@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from 'mongoose';
-import { ITodo, ITodoAdd, ITodoUpdate } from '../../../todo/TodoInterfaces';
+import { ITodo, ITodoAdd, ITodoUpdate } from '../interfaces/todoInterface';
 
 const todoSchema = new Schema<ITodo>({
 	name: { type: String, required: true, unique: false },
