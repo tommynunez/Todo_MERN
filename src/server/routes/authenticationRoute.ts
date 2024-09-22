@@ -1,63 +1,9 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import UserService from '../services/userService';
 import passport from 'passport';
-import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
 
 const router: Router = Router();
 const userService = new UserService();
-
-type PassPortCallBackFunction = (
-	error: any,
-	user?: Express.User | false,
-	options?: IVerifyOptions
-) => void;
-
-passport.use(
-	new LocalStrategy(
-		{
-			usernameField: 'emailAddress',
-			passwordField: 'password',
-		},
-		async function verify(
-			emailAddress: string,
-			password: string,
-			cb: PassPortCallBackFunction
-		) {
-			const user = await userService.getUserbyEmailAddressAsync(emailAddress);
-			if (!user) {
-				return cb(null, false, {
-					message: 'Incorrect emailAddress or password.',
-				});
-			}
-
-			const isUserauthenticated = await userService.signin(
-				emailAddress,
-				password,
-				user
-			);
-
-			if (isUserauthenticated) {
-				cb(null, user);
-			} else {
-				cb(null, false, {
-					message: 'Email address or password is incorrect!',
-				});
-			}
-		}
-	)
-);
-
-passport.serializeUser(function (user: any, cb) {
-	process.nextTick(function () {
-		cb(null, { id: user.id, username: user.username });
-	});
-});
-
-passport.deserializeUser(function (user: Express.User, cb) {
-	process.nextTick(function () {
-		return cb(null, user);
-	});
-});
 
 router.post(
 	'/authentication/signup',

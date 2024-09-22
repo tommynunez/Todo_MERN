@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import express, { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import ViteExpress from 'vite-express';
@@ -13,6 +12,8 @@ import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
+import UserService from './services/userService';
+import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
 
 const app: Express = express();
 const port: number = 3001;
@@ -39,7 +40,8 @@ app.use(
 		parseNumber: true,
 	})
 );
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(helmet());
 
@@ -47,6 +49,61 @@ const mongoString = process.env.NODE_MONGO_DB_URL;
 mongoose.connect(mongoString);
 
 app.use(cookieParser());
+
+type PassportCallBackFunction = (
+	error: any,
+	user?: Express.User | false,
+	options?: IVerifyOptions
+) => void;
+
+passport.use(
+	new LocalStrategy(
+		{
+			usernameField: 'emailAddress',
+			passwordField: 'password',
+			session: true,
+		},
+		async function verify(
+			emailAddress: string,
+			password: string,
+			cb: PassportCallBackFunction
+		) {
+			const userService = new UserService();
+			const user = await userService.getUserbyEmailAddressAsync(emailAddress);
+			if (!user) {
+				return cb(null, false, {
+					message: 'Incorrect emailAddress or password.',
+				});
+			}
+
+			const isUserauthenticated = await userService.signin(
+				emailAddress,
+				password,
+				user
+			);
+			console.log('isUserauthenticated', isUserauthenticated);
+			if (isUserauthenticated) {
+				cb(null, user);
+			} else {
+				cb(null, false, {
+					message: 'Email address or password is incorrect!',
+				});
+			}
+		}
+	)
+);
+
+passport.serializeUser(function (user: any, cb) {
+	process.nextTick(function () {
+		cb(null, { emailAddress: user.emailAddress });
+	});
+});
+
+passport.deserializeUser(function (user: any, cb) {
+	process.nextTick(function () {
+		return cb(null, user);
+	});
+});
 
 app.use(
 	session({
@@ -59,6 +116,7 @@ app.use(
 		}),
 	})
 );
+app.use(passport.initialize());
 app.use(passport.authenticate('session'));
 
 /**
