@@ -64,30 +64,36 @@ passport.use(
 			session: true,
 		},
 		async function verify(
-			emailAddress: string,
-			password: string,
+			usernameField: string,
+			passwordField: string,
 			cb: PassportCallBackFunction
 		) {
-			const userService = new UserService();
-			const user = await userService.getUserbyEmailAddressAsync(emailAddress);
-			if (!user) {
-				return cb(null, false, {
-					message: 'Incorrect emailAddress or password.',
-				});
-			}
+			try {
+				const userService = new UserService();
+				const user = await userService.getUserbyEmailAddressAsync(
+					usernameField
+				);
+				if (!user) {
+					return cb(null, false, {
+						message: 'Incorrect email address or password.',
+					});
+				}
 
-			const isUserauthenticated = await userService.signin(
-				emailAddress,
-				password,
-				user
-			);
-			console.log('isUserauthenticated', isUserauthenticated);
-			if (isUserauthenticated) {
-				cb(null, user);
-			} else {
-				cb(null, false, {
-					message: 'Email address or password is incorrect!',
-				});
+				const isUserauthenticated = await userService.signin(
+					usernameField,
+					passwordField,
+					user
+				);
+				console.log('isUserauthenticated', isUserauthenticated);
+				if (isUserauthenticated) {
+					return cb(null, user);
+				} else {
+					return cb(null, false, {
+						message: 'Email address or password is incorrect!',
+					});
+				}
+			} catch (error) {
+				return cb(error);
 			}
 		}
 	)
@@ -95,14 +101,19 @@ passport.use(
 
 passport.serializeUser(function (user: any, cb) {
 	process.nextTick(function () {
-		cb(null, { emailAddress: user.emailAddress });
+		cb(null, user.emailAddress);
 	});
 });
 
-passport.deserializeUser(function (user: any, cb) {
-	process.nextTick(function () {
-		return cb(null, user);
-	});
+passport.deserializeUser(async function (user: any, cb) {
+	const userService = new UserService();
+	const userFound = await userService.getUserbyEmailAddressAsync(
+		user.emailAddress
+	);
+	if (!userFound) {
+		return cb('User not found', userFound);
+	}
+	return cb(null, userFound);
 });
 
 app.use(
@@ -117,7 +128,7 @@ app.use(
 	})
 );
 app.use(passport.initialize());
-app.use(passport.authenticate('session'));
+app.use(passport.session());
 
 /**
  * Health check api

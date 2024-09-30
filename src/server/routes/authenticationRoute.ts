@@ -35,23 +35,31 @@ router.post(
 
 router.post(
 	'/authentication/signin',
-	passport.authenticate(
-		'local',
-		function (request: Request, response: Response, next: NextFunction) {
-			passport.authenticate(
-				'local',
-				function (error: any, user: any, info: any, status: any) {
-					if (error) {
-						return next(error);
-					}
-					if (!user) {
-						return response.status(401).json({ errmsg: info, status: status });
-					}
-					return response.sendStatus(200);
+	(_request: Request, _response: Response, _next: NextFunction) => {
+		passport.authenticate(
+			'local',
+			{ session: true },
+			(
+				err: any,
+				user?: Express.User | false | null,
+				info?: object | string | Array<string | undefined>,
+				status?: number | Array<number | undefined>
+			) => {
+				if (err) {
+					return _next(err);
 				}
-			)(request, response, next);
-		}
-	)
+				console.log('user', user);
+				if (!user) {
+					return _response.sendStatus(401);
+				}
+
+				console.log('info', info);
+				console.log('status', status);
+
+				return _next();
+			}
+		)(_request, _response, _next);
+	}
 );
 
 router.post(
