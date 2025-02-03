@@ -45,14 +45,16 @@ export default class UserService implements IUserService {
 					}>)
 			| null
 	): Promise<boolean> => {
-		const salt = crypto.randomBytes(64);
+		//const salt = crypto.randomBytes(64);
 		const hashedPassword = await crypto.pbkdf2Sync(
 			password,
-			salt,
+			user.salt,
 			10000,
 			64,
 			'sha512'
 		);
+		console.log('user1', user);
+		console.log('hashedPassword', hashedPassword.toString());
 		if (
 			emailAddress == user?.emailAddress &&
 			hashedPassword.toString() == user.password
