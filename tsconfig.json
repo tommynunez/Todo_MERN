@@ -26,9 +26,13 @@
     "noFallthroughCasesInSwitch": true,
     //"esModuleInterop": true,
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "environment.d.ts"],
   "exclude": [
     "node_modules",
   ],
+  "types": [ "node" ],
+  "ts-node": {
+    "files": true
+  },
   "references": [{ "path": "./tsconfig.node.json" }],
 }

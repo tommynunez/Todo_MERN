@@ -1,12 +1,11 @@
 import {
 	deleteDocumentAsync,
 	getDocumentbyIdAsync,
-	getDocumentbyNameAsync,
 	getDocumentsAsync,
 	insertDocumentAsync,
 	updateDocumentAsync,
-} from "./database/documents/todo";
-import { ITodo, ITodoService } from "./TodoInterfaces";
+} from '../models/todoModel';
+import { ITodo, ITodoService } from '../interfaces/todoInterface';
 
 export default class TodoService implements ITodoService {
 	constructor() {}
@@ -26,18 +25,14 @@ export default class TodoService implements ITodoService {
 		return await deleteDocumentAsync(id);
 	};
 
-	getByIdDocumentsAsync = async (id: string): Promise<ITodo | null> => {
+	getByIdDocumentsAsync = async (id?: string): Promise<ITodo | null> => {
 		return await getDocumentbyIdAsync(id);
 	};
 
-	getByNameDocumentsAsync = async (name: string): Promise<ITodo | null> => {
-		return await getDocumentbyNameAsync(name);
-	};
-
 	getAllDocumentsAsync = async (
-		search?: string,
-		pageIndex?: number,
-		pageSize?: number
+		search: any,
+		pageIndex: any,
+		pageSize: any
 	): Promise<Array<ITodo> | null> => {
 		return await getDocumentsAsync(search, pageIndex, pageSize);
 	};
