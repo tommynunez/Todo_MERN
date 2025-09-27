@@ -55,7 +55,7 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "tsx": "^4.7.1",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8",
+    "vite": "^7.1.7",
     "vite-express": "^0.13.0"
   }
 }
