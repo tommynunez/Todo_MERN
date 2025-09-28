@@ -12,8 +12,7 @@ import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
-import UserService from './services/userService';
-import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
+import { configurePassport } from './config/passport';
 
 const app: Express = express();
 const port: number = 3001;
@@ -50,72 +49,6 @@ mongoose.connect(mongoString);
 
 app.use(cookieParser());
 
-type PassportCallBackFunction = (
-	error: any,
-	user?: Express.User | false,
-	options?: IVerifyOptions
-) => void;
-
-passport.use(
-	new LocalStrategy(
-		{
-			usernameField: 'emailAddress',
-			passwordField: 'password',
-			session: true,
-		},
-		async function verify(
-			usernameField: string,
-			passwordField: string,
-			cb: PassportCallBackFunction
-		) {
-			try {
-				const userService = new UserService();
-				const user = await userService.getUserbyEmailAddressAsync(
-					usernameField
-				);
-				if (!user) {
-					return cb(null, false, {
-						message: 'Incorrect email address or password.',
-					});
-				}
-
-				const isUserauthenticated = await userService.signin(
-					usernameField,
-					passwordField,
-					user
-				);
-				console.log('isUserauthenticated', isUserauthenticated);
-				if (isUserauthenticated) {
-					return cb(null, user);
-				} else {
-					return cb(null, false, {
-						message: 'Email address or password is incorrect!',
-					});
-				}
-			} catch (error) {
-				return cb(error);
-			}
-		}
-	)
-);
-
-passport.serializeUser(function (user: any, cb) {
-	process.nextTick(function () {
-		cb(null, user.emailAddress);
-	});
-});
-
-passport.deserializeUser(async function (user: any, cb) {
-	const userService = new UserService();
-	const userFound = await userService.getUserbyEmailAddressAsync(
-		user.emailAddress
-	);
-	if (!userFound) {
-		return cb('User not found', userFound);
-	}
-	return cb(null, userFound);
-});
-
 app.use(
 	session({
 		secret: process.env.NODE_SESSION_SECRET,
@@ -127,9 +60,9 @@ app.use(
 		}),
 	})
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
+configurePassport({ app, passportInstance: passport });
+console.log('Passport has been configured');
 /**
  * Health check api
  */
