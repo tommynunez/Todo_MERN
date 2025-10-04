@@ -6,7 +6,7 @@ const router: Router = Router();
 const userService = new UserService();
 
 router.post(
-	'/authentication/signup',
+	'/signup',
 	async (_request: Request, _response: Response) => {
 		try {
 			const hasErrors = userService.validateSignupFields(_request, _response);
@@ -34,7 +34,7 @@ router.post(
 );
 
 router.post(
-	'/authentication/signin',
+	'/signin',
 	(_request: Request, _response: Response, _next: NextFunction) => {
 		passport.authenticate(
 			'local',
@@ -63,7 +63,7 @@ router.post(
 );
 
 router.post(
-	'authentication/logout',
+	'/logout',
 	(_request: Request, _response: Response, next: NextFunction) => {
 		_request.logout(function (error: any) {
 			if (error) {

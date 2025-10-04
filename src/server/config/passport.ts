@@ -82,6 +82,6 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
     app.use(passport.initialize());
     app.use(passport.session());
 
-
+	console.log('Passport has been configured');
     return passportInstance;
 }

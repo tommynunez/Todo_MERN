@@ -4,7 +4,7 @@ import TodoService from '../services/todoService';
 const router: Router = Router();
 const _todoService = new TodoService();
 
-router.get('/todo', async (_request: Request, _response: Response) => {
+router.get('/', async (_request: Request, _response: Response) => {
 	try {
 		const { search, pageIndex, pageSize } = _request.query;
 
@@ -21,7 +21,7 @@ router.get('/todo', async (_request: Request, _response: Response) => {
 	}
 });
 
-router.get('/todo/:id', async (_request: Request, _response: Response) => {
+router.get('/:id', async (_request: Request, _response: Response) => {
 	const response = await _todoService.getByIdDocumentsAsync(
 		_request.params.id?.toString()
 	);
@@ -30,14 +30,14 @@ router.get('/todo/:id', async (_request: Request, _response: Response) => {
 		: _response.sendStatus(500);
 });
 
-router.post('/todo', async (_request: Request, _response: Response) => {
+router.post('/', async (_request: Request, _response: Response) => {
 	const response = await _todoService.insertDocumentAsync(_request.body.name);
 	response
 		? _response.status(201).json({ response: response, status: 201 })
 		: _response.sendStatus(500);
 });
 
-router.put('/todo/:id', async (_request: Request, _response: Response) => {
+router.put('/:id', async (_request: Request, _response: Response) => {
 	console.log('reques!!', import.meta.env);
 	const response = await _todoService.updateDocumentAsync(
 		_request.body.name,
@@ -48,7 +48,7 @@ router.put('/todo/:id', async (_request: Request, _response: Response) => {
 		: _response.sendStatus(500);
 });
 
-router.delete('/todo/:id', async (_request: Request, _response: Response) => {
+router.delete('/:id', async (_request: Request, _response: Response) => {
 	const response = await _todoService.deleteDocumentAsync(
 		parseInt(_request.params.id)
 	);

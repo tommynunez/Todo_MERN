@@ -6,12 +6,11 @@
   "proxy": "http://localhost:3001",
   "entry": "./src/server/index.ts",
   "scripts": {
-    "build": "NODE_ENV=production && vite build",
+    "build": "cross-env NODE_ENV=production && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start-dev-backend": "concurrently \"npm run start-dev\" \"npm run start-backend\"",
-    "start-dev": "vite",
-    "start-backend": "cross-env NODE_ENV=development npx tsx ./src/server/index.ts",
+    "start": "cross-env NODE_ENV=production node ./dist/server/index.js",
+    "start-local": "cross-env NODE_ENV=local tsx ./src/server/index.ts",
     "database": "npx tsx ./src/server/models/database/index.ts"
   },
   "dependencies": {
@@ -51,7 +50,6 @@
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
-    "concurrently": "^9.2.1",
     "cross-env": "^10.0.0",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
