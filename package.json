@@ -10,7 +10,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "cross-env NODE_ENV=production node ./dist/server/index.js",
-    "start-local": "cross-env NODE_ENV=local tsx ./src/server/index.ts",
+    "start-local": "cross-env NODE_ENV=development tsx ./src/server/index.ts",
     "database": "npx tsx ./src/server/models/database/index.ts"
   },
   "dependencies": {

@@ -30,31 +30,26 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(helmet());
+// add Content-Security-Policy (allow same-origin images and dev HMR resources)
 const isProd = process.env.NODE_ENV === 'production';
 const cspDirectives = {
-  defaultSrc: ["'self'"],
-  scriptSrc: isProd
-    ? ["'self'"]
-    : ["'self'", "'unsafe-eval'", "'unsafe-inline'"], // allow Vite HMR in dev
-  connectSrc: isProd
-    ? ["'self'"]
-    : ["'self'", "ws:", "wss:"], // allow HMR websocket in dev
-  styleSrc: ["'self'", "'unsafe-inline'"], // allow inline styles (adjust if you use CSP-safe styles)
-  imgSrc: ["'self'", "data:", "blob:", "http://localhost:3000"], // adjust as needed
+  defaultSrc: ["'none'"],
+  scriptSrc: isProd ? ["'self'"] : ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+  connectSrc: isProd ? ["'self'"] : ["'self'", "ws:", "wss:"],
+  styleSrc: ["'self'", "'unsafe-inline'"],
+  imgSrc: ["'self'"], // allow favicon from same origin
   fontSrc: ["'self'", "data:"],
   objectSrc: ["'none'"],
   baseUri: ["'self'"],
   frameAncestors: ["'none'"],
 };
 
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: cspDirectives,
-  })
-);
-
-app.use(express.static(path.resolve(process.cwd(), 'public')));
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_USE_CSP) {
+  app.use(helmet({ contentSecurityPolicy: false })); // disable CSP in dev
+} else {
+  app.use(helmet());
+  app.use(helmet.contentSecurityPolicy({ directives: cspDirectives }));
+}
 
 const mongoString = process.env.NODE_MONGO_DB_URL;
 mongoose.connect(mongoString);
@@ -100,6 +95,6 @@ const server: Server = app.listen(port, () => {
 });
 
 attachClient(app, server, {
-	clientRoot: path.resolve(process.cwd(), 'client'),
-	clientDist: path.resolve(process.cwd(), 'dist', 'client'),
+	clientRoot: path.resolve(process.cwd()),
+	clientDist: path.resolve(process.cwd(), 'client', 'dist'),
 });
