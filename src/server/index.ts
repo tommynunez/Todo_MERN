@@ -32,7 +32,7 @@ app.use(express.json());
 
 // add Content-Security-Policy (allow same-origin images and dev HMR resources)
 const isProd = process.env.NODE_ENV === 'production';
-const devClientOrigin = process.env.DEV_CLIENT_ORIGIN ?? 'http://localhost:3000';
+const devClientOrigin = process.env.NODE_APP_URL ?? 'http://localhost:3000';
 
 const cspDirectives = {
   defaultSrc: ["'self'"],
@@ -45,6 +45,9 @@ const cspDirectives = {
   baseUri: ["'self'"],
   frameAncestors: ["'none'"],
 };
+
+app.use(helmet());
+app.use(helmet.contentSecurityPolicy({ directives: cspDirectives }));
 
 const mongoString = process.env.NODE_MONGO_DB_URL;
 mongoose.connect(mongoString);

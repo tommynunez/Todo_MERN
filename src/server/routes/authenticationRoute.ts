@@ -42,21 +42,15 @@ router.post(
 			(
 				err: any,
 				user?: Express.User | false | null,
-				info?: object | string | Array<string | undefined>,
-				status?: number | Array<number | undefined>
 			) => {
 				if (err) {
 					return _next(err);
 				}
-				console.log('user', user);
 				if (!user) {
 					return _response.sendStatus(401);
+				} else {
+					return _response.sendStatus(200);
 				}
-
-				console.log('info', info);
-				console.log('status', status);
-
-				return _next();
 			}
 		)(_request, _response, _next);
 	}

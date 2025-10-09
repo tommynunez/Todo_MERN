@@ -48,7 +48,7 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
 					passwordField,
 					user
 				);
-				console.log('isUserauthenticated', isUserauthenticated);
+				
 				if (isUserauthenticated) {
 					return cb(null, user);
 				} else {
@@ -64,7 +64,7 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
 
     passportInstance.serializeUser(function (user: any, cb) {
         process.nextTick(function () {
-            cb(null, user.emailAddress);
+			cb(null, user.emailAddress);
         });
     });
     
@@ -77,7 +77,6 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
         }
         return cb(null, userFound);
     });
-
     
     app.use(passport.initialize());
     app.use(passport.session());
