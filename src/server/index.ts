@@ -32,20 +32,23 @@ app.use(express.json());
 
 // add Content-Security-Policy (allow same-origin images and dev HMR resources)
 const isProd = process.env.NODE_ENV === 'production';
+const devClientOrigin = process.env.DEV_CLIENT_ORIGIN ?? 'http://localhost:3000';
+
 const cspDirectives = {
-  defaultSrc: ["'none'"],
+  defaultSrc: ["'self'"],
   scriptSrc: isProd ? ["'self'"] : ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
   connectSrc: isProd ? ["'self'"] : ["'self'", "ws:", "wss:"],
   styleSrc: ["'self'", "'unsafe-inline'"],
-  imgSrc: ["'self'"], // allow favicon from same origin
+  imgSrc: isProd ? ["'self'", "data:", "blob:"] : ["'self'", "data:", "blob:", devClientOrigin],
   fontSrc: ["'self'", "data:"],
   objectSrc: ["'none'"],
   baseUri: ["'self'"],
   frameAncestors: ["'none'"],
 };
 
-if (process.env.NODE_ENV !== 'production' && process.env.NODE_USE_CSP) {
-  app.use(helmet({ contentSecurityPolicy: false })); // disable CSP in dev
+// respect an env toggle to disable CSP in dev if needed
+if (process.env.NODE_USE_CSP && !isProd) {
+  app.use(helmet({ contentSecurityPolicy: false }));
 } else {
   app.use(helmet());
   app.use(helmet.contentSecurityPolicy({ directives: cspDirectives }));

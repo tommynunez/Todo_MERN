@@ -34,7 +34,8 @@ export default function attachClient(app: Express, server: Server, opts: AttachC
         mode: 'development',
         inlineViteConfig: {
           root: clientRoot,
-        }
+        },
+        viteConfigFile: path.resolve(clientRoot, 'vite.config.ts'),
       });
       ViteExpress.bind(app, server);
       console.log('[attachClient] Vite dev server bound to Express — do NOT run frontend dev server separately.');
