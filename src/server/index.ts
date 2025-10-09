@@ -46,14 +46,6 @@ const cspDirectives = {
   frameAncestors: ["'none'"],
 };
 
-// respect an env toggle to disable CSP in dev if needed
-if (process.env.NODE_USE_CSP && !isProd) {
-  app.use(helmet({ contentSecurityPolicy: false }));
-} else {
-  app.use(helmet());
-  app.use(helmet.contentSecurityPolicy({ directives: cspDirectives }));
-}
-
 const mongoString = process.env.NODE_MONGO_DB_URL;
 mongoose.connect(mongoString);
 

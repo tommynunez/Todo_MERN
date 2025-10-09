@@ -57,6 +57,7 @@
     "tsx": "^4.7.1",
     "typescript": "^5.2.2",
     "vite": "^7.1.7",
-    "vite-express": "^0.13.0"
+    "vite-express": "^0.13.0",
+    "vite-plugin-favicons-inject": "^2.2.0"
   }
 }

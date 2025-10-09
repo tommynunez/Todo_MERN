@@ -3,7 +3,6 @@ import fs from 'fs';
 import express, { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import ViteExpress from 'vite-express';
-import svgr from 'vite-plugin-svgr';
 
 export type AttachClientOptions = {
   clientRoot?: string; // development root (source)
@@ -24,6 +23,7 @@ export default function attachClient(app: Express, server: Server, opts: AttachC
       res.sendFile(path.join(clientDist, 'index.html'));
     });
   } else {
+    console.log('clientRoot', clientRoot)
     // development: let Vite (in-process) serve public/ and handle ?import requests.
     if (!fs.existsSync(clientRoot)) {
       console.error(`[attachClient] clientRoot not found at ${clientRoot} — Vite will fail to start`);
@@ -31,10 +31,6 @@ export default function attachClient(app: Express, server: Server, opts: AttachC
 
     try {
       ViteExpress.config({
-        mode: 'development',
-        inlineViteConfig: {
-          root: clientRoot,
-        },
         viteConfigFile: path.resolve(clientRoot, 'vite.config.ts'),
       });
       ViteExpress.bind(app, server);
