@@ -55,6 +55,11 @@ mongoose.connect(mongoString);
 
 app.use(cookieParser());
 
+/**
+ * Session middleware configuration
+ * The session secret should be a long random string
+ * In production, the secret should be stored in an environment variable
+ */
 app.use(
 	session({
 		secret: process.env.NODE_SESSION_SECRET,
@@ -93,6 +98,29 @@ const server: Server = app.listen(port, () => {
 	console.log(`Listening on port number: ${port}`);
 });
 
+/**	
+ * Attach client application (React) to the express server
+ * Make sure to run the client build process to generate the static files
+ * in the client/dist folder
+ * You can run the client in dev mode using Vite with HMR support
+ * by running `npm run dev` in the client folder
+ * Make sure to set the NODE_APP_URL environment variable to the
+ * client dev server url (e.g. http://localhost:3000)
+ * The client will be served from the root path (/)
+ * The api endpoints will be served from /api/*
+ * This setup allows to have a single server for both
+ * the client and the api
+ * 
+ * In production, the client will be served as static files
+ * from the client/dist folder
+ * 
+ * In development, the client will be served by the Vite dev server
+ * with HMR support
+ * The clientRoot is the root folder of the client application
+ * The clientDist is the folder where the static files are generated
+ * by the client build process
+ * The attachClient function takes care of the rest
+ */
 attachClient(app, server, {
 	clientRoot: path.resolve(process.cwd()),
 	clientDist: path.resolve(process.cwd(), 'client', 'dist'),

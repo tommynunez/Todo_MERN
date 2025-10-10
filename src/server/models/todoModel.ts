@@ -9,6 +9,11 @@ const todoSchema = new Schema<ITodo>({
 
 export const todoModel = model<ITodo>('Todo', todoSchema);
 
+/**
+ * Create a new todo document
+ * @param param0 
+ * @returns 
+ */
 export const insertDocumentAsync = async ({
 	name,
 }: ITodoAdd): Promise<boolean> => {
@@ -30,6 +35,11 @@ export const insertDocumentAsync = async ({
 	}
 };
 
+/**
+ * Update a todo document
+ * @param param0 
+ * @returns 
+ */
 export const updateDocumentAsync = async ({
 	name,
 	completed,
@@ -51,6 +61,11 @@ export const updateDocumentAsync = async ({
 	}
 };
 
+/**
+ * Delete a todo document
+ * @param id 
+ * @returns 
+ */
 export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
 	const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 	try {
@@ -64,6 +79,11 @@ export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
 	}
 };
 
+/**
+ * Get a todo document by id
+ * @param id 
+ * @returns 
+ */
 export const getDocumentbyIdAsync = async (
 	id?: string
 ): Promise<ITodo | null> => {
@@ -79,6 +99,13 @@ export const getDocumentbyIdAsync = async (
 	}
 };
 
+/**
+ * Get all todo documents with pagination
+ * @param search 
+ * @param pageIndex
+ * @param pageSize
+ * @return Array<ITodo> | null
+*/
 export const getDocumentsAsync = async (
 	search: string,
 	pageIndex: number,

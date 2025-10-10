@@ -9,6 +9,22 @@ export type AttachClientOptions = {
   clientDist?: string; // production build folder
 };
 
+/**
+ * Attach Vite dev server in development, or serve built static files in production.
+ * @param app 
+ * @param server 
+ * @param opts
+ * @example
+ * ```ts
+ * import express from 'express';
+ * import { createServer } from 'http';
+ * import attachClient from './config/attachClient';
+ * const app = express();
+ * const server = createServer(app);
+ * attachClient(app, server, { clientRoot: '../client' });
+ * server.listen(3000);
+ * ```
+ */
 export default function attachClient(app: Express, server: Server, opts: AttachClientOptions = {}) {
   const clientRoot = opts.clientRoot ?? path.resolve(process.cwd(), 'client');
   const clientDist = opts.clientDist ?? path.resolve(clientRoot, 'dist');

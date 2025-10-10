@@ -12,6 +12,12 @@ import mongoose from 'mongoose';
 export default class UserService implements IUserService {
 	constructor() {}
 
+	/**
+	 * Method to signup a user
+	 * @param emailAddress
+	 * @param password 
+	 * @returns Boolean
+	 */
 	signup = async (emailAddress: string, password: string): Promise<boolean> => {
 		const salt = crypto.randomBytes(64).toString('hex');
 		const hashedPassword = await crypto.pbkdf2Sync(
@@ -34,6 +40,13 @@ export default class UserService implements IUserService {
 		return true;
 	};
 
+	/**
+	 * Method to signin a user
+	 * @param emailAddress
+	 * @param password
+	 * @param user
+	 * @returns Boolean
+	 */
 	signin = async (
 		emailAddress: string,
 		password: string,
