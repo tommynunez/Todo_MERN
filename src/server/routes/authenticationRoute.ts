@@ -109,7 +109,10 @@ router.post(
 			if (error) {
 				return next(error);
 			}
-			_response.sendStatus(200);
+			_request.session.destroy(() => {
+				_response.clearCookie('connect.sid', { path: '/' });
+				_response.sendStatus(200);
+			});
 		});
 	}
 );
