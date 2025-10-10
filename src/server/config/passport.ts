@@ -63,12 +63,14 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
     ));
 
     passportInstance.serializeUser(function (user: any, cb) {
+		console.log('serializeUser', user);
         process.nextTick(function () {
-			cb(null, user.emailAddress);
+			return cb(null, { emailAddress: user.emailAddress });
         });
     });
     
     passportInstance.deserializeUser(async function (user: any, cb) {
+		console.log('deserializeUser', user);
         const userFound = await userService.getUserbyEmailAddressAsync(
             user.emailAddress
         );
