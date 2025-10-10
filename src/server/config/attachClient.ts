@@ -23,7 +23,6 @@ export default function attachClient(app: Express, server: Server, opts: AttachC
       res.sendFile(path.join(clientDist, 'index.html'));
     });
   } else {
-    console.log('clientRoot', clientRoot)
     // development: let Vite (in-process) serve public/ and handle ?import requests.
     if (!fs.existsSync(clientRoot)) {
       console.error(`[attachClient] clientRoot not found at ${clientRoot} — Vite will fail to start`);

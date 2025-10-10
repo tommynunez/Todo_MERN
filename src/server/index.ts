@@ -13,6 +13,7 @@ import cookieParser from 'cookie-parser';
 import { configurePassport } from './config/passport';
 import { loadEnv } from './config/environment';
 import attachClient from './config/attachClient';
+import { authenticatedMiddleware } from './middleware/authenticatedMiddleware';
 
 const app: Express = express();
 const port: number = 3000;
@@ -83,7 +84,7 @@ app.use('/api/authentication', authenticationController);
 /**
  * Todo controller entrypoint using express router
  */
-app.use('/api/todos', todoController);
+app.use('/api/todos', authenticatedMiddleware, todoController);
 
 /**
  * Starting the express server

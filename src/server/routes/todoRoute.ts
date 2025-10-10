@@ -1,15 +1,11 @@
 import { Request, Response, Router } from 'express';
 import TodoService from '../services/todoService';
-import passport from 'passport';
 
 const router: Router = Router();
 const _todoService = new TodoService();
 
 router.get('/', async (_request: Request, _response: Response,) => {
 	try {
-		console.log('request!!', _request.isAuthenticated());
-		console.log('request!!', _request.session);
-		console.log('request!!', _request.user);
 		const { search, pageIndex, pageSize } = _request.query;
 
 		const response = await _todoService.getAllDocumentsAsync(
@@ -42,7 +38,6 @@ router.post('/', async (_request: Request, _response: Response) => {
 });
 
 router.put('/:id', async (_request: Request, _response: Response) => {
-	console.log('reques!!', import.meta.env);
 	const response = await _todoService.updateDocumentAsync(
 		_request.body.name,
 		_request.body
