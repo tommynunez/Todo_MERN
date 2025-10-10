@@ -49,7 +49,12 @@ router.post(
 				if (!user) {
 					return _response.sendStatus(401);
 				} else {
-					return _response.sendStatus(200);
+					_request.logIn(user, (err) => {
+						if(err) {
+							return _next(err);
+						}
+						return _response.sendStatus(200);
+					});
 				}
 			}
 		)(_request, _response, _next);

@@ -110,7 +110,5 @@ export default class UserService implements IUserService {
 					_id: unknown;
 				}>)
 		| null
-	> => {
-		return await getUserbyEmailAddressAsync(emailAddress);
-	};
+	> => await getUserbyEmailAddressAsync(emailAddress);	
 }

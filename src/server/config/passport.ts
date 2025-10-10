@@ -18,7 +18,7 @@ export type ConfigureOptions = {
 export const configurePassport = (configOptions: ConfigureOptions) => {
     const app = configOptions.app;
     const passportInstance = configOptions.passportInstance || passport;
-    const userService = configOptions.userModel || UserService;
+    const userService = configOptions.userModel || new UserService();
     
     passportInstance.use(
 	  new LocalStrategy(
@@ -33,7 +33,6 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
 			cb: PassportCallBackFunction
 		) {
 			try {
-				const userService = new UserService();
 				const user = await userService.getUserbyEmailAddressAsync(
 					usernameField
 				);
@@ -62,27 +61,25 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
 		}
     ));
 
-    passportInstance.serializeUser(function (user: any, cb) {
-		console.log('serializeUser', user);
+    passportInstance.serializeUser(function (user: any, done) {
         process.nextTick(function () {
-			return cb(null, { emailAddress: user.emailAddress });
+			return done(null, { emailAddress: user.emailAddress });
         });
     });
     
-    passportInstance.deserializeUser(async function (user: any, cb) {
-		console.log('deserializeUser', user);
+    passportInstance.deserializeUser(async function (user: any, done) {
         const userFound = await userService.getUserbyEmailAddressAsync(
             user.emailAddress
         );
         if (!userFound) {
-            return cb('User not found', userFound);
+            return done('User not found', userFound);
         }
-        return cb(null, userFound);
+        return done(null, userFound);
     });
     
-    app.use(passport.initialize());
-    app.use(passport.session());
+    app.use(passportInstance.initialize());
+    app.use(passportInstance.session());
 
-	console.log('Passport has been configured');
+		console.log('Passport has been configured');
     return passportInstance;
 }
