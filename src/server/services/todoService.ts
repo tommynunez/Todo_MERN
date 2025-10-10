@@ -10,30 +10,48 @@ import { ITodo, ITodoService } from '../interfaces/todoInterface';
 export default class TodoService implements ITodoService {
 	constructor() {}
 
-	insertDocumentAsync = async (name: string): Promise<boolean> => {
-		return await insertDocumentAsync({ name });
-	};
+	/**
+	 * Create a new todo document
+	 * @param name 
+	 * @returns boolean
+	 */
+	insertDocumentAsync = async (name: string): Promise<boolean> => await insertDocumentAsync({ name });
 
+	/**
+	 * Update a todo document 
+	 * @param name 
+	 * @param completed 
+	 * @returns 
+	 */
 	updateDocumentAsync = async (
 		name: string,
 		completed: boolean
-	): Promise<boolean> => {
-		return await updateDocumentAsync({ name, completed });
-	};
+	): Promise<boolean> => await updateDocumentAsync({ name, completed });
 
-	deleteDocumentAsync = async (id: number): Promise<boolean> => {
-		return await deleteDocumentAsync(id);
-	};
+	/**
+	 * Delete a todo document
+	 * @param id 
+	 * @returns 
+	 */
+	deleteDocumentAsync = async (id: number): Promise<boolean> => await deleteDocumentAsync(id);
 
-	getByIdDocumentsAsync = async (id?: string): Promise<ITodo | null> => {
-		return await getDocumentbyIdAsync(id);
-	};
-
+	/**
+	 * Get a todo document by id
+	 * @param id 
+	 * @returns 
+	 */
+	getByIdDocumentsAsync = async (id?: string): Promise<ITodo | null> => await getDocumentbyIdAsync(id);
+	
+	/**
+	 * Get all todo documents with pagination
+	 * @param search 
+	 * @param pageIndex 
+	 * @param pageSize 
+	 * @returns 
+	 */
 	getAllDocumentsAsync = async (
 		search: any,
 		pageIndex: any,
 		pageSize: any
-	): Promise<Array<ITodo> | null> => {
-		return await getDocumentsAsync(search, pageIndex, pageSize);
-	};
+	): Promise<Array<ITodo> | null> => await getDocumentsAsync(search, pageIndex, pageSize);
 }

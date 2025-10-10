@@ -17,4 +17,14 @@ export interface IUserService {
 		password: string,
 		user: any
 	) => Promise<boolean>;
+	getUserbyEmailAddressAsync: (
+		emailAddress: string
+	) => Promise<
+		| (mongoose.Document<unknown, IUserAccount> &
+				IUserAccount &
+				Required<{
+					_id: unknown;
+				}>)
+		| null
+	>;
 }

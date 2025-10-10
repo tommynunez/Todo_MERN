@@ -1,10 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import { Server } from 'http';
-import ViteExpress from 'vite-express';
 import authenticationController from './routes/authenticationRoute';
 import todoController from './routes/todoRoute';
 import { queryParser } from 'express-query-parser';
-import * as dotenv from 'dotenv';
 import path from 'path';
 import helmet from 'helmet';
 import session from 'express-session';
@@ -12,25 +10,15 @@ import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
-import UserService from './services/userService';
-import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
+import { configurePassport } from './config/passport';
+import { loadEnv } from './config/environment';
+import attachClient from './config/attachClient';
+import { authenticatedMiddleware } from './middleware/authenticatedMiddleware';
 
 const app: Express = express();
-const port: number = 3001;
+const port: number = 3000;
 
-/**
- * Configure where to pull in the environment based
- * configuratons, the environment is set in package.json
- * within the script command
- */
-dotenv.config({
-	path: path.resolve(
-		process.cwd(),
-		process.env.NODE_ENV === 'development'
-			? '.env.development.local'
-			: '.env.production.local'
-	),
-});
+loadEnv();
 
 app.use(
 	queryParser({
@@ -43,92 +31,48 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// add Content-Security-Policy (allow same-origin images and dev HMR resources)
+const isProd = process.env.NODE_ENV === 'production';
+const devClientOrigin = process.env.NODE_APP_URL ?? 'http://localhost:3000';
+
+const cspDirectives = {
+  defaultSrc: ["'self'"],
+  scriptSrc: isProd ? ["'self'"] : ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+  connectSrc: isProd ? ["'self'"] : ["'self'", "ws:", "wss:"],
+  styleSrc: ["'self'", "'unsafe-inline'"],
+  imgSrc: isProd ? ["'self'", "data:", "blob:"] : ["'self'", "data:", "blob:", devClientOrigin],
+  fontSrc: ["'self'", "data:"],
+  objectSrc: ["'none'"],
+  baseUri: ["'self'"],
+  frameAncestors: ["'none'"],
+};
+
 app.use(helmet());
+app.use(helmet.contentSecurityPolicy({ directives: cspDirectives }));
 
 const mongoString = process.env.NODE_MONGO_DB_URL;
 mongoose.connect(mongoString);
 
 app.use(cookieParser());
 
-type PassportCallBackFunction = (
-	error: any,
-	user?: Express.User | false,
-	options?: IVerifyOptions
-) => void;
-
-passport.use(
-	new LocalStrategy(
-		{
-			usernameField: 'emailAddress',
-			passwordField: 'password',
-			session: true,
-		},
-		async function verify(
-			usernameField: string,
-			passwordField: string,
-			cb: PassportCallBackFunction
-		) {
-			try {
-				const userService = new UserService();
-				const user = await userService.getUserbyEmailAddressAsync(
-					usernameField
-				);
-				if (!user) {
-					return cb(null, false, {
-						message: 'Incorrect email address or password.',
-					});
-				}
-
-				const isUserauthenticated = await userService.signin(
-					usernameField,
-					passwordField,
-					user
-				);
-				console.log('isUserauthenticated', isUserauthenticated);
-				if (isUserauthenticated) {
-					return cb(null, user);
-				} else {
-					return cb(null, false, {
-						message: 'Email address or password is incorrect!',
-					});
-				}
-			} catch (error) {
-				return cb(error);
-			}
-		}
-	)
-);
-
-passport.serializeUser(function (user: any, cb) {
-	process.nextTick(function () {
-		cb(null, user.emailAddress);
-	});
-});
-
-passport.deserializeUser(async function (user: any, cb) {
-	const userService = new UserService();
-	const userFound = await userService.getUserbyEmailAddressAsync(
-		user.emailAddress
-	);
-	if (!userFound) {
-		return cb('User not found', userFound);
-	}
-	return cb(null, userFound);
-});
-
+/**
+ * Session middleware configuration
+ * The session secret should be a long random string
+ * In production, the secret should be stored in an environment variable
+ */
 app.use(
 	session({
 		secret: process.env.NODE_SESSION_SECRET,
 		resave: false,
 		saveUninitialized: true,
-		cookie: { secure: true, maxAge: 36000, httpOnly: true },
+		cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 36000, httpOnly: true },
 		store: new MongoStore({
 			mongoUrl: process.env.NODE_MONGO_DB_URL,
 		}),
 	})
 );
-app.use(passport.initialize());
-app.use(passport.session());
+
+configurePassport({ app, passportInstance: passport });
 
 /**
  * Health check api
@@ -140,12 +84,12 @@ app.get('/health', (_request: Request, _response: Response) => {
 /**
  * Authentication controller entry using express router
  */
-app.use('/', authenticationController);
+app.use('/api/authentication', authenticationController);
 
 /**
  * Todo controller entrypoint using express router
  */
-app.use('/', todoController);
+app.use('/api/todos', authenticatedMiddleware, todoController);
 
 /**
  * Starting the express server
@@ -154,4 +98,30 @@ const server: Server = app.listen(port, () => {
 	console.log(`Listening on port number: ${port}`);
 });
 
-ViteExpress.bind(app, server);
+/**	
+ * Attach client application (React) to the express server
+ * Make sure to run the client build process to generate the static files
+ * in the client/dist folder
+ * You can run the client in dev mode using Vite with HMR support
+ * by running `npm run dev` in the client folder
+ * Make sure to set the NODE_APP_URL environment variable to the
+ * client dev server url (e.g. http://localhost:3000)
+ * The client will be served from the root path (/)
+ * The api endpoints will be served from /api/*
+ * This setup allows to have a single server for both
+ * the client and the api
+ * 
+ * In production, the client will be served as static files
+ * from the client/dist folder
+ * 
+ * In development, the client will be served by the Vite dev server
+ * with HMR support
+ * The clientRoot is the root folder of the client application
+ * The clientDist is the folder where the static files are generated
+ * by the client build process
+ * The attachClient function takes care of the rest
+ */
+attachClient(app, server, {
+	clientRoot: path.resolve(process.cwd()),
+	clientDist: path.resolve(process.cwd(), 'client', 'dist'),
+});

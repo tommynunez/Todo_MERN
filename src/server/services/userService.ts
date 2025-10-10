@@ -12,20 +12,26 @@ import mongoose from 'mongoose';
 export default class UserService implements IUserService {
 	constructor() {}
 
+	/**
+	 * Method to signup a user
+	 * @param emailAddress
+	 * @param password 
+	 * @returns Boolean
+	 */
 	signup = async (emailAddress: string, password: string): Promise<boolean> => {
-		const salt = crypto.randomBytes(64);
+		const salt = crypto.randomBytes(64).toString('hex');
 		const hashedPassword = await crypto.pbkdf2Sync(
 			password,
 			salt,
-			10000,
+			100000,
 			64,
 			'sha512'
-		);
+		).toString('hex');
 
 		const document = await insertUseraccountAsync(
 			emailAddress,
-			hashedPassword.toString(),
-			salt.toString()
+			hashedPassword,
+			salt
 		);
 
 		if (!document) {
@@ -34,6 +40,13 @@ export default class UserService implements IUserService {
 		return true;
 	};
 
+	/**
+	 * Method to signin a user
+	 * @param emailAddress
+	 * @param password
+	 * @param user
+	 * @returns Boolean
+	 */
 	signin = async (
 		emailAddress: string,
 		password: string,
@@ -48,13 +61,12 @@ export default class UserService implements IUserService {
 		//const salt = crypto.randomBytes(64);
 		const hashedPassword = await crypto.pbkdf2Sync(
 			password,
-			user.salt,
-			10000,
+			user?.salt || '',
+			100000,
 			64,
 			'sha512'
-		);
-		console.log('user1', user);
-		console.log('hashedPassword', hashedPassword.toString());
+		).toString('hex');		
+
 		if (
 			emailAddress == user?.emailAddress &&
 			hashedPassword.toString() == user.password
@@ -111,7 +123,5 @@ export default class UserService implements IUserService {
 					_id: unknown;
 				}>)
 		| null
-	> => {
-		return await getUserbyEmailAddressAsync(emailAddress);
-	};
+	> => await getUserbyEmailAddressAsync(emailAddress);	
 }

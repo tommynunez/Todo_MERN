@@ -80,16 +80,14 @@ export const updateLastLoggedInAsync = async (
 		| null
 ): Promise<boolean> => {
 	try {
-		console.log('***8' + document);
 		if (!document) {
 			throw 'document is undefined';
 		}
-		await userModel.findByIdAndUpdate(
+		var resp = await userModel.findByIdAndUpdate(
 			{ id: document.id },
 			{ lastSignedIn: new Date(), updatedDate: new Date() },
 			{ upsert: false, new: false }
 		);
-
 		return true;
 	} catch (error: any) {
 		return false;
