@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
 import { IChoreList, IChoreListAdd, IChoreListUpdate, IShareWith } from "../interfaces/choreListInterfaces";
 
 const SharedWithSchema = new Schema<IShareWith>({
@@ -113,7 +113,7 @@ export const getDocumentbyIdAsync = async (id: string): Promise<IChoreList | nul
  * @returns 
  */
 export const getDocumentsAsync = async (
-  ownerId: string,
+  ownerId: Types.ObjectId,
   search: string,
   pageIndex: number,
   pageSize: number

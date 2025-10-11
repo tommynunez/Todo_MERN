@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import UserService from '../services/userService';
 import passport from 'passport';
+import { authenticatedMiddleware } from '../middleware/authenticatedMiddleware';
 
 const router: Router = Router();
 const userService = new UserService();
@@ -104,6 +105,7 @@ router.post(
  */
 router.post(
 	'/logout',
+	authenticatedMiddleware,
 	(_request: Request, _response: Response, next: NextFunction) => {
 		_request.logout(function (error: any) {
 			if (error) {

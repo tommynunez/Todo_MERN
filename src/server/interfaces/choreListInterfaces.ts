@@ -39,6 +39,7 @@ export interface IChoreListService {
   deleteDocumentAsync: (id: string) => Promise<boolean>;
   getByIdDocumentsAsync: (id: string) => Promise<IChoreList | null>;
   getAllDocumentsAsync: (
+    ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
     pageSize: any

@@ -22,7 +22,6 @@ const _todoService = new TodoService();
  * Response: { response: ITodo, status: 200 }
  */
 router.get('/', async (_request: Request, _response: Response,) => {
-	try {
 		const { search, pageIndex, pageSize } = _request.query;
 
 		const response = await _todoService.getAllDocumentsAsync(
@@ -33,9 +32,6 @@ router.get('/', async (_request: Request, _response: Response,) => {
 		response
 			? _response.status(200).json({ response, status: 200 })
 			: _response.sendStatus(500);
-	} catch (error) {
-		console.log(error);
-	}
 });
 
 /**

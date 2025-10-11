@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import { Server } from 'http';
 import authenticationController from './routes/authenticationRoute';
 import todoController from './routes/todoRoute';
+import chorelistController from './routes/chorelistRoute';
 import { queryParser } from 'express-query-parser';
 import path from 'path';
 import helmet from 'helmet';
@@ -90,6 +91,11 @@ app.use('/api/authentication', authenticationController);
  * Todo controller entrypoint using express router
  */
 app.use('/api/todos', authenticatedMiddleware, todoController);
+
+/**
+ * Chorelist controller entrypoint using express router
+ */
+app.use('/api/chorelists', authenticatedMiddleware, chorelistController);
 
 /**
  * Starting the express server
