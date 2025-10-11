@@ -51,15 +51,13 @@ export const insertDocumentAsync = async (choreList: IChoreListAdd): Promise<boo
 export const updateDocumentAsync = async (id: string, choreList: IChoreListUpdate): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
-    const existingChoreList = await choreListModel.findById(id);
-    if (!existingChoreList) {
-      db.disconnect();
-      return false;
-    }
-    existingChoreList.title = choreList.title;
-    existingChoreList.shareWith = choreList.shareWith;
-    existingChoreList.updatedDate = choreList.updatedDate;
-    await existingChoreList.save();
+    await choreListModel.findByIdAndUpdate({id}, 
+      {
+        title: choreList.title,
+        shareWith: choreList.shareWith,
+        updatedDate: choreList.updatedDate,
+      }
+    );
     db.disconnect();
     return true;
   }

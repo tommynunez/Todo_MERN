@@ -46,12 +46,12 @@ export const updateDocumentAsync = async ({
 }: ITodoUpdate): Promise<boolean> => {
 	const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 	try {
-		const todo = new todoModel({
-			name,
-			completed,
-			completedDate: new Date(),
-		});
-		await todo.updateOne();
+		await todoModel.findOneAndUpdate({ name }, 
+			{ 
+				completed, 
+				completedDate: completed ? new Date() : null 
+			}
+		);
 		db.disconnect();
 		return true;
 	} catch (error) {
