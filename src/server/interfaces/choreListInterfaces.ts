@@ -9,7 +9,7 @@ export interface IChoreList extends mongoose.Document {
   deletedDate: Date | null;
 }
 
-interface IShareWith {
+export interface IShareWith {
   userId: ObjectId;
   permission: PermissionLevel;
 }
