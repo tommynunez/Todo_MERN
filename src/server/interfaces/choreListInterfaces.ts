@@ -1,4 +1,4 @@
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { ObjectId, Types } from "mongoose";
 
 export interface IChoreList extends mongoose.Document {
   title: string;
@@ -18,7 +18,7 @@ type PermissionLevel = 'read' | 'write' | 'admin';
 
 export interface IChoreListAdd {
   title: String,
-  owner: mongoose.Schema.Types.ObjectId,
+  owner: Types.ObjectId,
   shareWith: Array<IShareWith>,
   createdDate: Date,
 };

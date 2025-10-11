@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "start": "cross-env NODE_ENV=production node ./dist/server/index.js",
     "start-local": "cross-env NODE_ENV=development tsx ./src/server/index.ts",
-    "database": "npx tsx ./src/server/models/database/index.ts"
+    "database": "npx tsx ./src/server/models/database/index.ts",
+    "test": "jest"
   },
   "dependencies": {
     "@rollup/plugin-replace": "^5.0.7",
@@ -43,6 +44,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^4.17.21",
     "@types/express-session": "^1.18.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.12.2",
     "@types/passport-local": "^1.0.38",
     "@types/react": "^18.2.43",
@@ -54,6 +56,8 @@
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
     "tsx": "^4.7.1",
     "typescript": "^5.2.2",
     "vite": "^7.1.7",
