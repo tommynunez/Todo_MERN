@@ -140,6 +140,6 @@ export const getDocumentsAsync = async (
   } catch (error) {
     console.log(error);
     db.disconnect();
-    return null;
+    return [];
   }
 };
