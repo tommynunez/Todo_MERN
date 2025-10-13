@@ -1,9 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
+import { RoleType } from '../types/RoleType';
 
 export interface IInvite extends mongoose.Document {
     email: string;
     listId: Schema.Types.ObjectId;
-    role: 'read' | 'write' | 'admin';
+    role: RoleType;
     token: string;
     accepted: boolean;
     createdAt: Date;
@@ -14,8 +15,7 @@ export interface IInvite extends mongoose.Document {
 export interface IInviteAdd {
     email: string;
     listId: Schema.Types.ObjectId;
-    role: 'read' | 'write' | 'admin';
-    token: string;
+    role: RoleType;
     accepted: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -23,6 +23,7 @@ export interface IInviteAdd {
 }
 
 export interface IInviteUpdate {
+    token: string;
     accepted: boolean;
     updatedAt: Date;
 }
@@ -33,15 +34,15 @@ export interface IInviteDelete {
     updatedAt: Date;
 }
 
+export interface InvitePayload {
+  listId: string;
+  email: string;
+  role: RoleType;
+}
+
 export interface IInviteService {
-    insertDocumentAsync: (invite: IInviteAdd) => Promise<boolean>;
-    updateDocumentAsync: (id: string, invite: IInviteUpdate) => Promise<boolean>;
-    deleteDocumentAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;
-    getByIdDocumentsAsync: (id: string) => Promise<IInvite | null>;
-    getAllDocumentsAsync: (
-        listId: Schema.Types.ObjectId,
-        search: any,
-        pageIndex: any,
-        pageSize: any
-    ) => Promise<Array<IInvite> | null>;
+    createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;
+    verifyInviteandUpdateAsync: (id: string, invite: IInviteUpdate) => Promise<boolean>;
+    inactivateInviteAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;
+    getInvitebyIdAsync: (id: string) => Promise<IInvite | null>;
 }
