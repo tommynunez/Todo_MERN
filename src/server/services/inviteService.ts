@@ -18,6 +18,7 @@ export default class InviteService implements IInviteService {
     const userDoc = await userService.getUserbyEmailAddressAsync(invite.email);
     let token = "";
 
+    //user exists, lets send the email for the invite
     if (userDoc) {
       console.log(
         `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`,

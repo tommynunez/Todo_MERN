@@ -5,6 +5,9 @@ import {
   IInviteDelete,
   IInviteUpdate,
 } from "../interfaces/inviteInterface";
+import { Roles } from "../constants/Roles";
+import { InviteStatuses } from "../constants/InviteStatuses";
+import { InviteTypes } from "../constants/InviteType";
 
 const inviteSchema = new mongoose.Schema(
   {
@@ -14,18 +17,23 @@ const inviteSchema = new mongoose.Schema(
       required: true,
       ref: "ChoreList",
     },
-    role: { type: String, enum: ["read", "write", "admin"], required: true },
+    role: { type: String, enum: Object.values(Roles), required: true },
+    type: { type: String, enum: Object.values(InviteTypes), require: true },
+    status: {
+      type: String,
+      enum: Object.values(InviteStatuses),
+      required: true,
+    },
     token: { type: String, required: true, unique: true },
     accepted: { type: Boolean, default: false },
-    hasExpired: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 const inviteModel = mongoose.model<IInvite>("Invite", inviteSchema);
 
 export const insertDocumentAsync = async (
-  invite: IInviteAdd,
+  invite: IInviteAdd
 ): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
@@ -47,7 +55,7 @@ export const insertDocumentAsync = async (
 
 export const updateDocumentAsync = async (
   id: string,
-  invite: IInviteUpdate,
+  invite: IInviteUpdate
 ): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
@@ -64,12 +72,12 @@ export const updateDocumentAsync = async (
 };
 
 export const deleteDocumentAsync = async (
-  inviteDelete: IInviteDelete,
+  inviteDelete: IInviteDelete
 ): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const deletedInvite = await inviteModel.findByIdAndUpdate(inviteDelete.id, {
-      hasExpired: inviteDelete.hasExpired,
+      status: inviteDelete.status,
       updatedAt: inviteDelete.updatedAt,
     });
 
@@ -83,7 +91,7 @@ export const deleteDocumentAsync = async (
 };
 
 export const getByIdDocumentsAsync = async (
-  id: string,
+  id: string
 ): Promise<IInvite | null> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
@@ -101,7 +109,7 @@ export const getAllDocumentsAsync = async (
   listId: mongoose.Schema.Types.ObjectId,
   search: any,
   pageIndex: any,
-  pageSize: any,
+  pageSize: any
 ): Promise<IInvite[]> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
