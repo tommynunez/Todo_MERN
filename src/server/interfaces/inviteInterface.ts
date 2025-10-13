@@ -7,8 +7,6 @@ export interface IInvite extends mongoose.Document {
     role: RoleType;
     token: string;
     accepted: boolean;
-    createdAt: Date;
-    updatedAt: Date;
     expiresAt: Date;
 }
 
@@ -16,6 +14,7 @@ export interface IInviteAdd {
     email: string;
     listId: Schema.Types.ObjectId;
     role: RoleType;
+    token: string;
     accepted: boolean;
     createdAt: Date;
     updatedAt: Date;

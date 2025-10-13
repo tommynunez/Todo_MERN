@@ -10,25 +10,27 @@ export default class InviteService implements IInviteService {
     // Logic to send an invite to the provided email
     const userService = new UserService();
     const userDoc = await userService.getUserbyEmailAddressAsync(invite.email);
-
+    let token = "";
+    
     if(userDoc){
       console.log(`Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`);
-      const token = await generateInviteToken(invite.listId, invite.email, invite.role);
+      token = await generateInviteToken(invite.listId, invite.email, invite.role);
       
       //Todo: send email logic would go here
 
-      await inviteModel.create({ 
-        email: invite.email, 
-        listId: invite.listId, 
-        role: invite.role, 
-        token: token, 
-        expiresAt: invite.expiresAt,
-      });
     } else {
       //user will need to signup first
       //Todo: send email to have the user signup
       
     }
+    
+    await inviteModel.create({ 
+      email: invite.email, 
+      listId: invite.listId, 
+      role: invite.role, 
+      token: token, 
+      expiresAt: Date.UTC.,
+    });
     return true; 
   }
 
@@ -54,7 +56,7 @@ export default class InviteService implements IInviteService {
       throw new Error('User not found');
     }
 
-    if(userDoc..includes(decodedToken.listId)) {
+    if(userDoc.includes(decodedToken.listId)) {
       console.log('User is already a member of this list');
       return false;
     }
