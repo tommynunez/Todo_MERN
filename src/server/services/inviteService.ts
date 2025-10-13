@@ -8,6 +8,8 @@ import {
   IInviteUpdate,
 } from "../interfaces/inviteInterface";
 import UserService from "./userService";
+import { InviteStatuses, InviteStatus } from "../constants/InviteStatuses";
+import { InviteTypes } from "../constants/InviteType";
 
 export default class InviteService implements IInviteService {
   constructor() {}
@@ -17,22 +19,26 @@ export default class InviteService implements IInviteService {
     const userService = new UserService();
     const userDoc = await userService.getUserbyEmailAddressAsync(invite.email);
     let token = "";
+    invite.status = InviteStatuses.Pending;
 
     //user exists, lets send the email for the invite
     if (userDoc) {
       console.log(
-        `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`,
+        `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`
       );
       token = await generateInviteToken(
         invite.listId,
         invite.email,
-        invite.role,
+        invite.role
       );
+
+      invite.type = InviteTypes.ChoreList;
 
       //Todo: send email logic would go here
     } else {
       //user will need to signup first
       //Todo: send email to have the user signup
+      invite.type = InviteTypes.Registration;
     }
 
     await inviteModel.create({
@@ -46,7 +52,7 @@ export default class InviteService implements IInviteService {
 
   verifyInviteandUpdateAsync = async (
     id: string,
-    invite: IInviteUpdate,
+    invite: IInviteUpdate
   ): Promise<boolean> => {
     const existingInvite = await inviteModel.findById(id);
     if (!existingInvite) {
@@ -55,15 +61,18 @@ export default class InviteService implements IInviteService {
 
     const decodedToken = await verifyInviteToken(invite.token);
 
-    if (typeof decodedToken === "boolean" || typeof decodedToken === "string") {
+    if (typeof decodedToken === typeof InviteStatuses) {
       //Todo: handle invalid token case
       console.log("Invalid token payload");
+      existingInvite.status = decodedToken as InviteStatus;
+      existingInvite.isNew = false;
+      await existingInvite.save();
       return false;
     }
 
     const userService = new UserService();
     const userDoc = await userService.getUserbyEmailAddressAsync(
-      decodedToken.email,
+      decodedToken.email
     );
 
     if (!userDoc) {
@@ -76,15 +85,15 @@ export default class InviteService implements IInviteService {
     }
 
     // Update the invite details
+    existingInvite.status = InviteStatuses.Accepted;
     existingInvite.accepted = invite.accepted;
-    existingInvite.updatedAt = invite.updatedAt;
 
     await existingInvite.save();
     return true;
   };
 
   inactivateInviteAsync = async (
-    inviteDelete: IInviteDelete,
+    inviteDelete: IInviteDelete
   ): Promise<boolean> => {
     const existingInvite = await inviteModel.findById(inviteDelete.id);
     if (!existingInvite) {

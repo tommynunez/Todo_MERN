@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import { Schema } from "mongoose";
-import { RoleType } from "../constants/Roles";
+import { Role } from "../constants/Roles";
 import { InvitePayload } from "../interfaces/inviteInterface";
+import { InviteStatus, InviteStatuses } from "../constants/InviteStatuses";
 
 export const generateInviteToken = async (
   listId: Schema.Types.ObjectId,
   email: string,
-  role: RoleType
+  role: Role
 ): Promise<string> => {
   if (!process.env.NODE_INVITE_JWT_SECRET) {
     throw new Error("JWT secret is not defined");
@@ -27,7 +28,7 @@ export const generateInviteToken = async (
 
 export const verifyInviteToken = async (
   token: string
-): Promise<string | InvitePayload | boolean> => {
+): Promise<InvitePayload | InviteStatus> => {
   if (!process.env.NODE_INVITE_JWT_SECRET) {
     throw new Error("JWT secret is not defined");
   }
@@ -38,11 +39,10 @@ export const verifyInviteToken = async (
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       console.log("The invite token has expired");
-    } else if (error instanceof jwt.JsonWebTokenError) {
-      console.log("The invite token is invalid");
+      return InviteStatuses.Expired;
     } else {
       console.log("An error occurred while verifying the invite token:", error);
+      return InviteStatuses.Revoked;
     }
-    return false;
   }
 };
