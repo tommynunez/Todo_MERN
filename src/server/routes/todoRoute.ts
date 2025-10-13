@@ -1,12 +1,12 @@
-import { Request, Response, Router } from 'express';
-import TodoService from '../services/todoService';
+import { Request, Response, Router } from "express";
+import TodoService from "../services/todoService";
 
 const router: Router = Router();
 const _todoService = new TodoService();
 
 /**
  * Get all todo items in a paginated manner
- * 
+ *
  * Query params:
  * search: string - search term to filter todo items by name
  * pageIndex: number - page index for pagination (default: 0)
@@ -21,17 +21,17 @@ const _todoService = new TodoService();
  * Example: GET /api/todos/123
  * Response: { response: ITodo, status: 200 }
  */
-router.get('/', async (_request: Request, _response: Response,) => {
-		const { search, pageIndex, pageSize } = _request.query;
+router.get("/", async (_request: Request, _response: Response) => {
+  const { search, pageIndex, pageSize } = _request.query;
 
-		const response = await _todoService.getAllDocumentsAsync(
-			search,
-			pageIndex,
-			pageSize
-		);
-		response
-			? _response.status(200).json({ response, status: 200 })
-			: _response.sendStatus(500);
+  const response = await _todoService.getAllDocumentsAsync(
+    search,
+    pageIndex,
+    pageSize,
+  );
+  response
+    ? _response.status(200).json({ response, status: 200 })
+    : _response.sendStatus(500);
 });
 
 /**
@@ -48,13 +48,13 @@ router.get('/', async (_request: Request, _response: Response,) => {
  * Example: GET /api/todos/123
  * Response: { response: ITodo, status: 200 }
  */
-router.get('/:id', async (_request: Request, _response: Response) => {
-	const response = await _todoService.getByIdDocumentsAsync(
-		_request.params.id?.toString()
-	);
-	response
-		? _response.status(200).json({ response, status: 2000 })
-		: _response.sendStatus(500);
+router.get("/:id", async (_request: Request, _response: Response) => {
+  const response = await _todoService.getByIdDocumentsAsync(
+    _request.params.id?.toString(),
+  );
+  response
+    ? _response.status(200).json({ response, status: 2000 })
+    : _response.sendStatus(500);
 });
 
 /**
@@ -65,12 +65,12 @@ router.get('/:id', async (_request: Request, _response: Response) => {
  * Example: POST /api/todos
  * Body: { name: "New Task" }
  * Response: { response: true, status: 201 }
-*/
-router.post('/', async (_request: Request, _response: Response) => {
-	const response = await _todoService.insertDocumentAsync(_request.body.name);
-	response
-		? _response.status(201).json({ response: response, status: 201 })
-		: _response.sendStatus(500);
+ */
+router.post("/", async (_request: Request, _response: Response) => {
+  const response = await _todoService.insertDocumentAsync(_request.body.name);
+  response
+    ? _response.status(201).json({ response: response, status: 201 })
+    : _response.sendStatus(500);
 });
 
 /**
@@ -85,14 +85,14 @@ router.post('/', async (_request: Request, _response: Response) => {
  * Body: { name: "Updated Task", completed: true }
  * Response: { response: true, status: 200 }
  */
-router.put('/:id', async (_request: Request, _response: Response) => {
-	const response = await _todoService.updateDocumentAsync(
-		_request.body.name,
-		_request.body
-	);
-	response
-		? _response.status(200).json({ response: response, status: 200 })
-		: _response.sendStatus(500);
+router.put("/:id", async (_request: Request, _response: Response) => {
+  const response = await _todoService.updateDocumentAsync(
+    _request.body.name,
+    _request.body,
+  );
+  response
+    ? _response.status(200).json({ response: response, status: 200 })
+    : _response.sendStatus(500);
 });
 
 /**
@@ -103,13 +103,13 @@ router.put('/:id', async (_request: Request, _response: Response) => {
  * Example: DELETE /api/todos/123
  * Response: { response: true, status: 200 }
  */
-router.delete('/:id', async (_request: Request, _response: Response) => {
-	const response = await _todoService.deleteDocumentAsync(
-		parseInt(_request.params.id)
-	);
-	response
-		? _response.status(200).json({ response: response, status: 200 })
-		: _response.sendStatus(500);
+router.delete("/:id", async (_request: Request, _response: Response) => {
+  const response = await _todoService.deleteDocumentAsync(
+    parseInt(_request.params.id),
+  );
+  response
+    ? _response.status(200).json({ response: response, status: 200 })
+    : _response.sendStatus(500);
 });
 
 export default router;

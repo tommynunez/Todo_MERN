@@ -1,28 +1,39 @@
 import mongoose, { Schema, Types, model } from "mongoose";
-import { IChoreList, IChoreListAdd, IChoreListUpdate, IShareWith } from "../interfaces/choreListInterfaces";
+import {
+  IChoreList,
+  IChoreListAdd,
+  IChoreListUpdate,
+  IShareWith,
+} from "../interfaces/choreListInterfaces";
 
 const SharedWithSchema = new Schema<IShareWith>({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  permission: { type: String, enum: ['read', 'write', 'admin'], required: true }
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  permission: {
+    type: String,
+    enum: ["read", "write", "admin"],
+    required: true,
+  },
 });
 
 const choreListSchema = new Schema<IChoreList>({
   title: { type: String, required: true, unique: false },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   shareWith: { type: [SharedWithSchema], required: false },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: false },
   deletedDate: { type: Date, required: false },
 });
 
-export const choreListModel = model<IChoreList>('ChoreList', choreListSchema);
+export const choreListModel = model<IChoreList>("ChoreList", choreListSchema);
 
 /**
  * Create a new chore list document
- * @param choreList 
- * @returns 
+ * @param choreList
+ * @returns
  */
-export const insertDocumentAsync = async (choreList: IChoreListAdd): Promise<boolean> => {
+export const insertDocumentAsync = async (
+  choreList: IChoreListAdd,
+): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const newChoreList = new choreListModel({
@@ -34,8 +45,7 @@ export const insertDocumentAsync = async (choreList: IChoreListAdd): Promise<boo
     await newChoreList.save();
     db.disconnect();
     return true;
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
     db.disconnect();
     return false;
@@ -44,24 +54,27 @@ export const insertDocumentAsync = async (choreList: IChoreListAdd): Promise<boo
 
 /**
  * Update a chore list document
- * @param id 
- * @param choreList 
- * @returns 
+ * @param id
+ * @param choreList
+ * @returns
  */
-export const updateDocumentAsync = async (id: string, choreList: IChoreListUpdate): Promise<boolean> => {
+export const updateDocumentAsync = async (
+  id: string,
+  choreList: IChoreListUpdate,
+): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
-    await choreListModel.findByIdAndUpdate({id}, 
+    await choreListModel.findByIdAndUpdate(
+      { id },
       {
         title: choreList.title,
         shareWith: choreList.shareWith,
         updatedDate: choreList.updatedDate,
-      }
+      },
     );
     db.disconnect();
     return true;
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
     db.disconnect();
     return false;
@@ -70,13 +83,13 @@ export const updateDocumentAsync = async (id: string, choreList: IChoreListUpdat
 
 /**
  * Delete a chore list document
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
 export const deleteDocumentAsync = async (id: string): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
-    await choreListModel.findOneAndDelete({id});
+    await choreListModel.findOneAndDelete({ id });
     await db.disconnect();
     return true;
   } catch (error) {
@@ -84,14 +97,16 @@ export const deleteDocumentAsync = async (id: string): Promise<boolean> => {
     await db.disconnect();
     return false;
   }
-}
+};
 
 /**
  * Get a chore list document by id
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
-export const getDocumentbyIdAsync = async (id: string): Promise<IChoreList | null> => {
+export const getDocumentbyIdAsync = async (
+  id: string,
+): Promise<IChoreList | null> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const response = await choreListModel.findById(id);
@@ -106,35 +121,33 @@ export const getDocumentbyIdAsync = async (id: string): Promise<IChoreList | nul
 
 /**
  * Get all chore list documents with paginationhujhjv
- * @param ownerId 
- * @param search 
- * @param pageIndex 
- * @param pageSize 
- * @returns 
+ * @param ownerId
+ * @param search
+ * @param pageIndex
+ * @param pageSize
+ * @returns
  */
 export const getDocumentsAsync = async (
   ownerId: Types.ObjectId,
   search: string,
   pageIndex: number,
-  pageSize: number
+  pageSize: number,
 ): Promise<Array<IChoreList> | null> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
 
   try {
-    const response = await choreListModel
-      .find(
-        { 
-          title: 
-          { 
-            $regex: search, 
-            $options: 'i' 
-          }, 
-          owner: ownerId 
-        }
-      )
-      .skip((pageIndex ?? 0) * (pageSize ?? 10))
-      .limit(pageSize)
-      .exec() || [];
+    const response =
+      (await choreListModel
+        .find({
+          title: {
+            $regex: search,
+            $options: "i",
+          },
+          owner: ownerId,
+        })
+        .skip((pageIndex ?? 0) * (pageSize ?? 10))
+        .limit(pageSize)
+        .exec()) || [];
     await db.disconnect();
     return response;
   } catch (error) {

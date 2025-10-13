@@ -1,63 +1,76 @@
 import inviteModel from "../models/invitesModel";
 import { generateInviteToken, verifyInviteToken } from "../utils/inviteToken";
-import { IInviteService, IInvite, IInviteAdd, IInviteDelete, IInviteUpdate } from "../interfaces/inviteInterface";
+import {
+  IInviteService,
+  IInvite,
+  IInviteAdd,
+  IInviteDelete,
+  IInviteUpdate,
+} from "../interfaces/inviteInterface";
 import UserService from "./userService";
 
 export default class InviteService implements IInviteService {
   constructor() {}
 
-  createInviteAsync = async (invite: IInviteAdd) : Promise<boolean> => {
+  createInviteAsync = async (invite: IInviteAdd): Promise<boolean> => {
     // Logic to send an invite to the provided email
     const userService = new UserService();
     const userDoc = await userService.getUserbyEmailAddressAsync(invite.email);
     let token = "";
-    
-    if(userDoc){
-      console.log(`Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`);
-      token = await generateInviteToken(invite.listId, invite.email, invite.role);
-      
-      //Todo: send email logic would go here
 
+    if (userDoc) {
+      console.log(
+        `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`,
+      );
+      token = await generateInviteToken(
+        invite.listId,
+        invite.email,
+        invite.role,
+      );
+
+      //Todo: send email logic would go here
     } else {
       //user will need to signup first
       //Todo: send email to have the user signup
-      
     }
-    
-    await inviteModel.create({ 
-      email: invite.email, 
-      listId: invite.listId, 
-      role: invite.role, 
-      token: token, 
-      expiresAt: Date.UTC.,
-    });
-    return true; 
-  }
 
-  verifyInviteandUpdateAsync = async (id: string, invite: IInviteUpdate): Promise<boolean> => {
+    await inviteModel.create({
+      email: invite.email,
+      listId: invite.listId,
+      role: invite.role,
+      token: token,
+    });
+    return true;
+  };
+
+  verifyInviteandUpdateAsync = async (
+    id: string,
+    invite: IInviteUpdate,
+  ): Promise<boolean> => {
     const existingInvite = await inviteModel.findById(id);
     if (!existingInvite) {
-      throw new Error('Invite not found');
+      throw new Error("Invite not found");
     }
 
     const decodedToken = await verifyInviteToken(invite.token);
 
-    if (typeof decodedToken === 'boolean' 
-      || typeof decodedToken === 'string') {
+    if (typeof decodedToken === "boolean" || typeof decodedToken === "string") {
       //Todo: handle invalid token case
-      console.log('Invalid token payload');
+      console.log("Invalid token payload");
       return false;
     }
 
     const userService = new UserService();
-    const userDoc = await userService.getUserbyEmailAddressAsync(decodedToken.email);
+    const userDoc = await userService.getUserbyEmailAddressAsync(
+      decodedToken.email,
+    );
 
     if (!userDoc) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
-    if(userDoc.includes(decodedToken.listId)) {
-      console.log('User is already a member of this list');
+    if (userDoc.includes(decodedToken.listId)) {
+      console.log("User is already a member of this list");
       return false;
     }
 
@@ -67,19 +80,21 @@ export default class InviteService implements IInviteService {
 
     await existingInvite.save();
     return true;
-  }
+  };
 
-  inactivateInviteAsync = async (inviteDelete: IInviteDelete): Promise<boolean> => {
+  inactivateInviteAsync = async (
+    inviteDelete: IInviteDelete,
+  ): Promise<boolean> => {
     const existingInvite = await inviteModel.findById(inviteDelete.id);
     if (!existingInvite) {
-      throw new Error('Invite not found');
+      throw new Error("Invite not found");
     }
     await inviteModel.findByIdAndDelete(inviteDelete.id);
     return true;
-  }
+  };
 
   getInvitebyIdAsync = async (id: string): Promise<IInvite | null> => {
     const invite = await inviteModel.findById(id);
     return invite;
-  }
+  };
 }

@@ -10,10 +10,14 @@
 // https://www.mongodb.com/docs/mongodb-vscode/playgrounds/
 
 // Select the database to use.
-use('todo');
+use("todo");
 
 // Insert a few documents into the sales collection.
-db.getCollection('todo').insertMany([
-  { 'name': 'Clean the house', 'completed': false, 'completedDate': null },
-  { 'name': 'Pick up chicken', 'completed': true , 'completedDate': new Date('2014-03-01T09:00:00Z') },
+db.getCollection("todo").insertMany([
+  { name: "Clean the house", completed: false, completedDate: null },
+  {
+    name: "Pick up chicken",
+    completed: true,
+    completedDate: new Date("2014-03-01T09:00:00Z"),
+  },
 ]);

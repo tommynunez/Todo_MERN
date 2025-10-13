@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response, Router } from 'express';
-import UserService from '../services/userService';
-import passport from 'passport';
-import { authenticatedMiddleware } from '../middleware/authenticatedMiddleware';
+import { NextFunction, Request, Response, Router } from "express";
+import UserService from "../services/userService";
+import passport from "passport";
+import { authenticatedMiddleware } from "../middleware/authenticatedMiddleware";
 
 const router: Router = Router();
 const userService = new UserService();
@@ -17,33 +17,30 @@ const userService = new UserService();
  * Body: { emailAddress: "testemail", password: "P@ssw0rd!", confirmPassword: "P@ssw0rd!" }
  * Response: { response: true, status: 201 }
  */
-router.post(
-	'/signup',
-	async (_request: Request, _response: Response) => {
-		try {
-			const hasErrors = userService.validateSignupFields(_request, _response);
+router.post("/signup", async (_request: Request, _response: Response) => {
+  try {
+    const hasErrors = userService.validateSignupFields(_request, _response);
 
-			if (hasErrors) {
-				return;
-			}
+    if (hasErrors) {
+      return;
+    }
 
-			const userWasregistered = await userService.signup(
-				_request.body.emailAddress,
-				_request.body.password
-			);
+    const userWasregistered = await userService.signup(
+      _request.body.emailAddress,
+      _request.body.password,
+    );
 
-			if (userWasregistered) {
-				_response.sendStatus(201);
-				return;
-			} else {
-				throw 'User was not created';
-			}
-		} catch (error) {
-			console.log(error);
-			_response.status(500).json({ errmsg: error?.toString() });
-		}
-	}
-);
+    if (userWasregistered) {
+      _response.sendStatus(201);
+      return;
+    } else {
+      throw "User was not created";
+    }
+  } catch (error) {
+    console.log(error);
+    _response.status(500).json({ errmsg: error?.toString() });
+  }
+});
 
 /**
  * Sign in an existing user
@@ -61,33 +58,30 @@ router.post(
  * Session is enabled to maintain user state across requests
  * On successful authentication, user info is stored in session
  * On failure, responds with 401 Unauthorized
-*/
+ */
 router.post(
-	'/signin',
-	(_request: Request, _response: Response, _next: NextFunction) => {
-		passport.authenticate(
-			'local',
-			{ session: true },
-			(
-				err: any,
-				user?: Express.User | false | null,
-			) => {
-				if (err) {
-					return _next(err);
-				}
-				if (!user) {
-					return _response.sendStatus(401);
-				} else {
-					_request.logIn(user, (err) => {
-						if(err) {
-							return _next(err);
-						}
-						return _response.sendStatus(200);
-					});
-				}
-			}
-		)(_request, _response, _next);
-	}
+  "/signin",
+  (_request: Request, _response: Response, _next: NextFunction) => {
+    passport.authenticate(
+      "local",
+      { session: true },
+      (err: any, user?: Express.User | false | null) => {
+        if (err) {
+          return _next(err);
+        }
+        if (!user) {
+          return _response.sendStatus(401);
+        } else {
+          _request.logIn(user, (err) => {
+            if (err) {
+              return _next(err);
+            }
+            return _response.sendStatus(200);
+          });
+        }
+      },
+    )(_request, _response, _next);
+  },
 );
 
 /**
@@ -104,19 +98,19 @@ router.post(
  * Helps prevent unauthorized access after logout
  */
 router.post(
-	'/logout',
-	authenticatedMiddleware,
-	(_request: Request, _response: Response, next: NextFunction) => {
-		_request.logout(function (error: any) {
-			if (error) {
-				return next(error);
-			}
-			_request.session.destroy(() => {
-				_response.clearCookie('connect.sid', { path: '/' });
-				_response.sendStatus(200);
-			});
-		});
-	}
+  "/logout",
+  authenticatedMiddleware,
+  (_request: Request, _response: Response, next: NextFunction) => {
+    _request.logout(function (error: any) {
+      if (error) {
+        return next(error);
+      }
+      _request.session.destroy(() => {
+        _response.clearCookie("connect.sid", { path: "/" });
+        _response.sendStatus(200);
+      });
+    });
+  },
 );
 
 export default router;

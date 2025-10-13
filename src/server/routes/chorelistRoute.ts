@@ -1,6 +1,6 @@
-import {Request, Response, Router} from 'express';
-import ChorelistService  from '../services/choreListService';
-import { Types } from 'mongoose';
+import { Request, Response, Router } from "express";
+import ChorelistService from "../services/choreListService";
+import { Types } from "mongoose";
 
 const router: Router = Router();
 const _chorelistService = new ChorelistService();
@@ -11,16 +11,16 @@ const _chorelistService = new ChorelistService();
  * search: string - search term to filter chorelist items by title
  * pageIndex: number - page index for pagination (default: 0)
  * pageSize: number - number of items per page (default: 10)
- * Returns: 200 with list of chorelist items or 500 on error 
-*/
-router.get('/', async (_request: Request, _response: Response) => {
+ * Returns: 200 with list of chorelist items or 500 on error
+ */
+router.get("/", async (_request: Request, _response: Response) => {
   const { ownerId, search, pageIndex, pageSize } = _request.query;
 
   const response = await _chorelistService.getAllDocumentsAsync(
     new Types.ObjectId(ownerId?.toString()),
-    search?.toString() || '',
+    search?.toString() || "",
     pageIndex || 0,
-    pageSize || 10
+    pageSize || 10,
   );
 
   response
@@ -34,9 +34,9 @@ router.get('/', async (_request: Request, _response: Response) => {
  * id: string - ID of the chorelist item
  * Returns: 200 with the chorelist item or 500 on error
  */
-router.get('/:id', async (_request: Request, _response: Response) => {
+router.get("/:id", async (_request: Request, _response: Response) => {
   const response = await _chorelistService.getByIdDocumentsAsync(
-    _request.params.id?.toString()
+    _request.params.id?.toString(),
   );
 
   response
@@ -46,9 +46,9 @@ router.get('/:id', async (_request: Request, _response: Response) => {
 
 /**
  * Create a new chorelist item
- *  
+ *
  * Body params:
- * choreList: IChoreListAdd - chorelist item to be created  
+ * choreList: IChoreListAdd - chorelist item to be created
  * Returns: 200 with true if created or 500 on error
  * Example: POST /api/chorelists
  * Request Body: { title: "New Chore List", owner: "ownerId", sharedWith: [] }
@@ -60,8 +60,8 @@ router.get('/:id', async (_request: Request, _response: Response) => {
  * Example: POST /api/chorelists
  * Request Body: { title: "New Chore List", owner: "ownerId", sharedWith: [] }
  * Response: { response: true, status: 200 }
-*/
-router.post('/', async (_request: Request, _response: Response) => {
+ */
+router.post("/", async (_request: Request, _response: Response) => {
   const response = await _chorelistService.insertDocumentAsync(_request.body);
   response
     ? _response.status(200).json({ response, status: 200 })
@@ -78,18 +78,17 @@ router.post('/', async (_request: Request, _response: Response) => {
  * Example: PUT /api/chorelists/123
  * Request Body: { title: "Updated Chore List", sharedWith: [] }
  * Response: { response: true, status: 200 }
-*/
-router.put('/:id', async (_request: Request, _response: Response) => {
+ */
+router.put("/:id", async (_request: Request, _response: Response) => {
   const response = await _chorelistService.updateDocumentAsync(
     _request.params.id?.toString(),
-    _request.body
+    _request.body,
   );
 
   response
     ? _response.status(200).json({ response, status: 200 })
     : _response.sendStatus(500);
 });
-
 
 /**
  *  Delete a chorelist item
@@ -98,10 +97,10 @@ router.put('/:id', async (_request: Request, _response: Response) => {
  * Returns: 200 with true if deleted or 500 on error
  * Example: DELETE /api/chorelists/123
  * Response: { response: true, status: 200 }
-*/
-router.delete('/:id', async (_request: Request, _response: Response) => {
+ */
+router.delete("/:id", async (_request: Request, _response: Response) => {
   const response = await _chorelistService.deleteDocumentAsync(
-    _request.params.id?.toString()
+    _request.params.id?.toString(),
   );
   response
     ? _response.status(200).json({ response, status: 200 })

@@ -14,34 +14,37 @@ export interface IShareWith {
   permission: PermissionLevel;
 }
 
-type PermissionLevel = 'read' | 'write' | 'admin';
+type PermissionLevel = "read" | "write" | "admin";
 
 export interface IChoreListAdd {
-  title: String,
-  owner: Types.ObjectId,
-  shareWith: Array<IShareWith>,
-  createdDate: Date,
-};
+  title: String;
+  owner: Types.ObjectId;
+  shareWith: Array<IShareWith>;
+  createdDate: Date;
+}
 
 export interface IChoreListUpdate {
-  title: String,
-  shareWith: Array<IShareWith>,
-  updatedDate: Date,
-};
+  title: String;
+  shareWith: Array<IShareWith>;
+  updatedDate: Date;
+}
 
 export interface IChoreListDelete {
-  deletedDate: Date,
-};
+  deletedDate: Date;
+}
 
 export interface IChoreListService {
   insertDocumentAsync: (choreList: IChoreListAdd) => Promise<boolean>;
-  updateDocumentAsync: (id: string, choreList: IChoreListUpdate) => Promise<boolean>;
+  updateDocumentAsync: (
+    id: string,
+    choreList: IChoreListUpdate,
+  ) => Promise<boolean>;
   deleteDocumentAsync: (id: string) => Promise<boolean>;
   getByIdDocumentsAsync: (id: string) => Promise<IChoreList | null>;
   getAllDocumentsAsync: (
     ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ) => Promise<Array<IChoreList> | null>;
-};
+}
