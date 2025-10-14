@@ -1,8 +1,9 @@
-import mongoose, { ObjectId, Types } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
+import { Role } from "../constants/Roles";
 
 export interface IChoreList extends mongoose.Document {
   title: string;
-  owner: ObjectId;
+  owner: Schema.Types.ObjectId;
   shareWith: Array<IShareWith>;
   createdDate: Date;
   updatedDate: Date | null;
@@ -10,15 +11,13 @@ export interface IChoreList extends mongoose.Document {
 }
 
 export interface IShareWith {
-  userId: ObjectId;
-  permission: PermissionLevel;
+  userId: Schema.Types.ObjectId;
+  role: Role;
 }
-
-type PermissionLevel = "read" | "write" | "admin";
 
 export interface IChoreListAdd {
   title: String;
-  owner: Types.ObjectId;
+  owner: Schema.Types.ObjectId;
   shareWith: Array<IShareWith>;
   createdDate: Date;
 }
@@ -37,7 +36,7 @@ export interface IChoreListService {
   insertDocumentAsync: (choreList: IChoreListAdd) => Promise<boolean>;
   updateDocumentAsync: (
     id: string,
-    choreList: IChoreListUpdate,
+    choreList: IChoreListUpdate
   ) => Promise<boolean>;
   deleteDocumentAsync: (id: string) => Promise<boolean>;
   getByIdDocumentsAsync: (id: string) => Promise<IChoreList | null>;
@@ -45,6 +44,6 @@ export interface IChoreListService {
     ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
-    pageSize: any,
+    pageSize: any
   ) => Promise<Array<IChoreList> | null>;
 }

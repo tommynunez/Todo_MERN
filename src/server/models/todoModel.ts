@@ -17,7 +17,6 @@ export const todoModel = model<ITodo>("Todo", todoSchema);
 export const insertDocumentAsync = async ({
   name,
 }: ITodoAdd): Promise<boolean> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const todo = new todoModel({
       name: name,
@@ -26,11 +25,9 @@ export const insertDocumentAsync = async ({
     });
 
     await todo.save();
-    db.disconnect();
     return true;
   } catch (error) {
     console.error(error);
-    db.disconnect();
     return false;
   }
 };
@@ -44,20 +41,17 @@ export const updateDocumentAsync = async ({
   name,
   completed,
 }: ITodoUpdate): Promise<boolean> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     await todoModel.findOneAndUpdate(
       { name },
       {
         completed,
         completedDate: completed ? new Date() : null,
-      },
+      }
     );
-    db.disconnect();
     return true;
   } catch (error) {
     console.error(error);
-    db.disconnect();
     return false;
   }
 };
@@ -71,11 +65,9 @@ export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
   const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     await todoModel.findOneAndDelete({ id });
-    await db.disconnect();
     return true;
   } catch (error) {
     console.error(error);
-    db.disconnect();
     return false;
   }
 };
@@ -86,16 +78,13 @@ export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
  * @returns
  */
 export const getDocumentbyIdAsync = async (
-  id?: string,
+  id?: string
 ): Promise<ITodo | null> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const response = await todoModel.findById(id);
-    await db.disconnect();
     return response;
   } catch (error) {
     console.log(error);
-    db.disconnect();
     return null;
   }
 };
@@ -110,9 +99,8 @@ export const getDocumentbyIdAsync = async (
 export const getDocumentsAsync = async (
   search: string,
   pageIndex: number,
-  pageSize: number,
+  pageSize: number
 ): Promise<Array<ITodo> | null> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     pageSize = pageSize ?? 0;
     pageIndex = pageIndex ?? 10;
@@ -123,11 +111,9 @@ export const getDocumentsAsync = async (
       .skip(pageIndex * pageSize)
       .exec();
 
-    await db.disconnect();
     return response;
   } catch (error) {
     console.error(error);
-    db.disconnect();
     return null;
   }
 };

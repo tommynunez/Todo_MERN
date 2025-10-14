@@ -5,12 +5,13 @@ import {
   IChoreListUpdate,
   IShareWith,
 } from "../interfaces/choreListInterfaces";
+import { Roles } from "../constants/Roles";
 
 const SharedWithSchema = new Schema<IShareWith>({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  permission: {
+  role: {
     type: String,
-    enum: ["read", "write", "admin"],
+    enum: Roles,
     required: true,
   },
 });
@@ -32,9 +33,8 @@ export const choreListModel = model<IChoreList>("ChoreList", choreListSchema);
  * @returns
  */
 export const insertDocumentAsync = async (
-  choreList: IChoreListAdd,
+  choreList: IChoreListAdd
 ): Promise<boolean> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const newChoreList = new choreListModel({
       title: choreList.title,
@@ -43,11 +43,9 @@ export const insertDocumentAsync = async (
       createdDate: choreList.createdDate,
     });
     await newChoreList.save();
-    db.disconnect();
     return true;
   } catch (error) {
     console.error(error);
-    db.disconnect();
     return false;
   }
 };
@@ -60,9 +58,8 @@ export const insertDocumentAsync = async (
  */
 export const updateDocumentAsync = async (
   id: string,
-  choreList: IChoreListUpdate,
+  choreList: IChoreListUpdate
 ): Promise<boolean> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     await choreListModel.findByIdAndUpdate(
       { id },
@@ -70,13 +67,11 @@ export const updateDocumentAsync = async (
         title: choreList.title,
         shareWith: choreList.shareWith,
         updatedDate: choreList.updatedDate,
-      },
+      }
     );
-    db.disconnect();
     return true;
   } catch (error) {
     console.error(error);
-    db.disconnect();
     return false;
   }
 };
@@ -87,14 +82,11 @@ export const updateDocumentAsync = async (
  * @returns
  */
 export const deleteDocumentAsync = async (id: string): Promise<boolean> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     await choreListModel.findOneAndDelete({ id });
-    await db.disconnect();
     return true;
   } catch (error) {
     console.error(error);
-    await db.disconnect();
     return false;
   }
 };
@@ -105,16 +97,13 @@ export const deleteDocumentAsync = async (id: string): Promise<boolean> => {
  * @returns
  */
 export const getDocumentbyIdAsync = async (
-  id: string,
+  id: string
 ): Promise<IChoreList | null> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const response = await choreListModel.findById(id);
-    await db.disconnect();
     return response;
   } catch (error) {
     console.log(error);
-    db.disconnect();
     return null;
   }
 };
@@ -131,10 +120,8 @@ export const getDocumentsAsync = async (
   ownerId: Types.ObjectId,
   search: string,
   pageIndex: number,
-  pageSize: number,
+  pageSize: number
 ): Promise<Array<IChoreList> | null> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
-
   try {
     const response =
       (await choreListModel
@@ -148,11 +135,9 @@ export const getDocumentsAsync = async (
         .skip((pageIndex ?? 0) * (pageSize ?? 10))
         .limit(pageSize)
         .exec()) || [];
-    await db.disconnect();
     return response;
   } catch (error) {
     console.log(error);
-    db.disconnect();
     return [];
   }
 };

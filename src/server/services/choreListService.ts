@@ -33,7 +33,7 @@ export default class ChoreListService implements IChoreListService {
    */
   updateDocumentAsync = async (
     id: string,
-    choreList: IChoreListUpdate,
+    choreList: IChoreListUpdate
   ): Promise<boolean> => {
     return updateDocumentAsync(id, choreList);
   };
@@ -68,7 +68,7 @@ export default class ChoreListService implements IChoreListService {
     ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
-    pageSize: any,
+    pageSize: any
   ): Promise<Array<IChoreList> | null> => {
     return await getDocumentsAsync(ownerId, search, pageIndex, pageSize);
   };

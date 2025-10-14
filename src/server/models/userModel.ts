@@ -16,9 +16,8 @@ export const userModel = model<IUserAccount>("UserAccount", userSchema);
 export const insertUseraccountAsync = async (
   emailAddress: string,
   password: string,
-  salt: string,
+  salt: string
 ): Promise<Document | undefined> => {
-  const db = await mongoose.connect(process.env.NODE_MONGO_DB_URL);
   try {
     const user = new userModel({
       emailAddress: emailAddress,
@@ -28,11 +27,8 @@ export const insertUseraccountAsync = async (
       updatedDate: Date.now(),
     });
     await user.save();
-    db.disconnect();
     return user;
   } catch (error: any) {
-    db.disconnect();
-
     if (error.errorResponse.code === 11000) {
       throw "Please try a different emailAddress";
     } else {
@@ -42,7 +38,7 @@ export const insertUseraccountAsync = async (
 };
 
 export const doesUserbyEmailAddressAsync = async (
-  emailAddress: string,
+  emailAddress: string
 ): Promise<boolean> => {
   try {
     const document = await userModel.findOne({ emailAddress: emailAddress });
@@ -53,7 +49,7 @@ export const doesUserbyEmailAddressAsync = async (
 };
 
 export const getUserbyEmailAddressAsync = async (
-  emailAddress: string,
+  emailAddress: string
 ): Promise<
   | (mongoose.Document<unknown, IUserAccount> &
       IUserAccount &
@@ -77,16 +73,16 @@ export const updateLastLoggedInAsync = async (
         Required<{
           _id: unknown;
         }>)
-    | null,
+    | null
 ): Promise<boolean> => {
   try {
     if (!document) {
       throw "document is undefined";
     }
-    var resp = await userModel.findByIdAndUpdate(
+    await userModel.findByIdAndUpdate(
       { id: document.id },
       { lastSignedIn: new Date(), updatedDate: new Date() },
-      { upsert: false, new: false },
+      { upsert: false, new: false }
     );
     return true;
   } catch (error: any) {

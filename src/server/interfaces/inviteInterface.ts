@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 import { Role } from "../constants/Roles";
 import { InviteStatus } from "../constants/InviteStatuses";
 import { InviteType } from "../constants/InviteType";
@@ -10,7 +10,6 @@ export interface IInvite extends mongoose.Document {
   type: InviteType;
   status: InviteStatus;
   token: string;
-  accepted: boolean;
 }
 
 export interface IInviteAdd {
@@ -20,13 +19,10 @@ export interface IInviteAdd {
   type: InviteType;
   status: InviteStatus;
   token: string;
-  accepted: boolean;
 }
 
 export interface IInviteUpdate {
   token: string;
-  status: InviteStatus;
-  accepted: boolean;
 }
 
 export interface IInviteDelete {
@@ -40,14 +36,12 @@ export interface InvitePayload {
   email: string;
   role: Role;
   type: InviteType;
+  status: InviteStatus;
 }
 
 export interface IInviteService {
   createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;
-  verifyInviteandUpdateAsync: (
-    id: string,
-    invite: IInviteUpdate
-  ) => Promise<boolean>;
+  verifyInviteandUpdateAsync: (invite: IInviteUpdate) => Promise<boolean>;
   inactivateInviteAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;
-  getInvitebyIdAsync: (id: string) => Promise<IInvite | null>;
+  getInvitebyIdAsync: (id: Types.ObjectId) => Promise<IInvite | null>;
 }
