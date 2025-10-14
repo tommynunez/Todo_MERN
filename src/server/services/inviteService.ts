@@ -1,4 +1,8 @@
-import { inviteModel } from "../models/invitesModel";
+import {
+  getInvitebyEmailAsync,
+  inactivateInviteAsync,
+  inviteModel,
+} from "../models/invitesModel";
 import { generateInviteToken, verifyInviteToken } from "../utils/inviteToken";
 import {
   IInviteService,
@@ -20,16 +24,22 @@ export default class InviteService implements IInviteService {
   constructor() {
     this.userService = new UserService();
   }
+  inactivateInviteAsync = async (
+    inviteDelete: IInviteDelete,
+  ): Promise<boolean> => await inactivateInviteAsync(inviteDelete);
+
+  getInvitebyIdAsync = async (id: Types.ObjectId): Promise<IInvite | null> =>
+    await this.getInvitebyIdAsync(id);
 
   createInviteAsync = async (invite: IInviteAdd): Promise<boolean> => {
     // Logic to send an invite to the provided email
-    const hasInvitepending = await this.getInvitebyEmailAsync(invite.email);
+    const hasInvitepending = await getInvitebyEmailAsync(invite.email);
     if (hasInvitepending) {
       return false;
     }
 
     const userDoc = await this.userService.getUserbyEmailAddressAsync(
-      invite.email
+      invite.email,
     );
     let token = "";
     invite.status = InviteStatuses.Pending;
@@ -37,13 +47,13 @@ export default class InviteService implements IInviteService {
     //user exists, lets send the email for the chore list invite
     if (userDoc) {
       console.log(
-        `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`
+        `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`,
       );
       token = await generateInviteToken(
         invite.listId,
         invite.email,
         invite.role,
-        InviteTypes.ChoreList
+        InviteTypes.ChoreList,
       );
 
       invite.type = InviteTypes.ChoreList;
@@ -67,7 +77,7 @@ export default class InviteService implements IInviteService {
   };
 
   verifyInviteandUpdateAsync = async (
-    invite: IInviteUpdate
+    invite: IInviteUpdate,
   ): Promise<boolean> => {
     const existingInvite = await inviteModel.findById({ token: invite.token });
     if (!existingInvite) {
@@ -85,7 +95,7 @@ export default class InviteService implements IInviteService {
         existingInvite.listId,
         existingInvite.email,
         existingInvite.role,
-        InviteTypes.ChoreList
+        InviteTypes.ChoreList,
       );
 
       inviteModel.create({
@@ -116,7 +126,7 @@ export default class InviteService implements IInviteService {
     const wasListUpdated = await this.addInvitedUserToChoreListAsync(
       decodedToken.email,
       decodedToken.listId,
-      decodedToken.role
+      decodedToken.role,
     );
 
     if (!wasListUpdated) {
@@ -129,7 +139,7 @@ export default class InviteService implements IInviteService {
   private addInvitedUserToChoreListAsync = async (
     email: string,
     listId: string,
-    role: Role
+    role: Role,
   ) => {
     const userService = new UserService();
     const user = await userService.getUserbyEmailAddressAsync(email);
@@ -138,42 +148,5 @@ export default class InviteService implements IInviteService {
     return await choreListService.updateDocumentAsync(listId, {
       shareWith: [{ userId: user?.id, role: role }],
     } as IChoreListUpdate);
-  };
-
-  inactivateInviteAsync = async (
-    inviteDelete: IInviteDelete
-  ): Promise<boolean> => {
-    try {
-      const existingInvite = await inviteModel.findByIdAndUpdate(
-        inviteDelete.id,
-        {}
-      );
-      if (!existingInvite) {
-        throw new Error("Invite not found");
-      }
-      await inviteModel.findByIdAndDelete(inviteDelete.id);
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  };
-
-  getInvitebyEmailAsync = async (email: string): Promise<IInvite | null> => {
-    try {
-      return await inviteModel.findOne({ email }).lean();
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
-  getInvitebyIdAsync = async (id: Types.ObjectId): Promise<IInvite | null> => {
-    try {
-      return await inviteModel.findById(id).lean();
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
   };
 }

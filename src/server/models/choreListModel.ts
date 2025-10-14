@@ -33,7 +33,7 @@ export const choreListModel = model<IChoreList>("ChoreList", choreListSchema);
  * @returns
  */
 export const insertDocumentAsync = async (
-  choreList: IChoreListAdd
+  choreList: IChoreListAdd,
 ): Promise<boolean> => {
   try {
     const newChoreList = new choreListModel({
@@ -58,7 +58,7 @@ export const insertDocumentAsync = async (
  */
 export const updateDocumentAsync = async (
   id: string,
-  choreList: IChoreListUpdate
+  choreList: IChoreListUpdate,
 ): Promise<boolean> => {
   try {
     await choreListModel.findByIdAndUpdate(
@@ -67,7 +67,7 @@ export const updateDocumentAsync = async (
         title: choreList.title,
         shareWith: choreList.shareWith,
         updatedDate: choreList.updatedDate,
-      }
+      },
     );
     return true;
   } catch (error) {
@@ -97,7 +97,7 @@ export const deleteDocumentAsync = async (id: string): Promise<boolean> => {
  * @returns
  */
 export const getDocumentbyIdAsync = async (
-  id: string
+  id: string,
 ): Promise<IChoreList | null> => {
   try {
     const response = await choreListModel.findById(id);
@@ -120,7 +120,7 @@ export const getDocumentsAsync = async (
   ownerId: Types.ObjectId,
   search: string,
   pageIndex: number,
-  pageSize: number
+  pageSize: number,
 ): Promise<Array<IChoreList> | null> => {
   try {
     const response =

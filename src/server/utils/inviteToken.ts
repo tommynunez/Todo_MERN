@@ -9,7 +9,7 @@ export const generateInviteToken = async (
   listId: Schema.Types.ObjectId,
   email: string,
   role: Role,
-  type: InviteType
+  type: InviteType,
 ): Promise<string> => {
   if (!process.env.NODE_INVITE_JWT_SECRET) {
     throw new Error("JWT secret is not defined");
@@ -23,14 +23,14 @@ export const generateInviteToken = async (
       type,
     },
     process.env.NODE_INVITE_JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "1h" },
   );
 
   return token;
 };
 
 export const verifyInviteToken = async (
-  token: string
+  token: string,
 ): Promise<InvitePayload> => {
   if (!process.env.NODE_INVITE_JWT_SECRET) {
     throw new Error("JWT secret is not defined");

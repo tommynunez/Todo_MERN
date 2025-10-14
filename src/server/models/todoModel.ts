@@ -47,7 +47,7 @@ export const updateDocumentAsync = async ({
       {
         completed,
         completedDate: completed ? new Date() : null,
-      }
+      },
     );
     return true;
   } catch (error) {
@@ -78,7 +78,7 @@ export const deleteDocumentAsync = async (id: number): Promise<boolean> => {
  * @returns
  */
 export const getDocumentbyIdAsync = async (
-  id?: string
+  id?: string,
 ): Promise<ITodo | null> => {
   try {
     const response = await todoModel.findById(id);
@@ -99,7 +99,7 @@ export const getDocumentbyIdAsync = async (
 export const getDocumentsAsync = async (
   search: string,
   pageIndex: number,
-  pageSize: number
+  pageSize: number,
 ): Promise<Array<ITodo> | null> => {
   try {
     pageSize = pageSize ?? 0;

@@ -28,7 +28,7 @@ app.use(
     parseUndefined: true,
     parseBoolean: true,
     parseNumber: true,
-  })
+  }),
 );
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -79,7 +79,7 @@ app.use(
     store: new MongoStore({
       mongoUrl: process.env.NODE_MONGO_DB_URL,
     }),
-  })
+  }),
 );
 
 configurePassport({ app, passportInstance: passport });
