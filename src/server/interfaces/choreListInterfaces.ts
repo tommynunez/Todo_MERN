@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { Role } from "../constants/Roles";
+import { IService } from "./service";
 
 export interface IChoreList extends mongoose.Document {
   title: string;
@@ -32,18 +33,18 @@ export interface IChoreListDelete {
   deletedDate: Date;
 }
 
-export interface IChoreListService {
-  insertDocumentAsync: (choreList: IChoreListAdd) => Promise<boolean>;
-  updateDocumentAsync: (
+export interface IChoreListService extends IService {
+  insertChorelistAsync: (choreList: IChoreListAdd) => Promise<boolean>;
+  updateChorelistAsync: (
     id: string,
-    choreList: IChoreListUpdate,
+    choreList: IChoreListUpdate
   ) => Promise<boolean>;
-  deleteDocumentAsync: (id: string) => Promise<boolean>;
+  deleteChorelistAsync: (id: string) => Promise<boolean>;
   getByIdDocumentsAsync: (id: string) => Promise<IChoreList | null>;
   getAllDocumentsAsync: (
     ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
-    pageSize: any,
+    pageSize: any
   ) => Promise<Array<IChoreList> | null>;
 }

@@ -1,16 +1,12 @@
 import * as crypto from "crypto";
 import { Request, Response } from "express";
 import { IUserAccount, IUserService } from "../interfaces/userInterface";
-import {
-  insertUseraccountAsync,
-  getUserbyEmailAddressAsync,
-  updateLastLoggedInAsync,
-} from "../models/userModel";
+import { UserRepository } from "../models/userModel";
 import { emailRegex, passwordRegex } from "../utils/regex";
 import mongoose from "mongoose";
 
 export default class UserService implements IUserService {
-  constructor() {}
+  constructor(private userRepository: UserRepository) {}
 
   /**
    * Method to signup a user
@@ -24,10 +20,10 @@ export default class UserService implements IUserService {
       .pbkdf2Sync(password, salt, 100000, 64, "sha512")
       .toString("hex");
 
-    const document = await insertUseraccountAsync(
+    const document = await this.userRepository.insertUseraccountAsync(
       emailAddress,
       hashedPassword,
-      salt,
+      salt
     );
 
     if (!document) {
@@ -52,7 +48,7 @@ export default class UserService implements IUserService {
           Required<{
             _id: unknown;
           }>)
-      | null,
+      | null
   ): Promise<boolean> => {
     //const salt = crypto.randomBytes(64);
     const hashedPassword = await crypto
@@ -63,7 +59,7 @@ export default class UserService implements IUserService {
       emailAddress == user?.emailAddress &&
       hashedPassword.toString() == user.password
     ) {
-      await updateLastLoggedInAsync(user);
+      await this.userRepository.updateLastLoggedInAsync(user);
       return true;
     } else {
       return false;
@@ -107,7 +103,7 @@ export default class UserService implements IUserService {
   };
 
   getUserbyEmailAddressAsync = async (
-    emailAddress: string,
+    emailAddress: string
   ): Promise<
     | (mongoose.Document<unknown, IUserAccount> &
         IUserAccount &
@@ -115,5 +111,5 @@ export default class UserService implements IUserService {
           _id: unknown;
         }>)
     | null
-  > => await getUserbyEmailAddressAsync(emailAddress);
+  > => await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
 }

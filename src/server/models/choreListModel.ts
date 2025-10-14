@@ -27,117 +27,116 @@ const choreListSchema = new Schema<IChoreList>({
 
 export const choreListModel = model<IChoreList>("ChoreList", choreListSchema);
 
-/**
- * Create a new chore list document
- * @param choreList
- * @returns
- */
-export const insertDocumentAsync = async (
-  choreList: IChoreListAdd,
-): Promise<boolean> => {
-  try {
-    const newChoreList = new choreListModel({
-      title: choreList.title,
-      owner: choreList.owner,
-      shareWith: choreList.shareWith,
-      createdDate: choreList.createdDate,
-    });
-    await newChoreList.save();
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
-
-/**
- * Update a chore list document
- * @param id
- * @param choreList
- * @returns
- */
-export const updateDocumentAsync = async (
-  id: string,
-  choreList: IChoreListUpdate,
-): Promise<boolean> => {
-  try {
-    await choreListModel.findByIdAndUpdate(
-      { id },
-      {
+export class ChoreRepository {
+  constructor() {}
+  /**
+   * Create a new chore list document
+   * @param choreList
+   * @returns
+   */
+  insertChorelistAsync = async (choreList: IChoreListAdd): Promise<boolean> => {
+    try {
+      const newChoreList = new choreListModel({
         title: choreList.title,
+        owner: choreList.owner,
         shareWith: choreList.shareWith,
-        updatedDate: choreList.updatedDate,
-      },
-    );
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
+        createdDate: choreList.createdDate,
+      });
+      await newChoreList.save();
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
 
-/**
- * Delete a chore list document
- * @param id
- * @returns
- */
-export const deleteDocumentAsync = async (id: string): Promise<boolean> => {
-  try {
-    await choreListModel.findOneAndDelete({ id });
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
+  /**
+   * Update a chore list document
+   * @param id
+   * @param choreList
+   * @returns
+   */
+  updateChorelistAsync = async (
+    id: string,
+    choreList: IChoreListUpdate
+  ): Promise<boolean> => {
+    try {
+      await choreListModel.findByIdAndUpdate(
+        { id },
+        {
+          title: choreList.title,
+          shareWith: choreList.shareWith,
+          updatedDate: choreList.updatedDate,
+        }
+      );
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
 
-/**
- * Get a chore list document by id
- * @param id
- * @returns
- */
-export const getDocumentbyIdAsync = async (
-  id: string,
-): Promise<IChoreList | null> => {
-  try {
-    const response = await choreListModel.findById(id);
-    return response;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
+  /**
+   * Delete a chore list document
+   * @param id
+   * @returns
+   */
+  deleteChorelistAsync = async (id: string): Promise<boolean> => {
+    try {
+      await choreListModel.findOneAndDelete({ id });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
 
-/**
- * Get all chore list documents with paginationhujhjv
- * @param ownerId
- * @param search
- * @param pageIndex
- * @param pageSize
- * @returns
- */
-export const getDocumentsAsync = async (
-  ownerId: Types.ObjectId,
-  search: string,
-  pageIndex: number,
-  pageSize: number,
-): Promise<Array<IChoreList> | null> => {
-  try {
-    const response =
-      (await choreListModel
-        .find({
-          title: {
-            $regex: search,
-            $options: "i",
-          },
-          owner: ownerId,
-        })
-        .skip((pageIndex ?? 0) * (pageSize ?? 10))
-        .limit(pageSize)
-        .exec()) || [];
-    return response;
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
+  /**
+   * Get a chore list document by id
+   * @param id
+   * @returns
+   */
+  getDocumentbyIdAsync = async (id: string): Promise<IChoreList | null> => {
+    try {
+      const response = await choreListModel.findById(id);
+      return response;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+
+  /**
+   * Get all chore list documents with paginationhujhjv
+   * @param ownerId
+   * @param search
+   * @param pageIndex
+   * @param pageSize
+   * @returns
+   */
+  getDocumentsAsync = async (
+    ownerId: Types.ObjectId,
+    search: string,
+    pageIndex: number,
+    pageSize: number
+  ): Promise<Array<IChoreList> | null> => {
+    try {
+      const response =
+        (await choreListModel
+          .find({
+            title: {
+              $regex: search,
+              $options: "i",
+            },
+            owner: ownerId,
+          })
+          .skip((pageIndex ?? 0) * (pageSize ?? 10))
+          .limit(pageSize)
+          .exec()) || [];
+      return response;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+}

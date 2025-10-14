@@ -5,23 +5,18 @@ import {
   IChoreListService,
   IChoreListUpdate,
 } from "../interfaces/choreListInterfaces";
-import {
-  deleteDocumentAsync,
-  getDocumentbyIdAsync,
-  getDocumentsAsync,
-  insertDocumentAsync,
-  updateDocumentAsync,
-} from "../models/choreListModel";
+import { ChoreRepository } from "../models/choreListModel";
 
 export default class ChoreListService implements IChoreListService {
-  constructor() {}
+  constructor(private choreRepository: ChoreRepository) {}
+
   /**
    * Create a new chore list document
    * @param choreList
    * @return boolean
    */
-  insertDocumentAsync = async (choreList: IChoreListAdd): Promise<boolean> => {
-    return await insertDocumentAsync(choreList);
+  insertChorelistAsync = async (choreList: IChoreListAdd): Promise<boolean> => {
+    return await this.choreRepository.insertChorelistAsync(choreList);
   };
 
   /**
@@ -31,11 +26,11 @@ export default class ChoreListService implements IChoreListService {
    * @param choreList
    * @return boolean
    */
-  updateDocumentAsync = async (
+  updateChorelistAsync = async (
     id: string,
-    choreList: IChoreListUpdate,
+    choreList: IChoreListUpdate
   ): Promise<boolean> => {
-    return updateDocumentAsync(id, choreList);
+    return this.choreRepository.updateChorelistAsync(id, choreList);
   };
 
   /**
@@ -43,8 +38,8 @@ export default class ChoreListService implements IChoreListService {
    * @param id
    * @return boolean
    */
-  deleteDocumentAsync = async (id: string): Promise<boolean> => {
-    return await deleteDocumentAsync(id);
+  deleteChorelistAsync = async (id: string): Promise<boolean> => {
+    return await this.choreRepository.deleteChorelistAsync(id);
   };
 
   /**
@@ -54,7 +49,7 @@ export default class ChoreListService implements IChoreListService {
    * @return IChoreList | null
    */
   getByIdDocumentsAsync = async (id: string): Promise<IChoreList | null> => {
-    return await getDocumentbyIdAsync(id);
+    return await this.choreRepository.getDocumentbyIdAsync(id);
   };
 
   /**
@@ -68,8 +63,13 @@ export default class ChoreListService implements IChoreListService {
     ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
-    pageSize: any,
+    pageSize: any
   ): Promise<Array<IChoreList> | null> => {
-    return await getDocumentsAsync(ownerId, search, pageIndex, pageSize);
+    return await this.choreRepository.getDocumentsAsync(
+      ownerId,
+      search,
+      pageIndex,
+      pageSize
+    );
   };
 }

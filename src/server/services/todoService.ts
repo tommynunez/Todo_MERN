@@ -1,61 +1,56 @@
-import {
-  deleteDocumentAsync,
-  getDocumentbyIdAsync,
-  getDocumentsAsync,
-  insertDocumentAsync,
-  updateDocumentAsync,
-} from "../models/todoModel";
+import { TodoRepository } from "../models/todoModel";
 import { ITodo, ITodoService } from "../interfaces/todoInterface";
 
 export default class TodoService implements ITodoService {
-  constructor() {}
+  constructor(private todoRepository: TodoRepository) {}
 
   /**
-   * Create a new todo document
+   * Create a new todo Todo
    * @param name
    * @returns boolean
    */
-  insertDocumentAsync = async (name: string): Promise<boolean> =>
-    await insertDocumentAsync({ name });
+  insertTodoAsync = async (name: string): Promise<boolean> =>
+    await this.todoRepository.insertTodoAsync({ name });
 
   /**
-   * Update a todo document
+   * Update a todo Todo
    * @param name
    * @param completed
    * @returns
    */
-  updateDocumentAsync = async (
+  updateTodoAsync = async (
     name: string,
-    completed: boolean,
-  ): Promise<boolean> => await updateDocumentAsync({ name, completed });
+    completed: boolean
+  ): Promise<boolean> =>
+    await this.todoRepository.updateTodoAsync({ name, completed });
 
   /**
-   * Delete a todo document
+   * Delete a todo Todo
    * @param id
    * @returns
    */
-  deleteDocumentAsync = async (id: number): Promise<boolean> =>
-    await deleteDocumentAsync(id);
+  deleteTodoAsync = async (id: number): Promise<boolean> =>
+    await this.todoRepository.deleteTodoAsync(id);
 
   /**
-   * Get a todo document by id
+   * Get a todo Todo by id
    * @param id
    * @returns
    */
-  getByIdDocumentsAsync = async (id?: string): Promise<ITodo | null> =>
-    await getDocumentbyIdAsync(id);
+  getByIdTodosAsync = async (id?: string): Promise<ITodo | null> =>
+    await this.todoRepository.getTodobyIdAsync(id);
 
   /**
-   * Get all todo documents with pagination
+   * Get all todo Todos with pagination
    * @param search
    * @param pageIndex
    * @param pageSize
    * @returns
    */
-  getAllDocumentsAsync = async (
+  getAllTodosAsync = async (
     search: any,
     pageIndex: any,
-    pageSize: any,
+    pageSize: any
   ): Promise<Array<ITodo> | null> =>
-    await getDocumentsAsync(search, pageIndex, pageSize);
+    await this.todoRepository.getTodosAsync(search, pageIndex, pageSize);
 }

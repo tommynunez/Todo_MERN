@@ -2,6 +2,7 @@ import mongoose, { Schema, Types } from "mongoose";
 import { Role } from "../constants/Roles";
 import { InviteStatus } from "../constants/InviteStatuses";
 import { InviteType } from "../constants/InviteType";
+import { IService } from "./service";
 
 export interface IInvite extends mongoose.Document {
   email: string;
@@ -39,7 +40,7 @@ export interface InvitePayload {
   status: InviteStatus;
 }
 
-export interface IInviteService {
+export interface IInviteService extends IService {
   createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;
   getInvitebyIdAsync: (id: Types.ObjectId) => Promise<IInvite | null>;
   inactivateInviteAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;

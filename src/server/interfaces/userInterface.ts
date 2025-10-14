@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { IService } from "./service";
 
 export interface IUserAccount extends mongoose.Document {
   emailAddress: string;
@@ -10,12 +11,12 @@ export interface IUserAccount extends mongoose.Document {
   deletedDate: Date;
 }
 
-export interface IUserService {
+export interface IUserService extends IService {
   signup: (emailAddress: string, password: string) => Promise<boolean>;
   signin: (
     emailAddress: string,
     password: string,
-    user: any,
+    user: any
   ) => Promise<boolean>;
   getUserbyEmailAddressAsync: (emailAddress: string) => Promise<
     | (mongoose.Document<unknown, IUserAccount> &

@@ -1,8 +1,11 @@
 import { Request, Response, Router } from "express";
 import TodoService from "../services/todoService";
+import { TodoRepository } from "../models/todoModel";
+import { createRouter } from "../config/createRouter";
 
-const router: Router = Router();
-const _todoService = new TodoService();
+const todoRepositoru = new TodoRepository();
+const _todoService = new TodoService(todoRepositoru);
+const router: Router = createRouter(_todoService);
 
 /**
  * Get all todo items in a paginated manner
@@ -27,7 +30,7 @@ router.get("/", async (_request: Request, _response: Response) => {
   const response = await _todoService.getAllDocumentsAsync(
     search,
     pageIndex,
-    pageSize,
+    pageSize
   );
   response
     ? _response.status(200).json({ response, status: 200 })
@@ -50,7 +53,7 @@ router.get("/", async (_request: Request, _response: Response) => {
  */
 router.get("/:id", async (_request: Request, _response: Response) => {
   const response = await _todoService.getByIdDocumentsAsync(
-    _request.params.id?.toString(),
+    _request.params.id?.toString()
   );
   response
     ? _response.status(200).json({ response, status: 2000 })
@@ -88,7 +91,7 @@ router.post("/", async (_request: Request, _response: Response) => {
 router.put("/:id", async (_request: Request, _response: Response) => {
   const response = await _todoService.updateDocumentAsync(
     _request.body.name,
-    _request.body,
+    _request.body
   );
   response
     ? _response.status(200).json({ response: response, status: 200 })
@@ -105,7 +108,7 @@ router.put("/:id", async (_request: Request, _response: Response) => {
  */
 router.delete("/:id", async (_request: Request, _response: Response) => {
   const response = await _todoService.deleteDocumentAsync(
-    parseInt(_request.params.id),
+    parseInt(_request.params.id)
   );
   response
     ? _response.status(200).json({ response: response, status: 200 })

@@ -17,12 +17,11 @@ import { IChoreListUpdate } from "../interfaces/choreListInterfaces";
 import { Role } from "../constants/Roles";
 
 export class InviteService implements IInviteService {
-  userService: UserService;
-  inviteRepository: InviteRepository;
-  constructor() {
-    this.userService = new UserService();
-    this.inviteRepository = new InviteRepository();
-  }
+  constructor(
+    private choreListService: ChoreListService,
+    private userService: UserService,
+    private inviteRepository: InviteRepository
+  ) {}
 
   createInviteAsync = async (invite: IInviteAdd): Promise<boolean> => {
     // Logic to send an invite to the provided email
@@ -110,8 +109,7 @@ export class InviteService implements IInviteService {
   ) => {
     const user = await this.userService.getUserbyEmailAddressAsync(email);
 
-    const choreListService = new ChoreListService();
-    return await choreListService.updateDocumentAsync(listId, {
+    return await this.choreListService.updateChorelistAsync(listId, {
       shareWith: [{ userId: user?.id, role: role }],
     } as IChoreListUpdate);
   };
