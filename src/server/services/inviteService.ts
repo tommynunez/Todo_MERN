@@ -1,8 +1,4 @@
-import {
-  getInvitebyEmailAsync,
-  inactivateInviteAsync,
-  inviteModel,
-} from "../models/invitesModel";
+import { InviteRepository } from "../models/invitesModel";
 import { generateInviteToken, verifyInviteToken } from "../utils/inviteToken";
 import {
   IInviteService,
@@ -13,37 +9,40 @@ import {
   InvitePayload,
 } from "../interfaces/inviteInterface";
 import UserService from "./userService";
-import { InviteStatus, InviteStatuses } from "../constants/InviteStatuses";
+import { InviteStatuses } from "../constants/InviteStatuses";
 import { InviteTypes } from "../constants/InviteType";
 import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
 import { IChoreListUpdate } from "../interfaces/choreListInterfaces";
 import { Role } from "../constants/Roles";
 
-export default class InviteService implements IInviteService {
+export class InviteService implements IInviteService {
   userService: UserService;
+  inviteRepository: InviteRepository;
   constructor() {
     this.userService = new UserService();
+    this.inviteRepository = new InviteRepository();
   }
 
   createInviteAsync = async (invite: IInviteAdd): Promise<boolean> => {
     // Logic to send an invite to the provided email
     try {
-      const hasInvitepending = await getInvitebyEmailAsync(invite.email);
+      const hasInvitepending =
+        await this.inviteRepository.getInvitebyEmailAsync(invite.email);
       if (hasInvitepending) {
         return false;
       }
 
       const token = await this.sendInviteAsync(invite);
 
-      await inviteModel.create({
+      await this.inviteRepository.createInviteAsync({
         email: invite.email,
         listId: invite.listId,
         role: invite.role,
         token: token,
         type: invite.type,
         status: invite.status,
-      });
+      } as IInvite);
       return true;
     } catch (error) {
       console.error("Something went wrong will sending an invite");
@@ -56,12 +55,15 @@ export default class InviteService implements IInviteService {
 
   inactivateInviteAsync = async (
     inviteDelete: IInviteDelete
-  ): Promise<boolean> => await inactivateInviteAsync(inviteDelete);
+  ): Promise<boolean> =>
+    await this.inviteRepository.inactivateInviteAsync(inviteDelete);
 
   verifyInviteandUpdateAsync = async (
     invite: IInviteUpdate
   ): Promise<boolean> => {
-    const existingInvite = await inviteModel.findById({ token: invite.token });
+    const existingInvite = await this.inviteRepository.getInvitebyTokenAsync(
+      invite.token
+    );
     if (!existingInvite) {
       throw new Error("Invite not found");
     }
@@ -106,8 +108,7 @@ export default class InviteService implements IInviteService {
     listId: string,
     role: Role
   ) => {
-    const userService = new UserService();
-    const user = await userService.getUserbyEmailAddressAsync(email);
+    const user = await this.userService.getUserbyEmailAddressAsync(email);
 
     const choreListService = new ChoreListService();
     return await choreListService.updateDocumentAsync(listId, {
@@ -162,14 +163,14 @@ export default class InviteService implements IInviteService {
         InviteTypes.ChoreList
       );
 
-      inviteModel.create({
+      await this.inviteRepository.createInviteAsync({
         email: existingInvite.email,
         listId: existingInvite.listId,
         role: existingInvite.role,
         token: token,
         type: existingInvite.type,
         status: InviteStatuses.Pending,
-      });
+      } as IInvite);
 
       //Todo: send new token
       return true;
