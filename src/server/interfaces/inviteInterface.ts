@@ -41,7 +41,7 @@ export interface InvitePayload {
 
 export interface IInviteService {
   createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;
-  verifyInviteandUpdateAsync: (invite: IInviteUpdate) => Promise<boolean>;
-  inactivateInviteAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;
   getInvitebyIdAsync: (id: Types.ObjectId) => Promise<IInvite | null>;
+  inactivateInviteAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;
+  verifyInviteandUpdateAsync: (invite: IInviteUpdate) => Promise<boolean>;
 }
