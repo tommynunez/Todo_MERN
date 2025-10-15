@@ -2,11 +2,12 @@ import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import UserService from "../services/userService";
 import passport, { PassportStatic } from "passport";
 import { Express } from "express";
+import { UserRepository } from "../repositories/userRepository";
 
 export type PassportCallBackFunction = (
   error: any,
   user?: Express.User | false,
-  options?: IVerifyOptions,
+  options?: IVerifyOptions
 ) => void;
 
 export type ConfigureOptions = {
@@ -23,7 +24,8 @@ export type ConfigureOptions = {
 export const configurePassport = (configOptions: ConfigureOptions) => {
   const app = configOptions.app;
   const passportInstance = configOptions.passportInstance || passport;
-  const userService = configOptions.userModel || new UserService();
+  const userService =
+    configOptions.userModel || new UserService(new UserRepository());
 
   /**
    * Use the LocalStrategy within Passport.
@@ -51,11 +53,12 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
       async function verify(
         usernameField: string,
         passwordField: string,
-        cb: PassportCallBackFunction,
+        cb: PassportCallBackFunction
       ) {
         try {
-          const user =
-            await userService.getUserbyEmailAddressAsync(usernameField);
+          const user = await userService.getUserbyEmailAddressAsync(
+            usernameField
+          );
           if (!user) {
             return cb(null, false, {
               message: "Incorrect email address or password.",
@@ -65,7 +68,7 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
           const isUserauthenticated = await userService.signin(
             usernameField,
             passwordField,
-            user,
+            user
           );
 
           if (isUserauthenticated) {
@@ -78,8 +81,8 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
         } catch (error) {
           return cb(error);
         }
-      },
-    ),
+      }
+    )
   );
 
   /**
@@ -107,7 +110,7 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
    */
   passportInstance.deserializeUser(async function (user: any, done) {
     const userFound = await userService.getUserbyEmailAddressAsync(
-      user.emailAddress,
+      user.emailAddress
     );
     if (!userFound) {
       return done("User not found", userFound);
