@@ -1,8 +1,8 @@
 import express, { Express, Request, Response } from "express";
 import { Server } from "http";
-import authenticationController from "./routes/authenticationRoute";
-import todoController from "./routes/todoRoute";
-import chorelistController from "./routes/chorelistRoute";
+import { createAuthenticationroutes } from "./routes/authenticationRoute";
+import { createTodoroutes } from "./routes/todoRoute";
+import { createChorelistRoutes } from "./routes/chorelistRoute";
 import { queryParser } from "express-query-parser";
 import path from "path";
 import helmet from "helmet";
@@ -16,6 +16,12 @@ import { loadEnv } from "./config/environment";
 import attachClient from "./config/attachClient";
 import { authenticatedMiddleware } from "./middleware/authenticatedMiddleware";
 import { closeConnection, openConnection } from "./config/databaseClient";
+import ChoreListService from "./services/choreListService";
+import { ChoreRepository } from "./repositories/choreListRepository";
+import TodoService from "./services/todoService";
+import { TodoRepository } from "./repositories/todoRepository";
+import UserService from "./services/userService";
+import { UserRepository } from "./repositories/userRepository";
 
 const app: Express = express();
 const port: number = 3000;
@@ -28,7 +34,7 @@ app.use(
     parseUndefined: true,
     parseBoolean: true,
     parseNumber: true,
-  }),
+  })
 );
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -79,7 +85,7 @@ app.use(
     store: new MongoStore({
       mongoUrl: process.env.NODE_MONGO_DB_URL,
     }),
-  }),
+  })
 );
 
 configurePassport({ app, passportInstance: passport });
@@ -96,17 +102,28 @@ app.get("/health", (_request: Request, _response: Response) => {
 /**
  * Authentication controller entry using express router
  */
-app.use("/api/authentication", authenticationController);
+app.use(
+  "/api/authentication",
+  createAuthenticationroutes(new UserService(new UserRepository()))
+);
 
 /**
  * Todo controller entrypoint using express router
  */
-app.use("/api/todos", authenticatedMiddleware, todoController);
+app.use(
+  "/api/todos",
+  authenticatedMiddleware,
+  createTodoroutes(new TodoService(new TodoRepository()))
+);
 
 /**
  * Chorelist controller entrypoint using express router
  */
-app.use("/api/chorelists", authenticatedMiddleware, chorelistController);
+app.use(
+  "/api/chorelists",
+  authenticatedMiddleware,
+  createChorelistRoutes(new ChoreListService(new ChoreRepository()))
+);
 
 /**
  * Starting the express server
