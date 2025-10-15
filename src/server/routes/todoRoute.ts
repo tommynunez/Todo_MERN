@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import TodoService from "../services/todoService";
-import { TodoRepository } from "../models/todoModel";
+import { TodoRepository } from "../repositories/todoRepository";
 import { createRouter } from "../config/createRouter";
 
 const todoRepositoru = new TodoRepository();
@@ -27,7 +27,7 @@ const router: Router = createRouter(_todoService);
 router.get("/", async (_request: Request, _response: Response) => {
   const { search, pageIndex, pageSize } = _request.query;
 
-  const response = await _todoService.getAllDocumentsAsync(
+  const response = await _todoService.getAllTodosAsync(
     search,
     pageIndex,
     pageSize
@@ -52,7 +52,7 @@ router.get("/", async (_request: Request, _response: Response) => {
  * Response: { response: ITodo, status: 200 }
  */
 router.get("/:id", async (_request: Request, _response: Response) => {
-  const response = await _todoService.getByIdDocumentsAsync(
+  const response = await _todoService.getByIdTodosAsync(
     _request.params.id?.toString()
   );
   response
@@ -70,7 +70,7 @@ router.get("/:id", async (_request: Request, _response: Response) => {
  * Response: { response: true, status: 201 }
  */
 router.post("/", async (_request: Request, _response: Response) => {
-  const response = await _todoService.insertDocumentAsync(_request.body.name);
+  const response = await _todoService.insertTodoAsync(_request.body.name);
   response
     ? _response.status(201).json({ response: response, status: 201 })
     : _response.sendStatus(500);
@@ -89,7 +89,7 @@ router.post("/", async (_request: Request, _response: Response) => {
  * Response: { response: true, status: 200 }
  */
 router.put("/:id", async (_request: Request, _response: Response) => {
-  const response = await _todoService.updateDocumentAsync(
+  const response = await _todoService.updateTodoAsync(
     _request.body.name,
     _request.body
   );
@@ -107,7 +107,7 @@ router.put("/:id", async (_request: Request, _response: Response) => {
  * Response: { response: true, status: 200 }
  */
 router.delete("/:id", async (_request: Request, _response: Response) => {
-  const response = await _todoService.deleteDocumentAsync(
+  const response = await _todoService.deleteTodoAsync(
     parseInt(_request.params.id)
   );
   response

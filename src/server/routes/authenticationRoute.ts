@@ -2,9 +2,10 @@ import { NextFunction, Request, Response, Router } from "express";
 import UserService from "../services/userService";
 import passport from "passport";
 import { authenticatedMiddleware } from "../middleware/authenticatedMiddleware";
+import { UserRepository } from "../models/userModel";
 
 const router: Router = Router();
-const userService = new UserService();
+const userService = new UserService(new UserRepository());
 
 /**
  * Sign up a new user
@@ -27,7 +28,7 @@ router.post("/signup", async (_request: Request, _response: Response) => {
 
     const userWasregistered = await userService.signup(
       _request.body.emailAddress,
-      _request.body.password,
+      _request.body.password
     );
 
     if (userWasregistered) {
@@ -79,9 +80,9 @@ router.post(
             return _response.sendStatus(200);
           });
         }
-      },
+      }
     )(_request, _response, _next);
-  },
+  }
 );
 
 /**
@@ -110,7 +111,7 @@ router.post(
         _response.sendStatus(200);
       });
     });
-  },
+  }
 );
 
 export default router;

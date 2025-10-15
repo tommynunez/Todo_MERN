@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
 import ChorelistService from "../services/choreListService";
 import { Types } from "mongoose";
+import { ChoreRepository } from "../repositories/choreListRepository";
 
 const router: Router = Router();
-const _chorelistService = new ChorelistService();
+const _chorelistService = new ChorelistService(new ChoreRepository());
 
 /**
  * Get all chorelist items in a paginated manner
@@ -20,7 +21,7 @@ router.get("/", async (_request: Request, _response: Response) => {
     new Types.ObjectId(ownerId?.toString()),
     search?.toString() || "",
     pageIndex || 0,
-    pageSize || 10,
+    pageSize || 10
   );
 
   response
@@ -36,7 +37,7 @@ router.get("/", async (_request: Request, _response: Response) => {
  */
 router.get("/:id", async (_request: Request, _response: Response) => {
   const response = await _chorelistService.getByIdDocumentsAsync(
-    _request.params.id?.toString(),
+    _request.params.id?.toString()
   );
 
   response
@@ -62,7 +63,7 @@ router.get("/:id", async (_request: Request, _response: Response) => {
  * Response: { response: true, status: 200 }
  */
 router.post("/", async (_request: Request, _response: Response) => {
-  const response = await _chorelistService.insertDocumentAsync(_request.body);
+  const response = await _chorelistService.insertChorelistAsync(_request.body);
   response
     ? _response.status(200).json({ response, status: 200 })
     : _response.sendStatus(500);
@@ -80,9 +81,9 @@ router.post("/", async (_request: Request, _response: Response) => {
  * Response: { response: true, status: 200 }
  */
 router.put("/:id", async (_request: Request, _response: Response) => {
-  const response = await _chorelistService.updateDocumentAsync(
+  const response = await _chorelistService.updateChorelistAsync(
     _request.params.id?.toString(),
-    _request.body,
+    _request.body
   );
 
   response
@@ -99,8 +100,8 @@ router.put("/:id", async (_request: Request, _response: Response) => {
  * Response: { response: true, status: 200 }
  */
 router.delete("/:id", async (_request: Request, _response: Response) => {
-  const response = await _chorelistService.deleteDocumentAsync(
-    _request.params.id?.toString(),
+  const response = await _chorelistService.deleteChorelistAsync(
+    _request.params.id?.toString()
   );
   response
     ? _response.status(200).json({ response, status: 200 })

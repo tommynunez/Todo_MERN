@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
 import { Request, Response } from "express";
 import { IUserAccount, IUserService } from "../interfaces/userInterface";
-import { UserRepository } from "../models/userModel";
+import { UserRepository } from "../repositories/userRepository";
 import { emailRegex, passwordRegex } from "../utils/regex";
 import mongoose from "mongoose";
 

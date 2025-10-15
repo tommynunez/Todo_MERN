@@ -1,4 +1,3 @@
-
 # Todo_MERN
 
 A full-stack Todo application built with React, TypeScript, Vite and a Node/Express + TypeScript backend using MongoDB.
@@ -18,26 +17,31 @@ This repository contains a monorepo-style structure where the client (React + Vi
 From `package.json` (high level):
 
 - Runtime / Frameworks
+
   - Node.js (server)
   - Express
   - React 18
   - Vite
 
 - Language / Tooling
+
   - TypeScript
   - tsx / ts-node (dev)
   - Vite plugins: `@vitejs/plugin-react-swc`, `vite-plugin-svgr`, `vite-plugin-env-compatible`
 
 - Database
+
   - MongoDB (driver) and Mongoose
   - connect-mongo for session storage
 
 - Authentication & Security
+
   - passport, passport-local
   - helmet
   - cookie-parser, express-session
 
 - Dev & Lint
+
   - ESLint with `@typescript-eslint` plugins
   - nodemon (in dependencies), tsx for running TypeScript directly in dev
 
@@ -69,31 +73,37 @@ Create a `.env` file in the project root or ensure environment variables are pro
 Derived from `package.json` — run these from the project root in PowerShell (Windows):
 
 - Start frontend dev server (Vite):
+
 ```powershell
 npm run start-dev
 ```
 
 - Start backend dev server (runs the TypeScript server with `tsx`):
+
 ```powershell
 npm run start-backend
 ```
 
 - Build the frontend for production:
+
 ```powershell
 npm run build
 ```
 
 - Preview the built frontend:
+
 ```powershell
 npm run preview
 ```
 
 - Start the database script (project includes a `database` script):
+
 ```powershell
 npm run database
 ```
 
 - Lint the project with ESLint:
+
 ```powershell
 npm run lint
 ```
@@ -101,16 +111,19 @@ npm run lint
 ## Typical local development workflow
 
 1. Install dependencies:
+
 ```powershell
 npm install
 ```
 
 2. Start the backend in one terminal:
+
 ```powershell
 npm run start-backend
 ```
 
 3. Start the frontend in another terminal (Vite dev server):
+
 ```powershell
 npm run start-dev
 ```
@@ -122,16 +135,19 @@ npm run start-dev
 ## Upgrading dependencies
 
 - To see outdated packages:
+
 ```powershell
 npm outdated --depth=0
 ```
 
 - To update packages safely (within semver ranges):
+
 ```powershell
 npm update
 ```
 
 - To update to latest versions (including majors) using `npm-check-updates` (via npx):
+
 ```powershell
 npx npm-check-updates -u
 npm install
@@ -152,3 +168,25 @@ If you'd like, I can:
 - Run `npm outdated --depth=0` in a terminal and paste the output here.
 
 Which of those would you like next?
+
+## Architecture
+
+┌────────────────────────────┐
+│ Routes (HTTP) │ → Express handlers (functional or class-based)
+└────────────────────────────┘
+↓
+┌────────────────────────────┐
+│ Controllers │ → Optional: orchestrate service calls, format responses
+└────────────────────────────┘
+↓
+┌────────────────────────────┐
+│ Services │ → Business logic, validation, orchestration
+└────────────────────────────┘
+↓
+┌────────────────────────────┐
+│ Repositories │ → DB access, Mongoose queries, data shaping
+└────────────────────────────┘
+↓
+────────────────────────────┐
+│ Models │ → Mongoose schemas, types, hooks
+└────────────────────────────┘

@@ -1,4 +1,4 @@
-import { InviteRepository } from "../models/invitesModel";
+import { InviteRepository } from "../repositories/inviteRepository";
 import { generateInviteToken, verifyInviteToken } from "../utils/inviteToken";
 import {
   IInviteService,

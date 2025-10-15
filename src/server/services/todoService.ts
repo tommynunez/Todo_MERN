@@ -1,4 +1,4 @@
-import { TodoRepository } from "../models/todoModel";
+import { TodoRepository } from "../repositories/todoRepository";
 import { ITodo, ITodoService } from "../interfaces/todoInterface";
 
 export default class TodoService implements ITodoService {

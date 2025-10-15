@@ -5,7 +5,7 @@ import {
   IChoreListService,
   IChoreListUpdate,
 } from "../interfaces/choreListInterfaces";
-import { ChoreRepository } from "../models/choreListModel";
+import { ChoreRepository } from "../repositories/choreListRepository";
 
 export default class ChoreListService implements IChoreListService {
   constructor(private choreRepository: ChoreRepository) {}
