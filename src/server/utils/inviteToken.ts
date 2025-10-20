@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
-import { Schema } from "mongoose";
+import { Types } from "mongoose";
 import { Role } from "../constants/Roles";
 import { InvitePayload } from "../interfaces/inviteInterface";
 import { InviteStatuses } from "../constants/InviteStatuses";
 import { InviteType } from "../constants/InviteType";
 
 export const generateInviteToken = (
-  listId: Schema.Types.ObjectId,
+  listId: Types.ObjectId,
   email: string,
   role: Role,
   type: InviteType

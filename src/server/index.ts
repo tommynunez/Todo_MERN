@@ -22,6 +22,9 @@ import TodoService from "./services/todoService";
 import { TodoRepository } from "./repositories/todoRepository";
 import UserService from "./services/userService";
 import { UserRepository } from "./repositories/userRepository";
+import { InviteService } from "./services/inviteService";
+import { InviteRepository } from "./repositories/inviteRepository";
+import { createInviteRoutes } from "./routes/inviteRoute";
 
 const app: Express = express();
 const port: number = 3000;
@@ -123,6 +126,17 @@ app.use(
   "/api/chorelists",
   authenticatedMiddleware,
   createChorelistRoutes(new ChoreListService(new ChoreRepository()))
+);
+
+app.use(
+  "/api/invite",
+  createInviteRoutes(
+    new InviteService(
+      new ChoreListService(new ChoreRepository()),
+      new UserService(new UserRepository()),
+      new InviteRepository()
+    )
+  )
 );
 
 /**

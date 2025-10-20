@@ -7,6 +7,7 @@ import {
   IInviteDelete,
   IInviteUpdate,
   InvitePayload,
+  IInviteResponse,
 } from "../interfaces/inviteInterface";
 import UserService from "./userService";
 import { InviteStatuses } from "../constants/InviteStatuses";
@@ -49,8 +50,10 @@ export class InviteService implements IInviteService {
     }
   };
 
-  getInvitebyIdAsync = async (id: Types.ObjectId): Promise<IInvite | null> =>
-    await this.getInvitebyIdAsync(id);
+  getInvitebyIdAsync = async (
+    id: Types.ObjectId
+  ): Promise<IInviteResponse | null> =>
+    await this.inviteRepository.getInvitebyIdAsync(id);
 
   inactivateInviteAsync = async (
     inviteDelete: IInviteDelete
