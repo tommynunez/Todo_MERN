@@ -19,7 +19,6 @@ export class ChoreRepository {
         title: choreList.title,
         owner: choreList.owner,
         shareWith: choreList.shareWith,
-        createdDate: choreList.createdDate,
       });
       await newChoreList.save();
       return true;
@@ -36,7 +35,7 @@ export class ChoreRepository {
    * @returns
    */
   updateChorelistAsync = async (
-    id: Types.ObjectId,
+    id: string,
     choreList: IChoreListUpdate
   ): Promise<boolean> => {
     try {
@@ -60,7 +59,7 @@ export class ChoreRepository {
    * @param id
    * @returns
    */
-  deleteChorelistAsync = async (id: Types.ObjectId): Promise<boolean> => {
+  deleteChorelistAsync = async (id: string): Promise<boolean> => {
     try {
       await choreListModel.findOneAndDelete({ id });
       return true;
@@ -75,9 +74,7 @@ export class ChoreRepository {
    * @param id
    * @returns
    */
-  getDocumentbyIdAsync = async (
-    id: Types.ObjectId
-  ): Promise<IChoreList | null> => {
+  getDocumentbyIdAsync = async (id: string): Promise<IChoreList | null> => {
     try {
       const response = await choreListModel.findById(id);
       return response;
@@ -96,7 +93,7 @@ export class ChoreRepository {
    * @returns
    */
   getDocumentsAsync = async (
-    ownerId: Types.ObjectId,
+    ownerId: string,
     search: string,
     pageIndex: number,
     pageSize: number
