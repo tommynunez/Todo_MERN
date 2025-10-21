@@ -36,11 +36,11 @@ export interface IChoreListDelete {
 export interface IChoreListService extends IService {
   insertChorelistAsync: (choreList: IChoreListAdd) => Promise<boolean>;
   updateChorelistAsync: (
-    id: string,
+    id: Types.ObjectId,
     choreList: IChoreListUpdate
   ) => Promise<boolean>;
-  deleteChorelistAsync: (id: string) => Promise<boolean>;
-  getByIdDocumentsAsync: (id: string) => Promise<IChoreList | null>;
+  deleteChorelistAsync: (id: Types.ObjectId) => Promise<boolean>;
+  getByIdDocumentsAsync: (id: Types.ObjectId) => Promise<IChoreList | null>;
   getAllDocumentsAsync: (
     ownerId: Types.ObjectId,
     search: any,

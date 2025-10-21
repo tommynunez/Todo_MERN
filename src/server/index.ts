@@ -116,7 +116,12 @@ app.use(
 app.use(
   "/api/todos",
   authenticatedMiddleware,
-  createTodoroutes(new TodoService(new TodoRepository()))
+  createTodoroutes(
+    new TodoService(
+      new TodoRepository(),
+      new ChoreListService(new ChoreRepository())
+    )
+  )
 );
 
 /**

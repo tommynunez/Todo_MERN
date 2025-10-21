@@ -36,7 +36,7 @@ export class ChoreRepository {
    * @returns
    */
   updateChorelistAsync = async (
-    id: string,
+    id: Types.ObjectId,
     choreList: IChoreListUpdate
   ): Promise<boolean> => {
     try {
@@ -60,7 +60,7 @@ export class ChoreRepository {
    * @param id
    * @returns
    */
-  deleteChorelistAsync = async (id: string): Promise<boolean> => {
+  deleteChorelistAsync = async (id: Types.ObjectId): Promise<boolean> => {
     try {
       await choreListModel.findOneAndDelete({ id });
       return true;
@@ -75,7 +75,9 @@ export class ChoreRepository {
    * @param id
    * @returns
    */
-  getDocumentbyIdAsync = async (id: string): Promise<IChoreList | null> => {
+  getDocumentbyIdAsync = async (
+    id: Types.ObjectId
+  ): Promise<IChoreList | null> => {
     try {
       const response = await choreListModel.findById(id);
       return response;

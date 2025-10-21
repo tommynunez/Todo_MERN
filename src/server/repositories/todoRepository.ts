@@ -9,9 +9,13 @@ export class TodoRepository {
    * @param param0
    * @returns
    */
-  insertTodoAsync = async ({ name }: ITodoAdd): Promise<boolean> => {
+  insertTodoAsync = async ({
+    name,
+    choreListId,
+  }: ITodoAdd): Promise<boolean> => {
     try {
       const todo = new todoModel({
+        choreListId: choreListId,
         name: name,
         completed: false,
         completedDate: null,

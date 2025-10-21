@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import TodoService from "../services/todoService";
-import { TodoRepository } from "../repositories/todoRepository";
+import mongoose from "mongoose";
 
 export const createTodoroutes = (_todoService: TodoService): Router => {
   const router: Router = Router();
@@ -67,7 +67,19 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Response: { response: true, status: 201 }
    */
   router.post("/", async (_request: Request, _response: Response) => {
-    const response = await _todoService.insertTodoAsync(_request.body.name);
+    if (!_request.body.choreListId) {
+      _response
+        .status(400)
+        .json({ response: "A todo needs to be assigned to a chore list" });
+    }
+    if (!mongoose.isValidObjectId(_request.body.choreListId)) {
+      _response.status(400).json({ response: "choreList is not valid" });
+    }
+
+    const response = await _todoService.insertTodoAsync(
+      _request.body.name,
+      _request.body.choreListId
+    );
     response
       ? _response.status(201).json({ response: response, status: 201 })
       : _response.sendStatus(500);

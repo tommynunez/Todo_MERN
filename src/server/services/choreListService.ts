@@ -27,7 +27,7 @@ export default class ChoreListService implements IChoreListService {
    * @return boolean
    */
   updateChorelistAsync = async (
-    id: string,
+    id: Types.ObjectId,
     choreList: IChoreListUpdate
   ): Promise<boolean> => {
     return this.choreRepository.updateChorelistAsync(id, choreList);
@@ -38,7 +38,7 @@ export default class ChoreListService implements IChoreListService {
    * @param id
    * @return boolean
    */
-  deleteChorelistAsync = async (id: string): Promise<boolean> => {
+  deleteChorelistAsync = async (id: Types.ObjectId): Promise<boolean> => {
     return await this.choreRepository.deleteChorelistAsync(id);
   };
 
@@ -48,7 +48,7 @@ export default class ChoreListService implements IChoreListService {
    * @param id
    * @return IChoreList | null
    */
-  getByIdDocumentsAsync = async (id: string): Promise<IChoreList | null> => {
+  getByIdDocumentsAsync = async (id: Types.ObjectId): Promise<IChoreList | null> => {
     return await this.choreRepository.getDocumentbyIdAsync(id);
   };
 

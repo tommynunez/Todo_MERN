@@ -13,7 +13,7 @@ const inviteSchema = new mongoose.Schema(
       ref: "ChoreList",
     },
     role: { type: String, enum: Object.values(Roles), required: true },
-    type: { type: String, enum: Object.values(InviteTypes), require: true },
+    type: { type: String, enum: Object.values(InviteTypes), required: true },
     status: {
       type: String,
       enum: Object.values(InviteStatuses),
