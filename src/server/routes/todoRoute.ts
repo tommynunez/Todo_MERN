@@ -27,7 +27,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     const response = await _todoService.getAllTodosAsync(
       search,
       pageIndex,
-      pageSize
+      pageSize,
     );
     response
       ? _response.status(200).json({ response, status: 200 })
@@ -50,7 +50,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    */
   router.get("/:id", async (_request: Request, _response: Response) => {
     const response = await _todoService.getByIdTodosAsync(
-      _request.params.id?.toString()
+      _request.params.id?.toString(),
     );
     response
       ? _response.status(200).json({ response, status: 2000 })
@@ -88,7 +88,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
   router.put("/:id", async (_request: Request, _response: Response) => {
     const response = await _todoService.updateTodoAsync(
       _request.body.name,
-      _request.body
+      _request.body,
     );
     response
       ? _response.status(200).json({ response: response, status: 200 })
@@ -105,7 +105,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    */
   router.delete("/:id", async (_request: Request, _response: Response) => {
     const response = await _todoService.deleteTodoAsync(
-      parseInt(_request.params.id)
+      parseInt(_request.params.id),
     );
     response
       ? _response.status(200).json({ response: response, status: 200 })

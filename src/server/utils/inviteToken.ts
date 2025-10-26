@@ -9,7 +9,7 @@ export const generateInviteToken = (
   listId: Schema.Types.ObjectId,
   email: string,
   role: Role,
-  type: InviteType
+  type: InviteType,
 ): string => {
   if (!process.env.NODE_INVITE_JWT_SECRET) {
     throw new Error("JWT secret is not defined");
@@ -23,7 +23,7 @@ export const generateInviteToken = (
       type,
     },
     process.env.NODE_INVITE_JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "1h" },
   );
 
   return token;

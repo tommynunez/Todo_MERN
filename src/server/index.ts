@@ -22,6 +22,9 @@ import TodoService from "./services/todoService";
 import { TodoRepository } from "./repositories/todoRepository";
 import UserService from "./services/userService";
 import { UserRepository } from "./repositories/userRepository";
+import { createInviteRoutes } from "./routes/inviteRoute";
+import { InviteService } from "./services/inviteService";
+import { InviteRepository } from "./repositories/inviteRepository";
 
 const app: Express = express();
 const port: number = 3000;
@@ -107,7 +110,7 @@ app.use(
   createAuthenticationroutes(new UserService(new UserRepository()))
 );
 
-/**
+/**k
  * Todo controller entrypoint using express router
  */
 app.use(
@@ -123,6 +126,18 @@ app.use(
   "/api/chorelists",
   authenticatedMiddleware,
   createChorelistRoutes(new ChoreListService(new ChoreRepository()))
+);
+
+app.use(
+  "/api/invitations",
+  authenticatedMiddleware,
+  createInviteRoutes(
+    new InviteService(
+      new ChoreListService(new ChoreRepository()),
+      new UserService(new UserRepository()),
+      new InviteRepository()
+    )
+  )
 );
 
 /**

@@ -24,6 +24,6 @@ export interface ITodoService extends IService {
   getAllTodosAsync: (
     search: any,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ) => Promise<Array<ITodo> | null>;
 }

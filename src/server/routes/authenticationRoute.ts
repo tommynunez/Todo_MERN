@@ -4,7 +4,7 @@ import passport from "passport";
 import { authenticatedMiddleware } from "../middleware/authenticatedMiddleware";
 
 export const createAuthenticationroutes = (
-  _userService: UserService
+  _userService: UserService,
 ): Router => {
   const router: Router = Router();
   /**
@@ -28,7 +28,7 @@ export const createAuthenticationroutes = (
 
       const userWasregistered = await _userService.signup(
         _request.body.emailAddress,
-        _request.body.password
+        _request.body.password,
       );
 
       if (userWasregistered) {
@@ -80,9 +80,9 @@ export const createAuthenticationroutes = (
               return _response.sendStatus(200);
             });
           }
-        }
+        },
       )(_request, _response, _next);
-    }
+    },
   );
 
   /**
@@ -111,7 +111,7 @@ export const createAuthenticationroutes = (
           _response.sendStatus(200);
         });
       });
-    }
+    },
   );
 
   return router;

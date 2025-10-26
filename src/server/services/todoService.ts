@@ -20,7 +20,7 @@ export default class TodoService implements ITodoService {
    */
   updateTodoAsync = async (
     name: string,
-    completed: boolean
+    completed: boolean,
   ): Promise<boolean> =>
     await this.todoRepository.updateTodoAsync({ name, completed });
 
@@ -50,7 +50,7 @@ export default class TodoService implements ITodoService {
   getAllTodosAsync = async (
     search: any,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ): Promise<Array<ITodo> | null> =>
     await this.todoRepository.getTodosAsync(search, pageIndex, pageSize);
 }

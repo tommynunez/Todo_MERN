@@ -37,7 +37,7 @@ export class ChoreRepository {
    */
   updateChorelistAsync = async (
     id: string,
-    choreList: IChoreListUpdate
+    choreList: IChoreListUpdate,
   ): Promise<boolean> => {
     try {
       await choreListModel.findByIdAndUpdate(
@@ -46,7 +46,7 @@ export class ChoreRepository {
           title: choreList.title,
           shareWith: choreList.shareWith,
           updatedDate: choreList.updatedDate,
-        }
+        },
       );
       return true;
     } catch (error) {
@@ -97,7 +97,7 @@ export class ChoreRepository {
     ownerId: Types.ObjectId,
     search: string,
     pageIndex: number,
-    pageSize: number
+    pageSize: number,
   ): Promise<Array<IChoreList> | null> => {
     try {
       const response =

@@ -2,6 +2,7 @@ import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
 import UserService from "../services/userService";
 import passport, { PassportStatic } from "passport";
 import { Express } from "express";
+import { UserRepository } from "../repositories/userRepository";
 
 export type PassportCallBackFunction = (
   error: any,
@@ -23,7 +24,8 @@ export type ConfigureOptions = {
 export const configurePassport = (configOptions: ConfigureOptions) => {
   const app = configOptions.app;
   const passportInstance = configOptions.passportInstance || passport;
-  const userService = configOptions.userModel || new UserService();
+  const userService =
+    configOptions.userModel || new UserService(new UserRepository());
 
   /**
    * Use the LocalStrategy within Passport.

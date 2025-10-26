@@ -37,7 +37,7 @@ export interface IChoreListService extends IService {
   insertChorelistAsync: (choreList: IChoreListAdd) => Promise<boolean>;
   updateChorelistAsync: (
     id: string,
-    choreList: IChoreListUpdate
+    choreList: IChoreListUpdate,
   ) => Promise<boolean>;
   deleteChorelistAsync: (id: string) => Promise<boolean>;
   getByIdDocumentsAsync: (id: string) => Promise<IChoreList | null>;
@@ -45,6 +45,6 @@ export interface IChoreListService extends IService {
     ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ) => Promise<Array<IChoreList> | null>;
 }

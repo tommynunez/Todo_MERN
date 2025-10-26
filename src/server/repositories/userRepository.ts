@@ -7,7 +7,7 @@ export class UserRepository {
   insertUseraccountAsync = async (
     emailAddress: string,
     password: string,
-    salt: string
+    salt: string,
   ): Promise<Document | undefined> => {
     try {
       const user = new userModel({
@@ -29,7 +29,7 @@ export class UserRepository {
   };
 
   getUserbyEmailAddressAsync = async (
-    emailAddress: string
+    emailAddress: string,
   ): Promise<
     | (mongoose.Document<unknown, IUserAccount> &
         IUserAccount &
@@ -53,7 +53,7 @@ export class UserRepository {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -62,7 +62,7 @@ export class UserRepository {
       await userModel.findByIdAndUpdate(
         { id: document.id },
         { lastSignedIn: new Date(), updatedDate: new Date() },
-        { upsert: false, new: false }
+        { upsert: false, new: false },
       );
       return true;
     } catch (error: any) {

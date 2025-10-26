@@ -8,4 +8,3 @@ const todoSchema = new Schema<ITodo>({
 });
 
 export const todoModel = model<ITodo>("Todo", todoSchema);
-

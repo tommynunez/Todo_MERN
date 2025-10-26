@@ -3,7 +3,7 @@ import ChorelistService from "../services/choreListService";
 import { Types } from "mongoose";
 
 export const createChorelistRoutes = (
-  _chorelistService: ChorelistService
+  _chorelistService: ChorelistService,
 ): Router => {
   const router: Router = Router();
   /**
@@ -21,7 +21,7 @@ export const createChorelistRoutes = (
       new Types.ObjectId(ownerId?.toString()),
       search?.toString() || "",
       pageIndex || 0,
-      pageSize || 10
+      pageSize || 10,
     );
 
     response
@@ -37,7 +37,7 @@ export const createChorelistRoutes = (
    */
   router.get("/:id", async (_request: Request, _response: Response) => {
     const response = await _chorelistService.getByIdDocumentsAsync(
-      _request.params.id?.toString()
+      _request.params.id?.toString(),
     );
 
     response
@@ -64,7 +64,7 @@ export const createChorelistRoutes = (
    */
   router.post("/", async (_request: Request, _response: Response) => {
     const response = await _chorelistService.insertChorelistAsync(
-      _request.body
+      _request.body,
     );
     response
       ? _response.status(200).json({ response, status: 200 })
@@ -85,7 +85,7 @@ export const createChorelistRoutes = (
   router.put("/:id", async (_request: Request, _response: Response) => {
     const response = await _chorelistService.updateChorelistAsync(
       _request.params.id?.toString(),
-      _request.body
+      _request.body,
     );
 
     response
@@ -103,7 +103,7 @@ export const createChorelistRoutes = (
    */
   router.delete("/:id", async (_request: Request, _response: Response) => {
     const response = await _chorelistService.deleteChorelistAsync(
-      _request.params.id?.toString()
+      _request.params.id?.toString(),
     );
     response
       ? _response.status(200).json({ response, status: 200 })

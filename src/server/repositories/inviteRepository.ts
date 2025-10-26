@@ -17,12 +17,12 @@ export class InviteRepository {
   };
 
   inactivateInviteAsync = async (
-    inviteDelete: IInviteDelete
+    inviteDelete: IInviteDelete,
   ): Promise<boolean> => {
     try {
       const existingInvite = await inviteModel.findByIdAndUpdate(
         inviteDelete.id,
-        {}
+        {},
       );
       if (!existingInvite) {
         throw new Error("Invite not found");
@@ -37,7 +37,7 @@ export class InviteRepository {
 
   getInvitebyEmailAsync = async (
     email: string,
-    isLean: Boolean = false
+    isLean: Boolean = false,
   ): Promise<IInvite | null> => {
     try {
       const invite = inviteModel.findOne({ email });
@@ -54,7 +54,7 @@ export class InviteRepository {
 
   getInvitebyIdAsync = async (
     id: Types.ObjectId,
-    isLean: Boolean = false
+    isLean: Boolean = false,
   ): Promise<IInvite | null> => {
     try {
       const invite = inviteModel.findById(id);
@@ -71,7 +71,7 @@ export class InviteRepository {
 
   getInvitebyTokenAsync = async (
     token: string,
-    isLean: Boolean = false
+    isLean: Boolean = false,
   ): Promise<IInvite | null> => {
     try {
       const invite = inviteModel.findById({ token: token });

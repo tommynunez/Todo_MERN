@@ -28,7 +28,7 @@ export default class ChoreListService implements IChoreListService {
    */
   updateChorelistAsync = async (
     id: string,
-    choreList: IChoreListUpdate
+    choreList: IChoreListUpdate,
   ): Promise<boolean> => {
     return this.choreRepository.updateChorelistAsync(id, choreList);
   };
@@ -63,13 +63,13 @@ export default class ChoreListService implements IChoreListService {
     ownerId: Types.ObjectId,
     search: any,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ): Promise<Array<IChoreList> | null> => {
     return await this.choreRepository.getDocumentsAsync(
       ownerId,
       search,
       pageIndex,
-      pageSize
+      pageSize,
     );
   };
 }
