@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { IInvite } from "../interfaces/inviteInterface";
 import { Roles } from "../constants/Roles";
 import { InviteStatuses } from "../constants/InviteStatuses";
@@ -8,12 +8,12 @@ const inviteSchema = new mongoose.Schema(
   {
     email: { type: String, required: true },
     listId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       required: true,
       ref: "ChoreList",
     },
     role: { type: String, enum: Object.values(Roles), required: true },
-    type: { type: String, enum: Object.values(InviteTypes), require: true },
+    type: { type: String, enum: Object.values(InviteTypes), required: true },
     status: {
       type: String,
       enum: Object.values(InviteStatuses),

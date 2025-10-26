@@ -19,7 +19,6 @@ export class ChoreRepository {
         title: choreList.title,
         owner: choreList.owner,
         shareWith: choreList.shareWith,
-        createdDate: choreList.createdDate,
       });
       await newChoreList.save();
       return true;
@@ -94,7 +93,7 @@ export class ChoreRepository {
    * @returns
    */
   getDocumentsAsync = async (
-    ownerId: Types.ObjectId,
+    ownerId: string,
     search: string,
     pageIndex: number,
     pageSize: number,

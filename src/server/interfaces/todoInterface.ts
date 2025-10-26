@@ -1,7 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { IService } from "./service";
 
 export interface ITodo extends mongoose.Document {
+  choreListId: Types.ObjectId;
   name: string;
   completed: boolean;
   completedDate: Date;
@@ -9,6 +10,7 @@ export interface ITodo extends mongoose.Document {
 
 export interface ITodoAdd {
   name: string;
+  choreListId: Types.ObjectId;
 }
 
 export interface ITodoUpdate {
@@ -17,7 +19,10 @@ export interface ITodoUpdate {
 }
 
 export interface ITodoService extends IService {
-  insertTodoAsync: (name: string) => Promise<boolean>;
+  insertTodoAsync: (
+    name: string,
+    choreList: Types.ObjectId
+  ) => Promise<boolean>;
   updateTodoAsync: (name: string, completed: boolean) => Promise<boolean>;
   deleteTodoAsync: (id: number) => Promise<boolean>;
   getByIdTodosAsync: (name: string) => Promise<ITodo | null>;

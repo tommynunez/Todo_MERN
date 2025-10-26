@@ -7,7 +7,7 @@ import { UserRepository } from "../repositories/userRepository";
 export type PassportCallBackFunction = (
   error: any,
   user?: Express.User | false,
-  options?: IVerifyOptions,
+  options?: IVerifyOptions
 ) => void;
 
 export type ConfigureOptions = {
@@ -53,11 +53,12 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
       async function verify(
         usernameField: string,
         passwordField: string,
-        cb: PassportCallBackFunction,
+        cb: PassportCallBackFunction
       ) {
         try {
-          const user =
-            await userService.getUserbyEmailAddressAsync(usernameField);
+          const user = await userService.getUserbyEmailAddressAsync(
+            usernameField
+          );
           if (!user) {
             return cb(null, false, {
               message: "Incorrect email address or password.",
@@ -67,7 +68,7 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
           const isUserauthenticated = await userService.signin(
             usernameField,
             passwordField,
-            user,
+            user
           );
 
           if (isUserauthenticated) {
@@ -80,8 +81,8 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
         } catch (error) {
           return cb(error);
         }
-      },
-    ),
+      }
+    )
   );
 
   /**
@@ -109,7 +110,7 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
    */
   passportInstance.deserializeUser(async function (user: any, done) {
     const userFound = await userService.getUserbyEmailAddressAsync(
-      user.emailAddress,
+      user.emailAddress
     );
     if (!userFound) {
       return done("User not found", userFound);

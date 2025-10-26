@@ -1,5 +1,8 @@
 import { Types } from "mongoose";
-import { IInvite, IInviteDelete } from "../interfaces/inviteInterface";
+import {
+  IInvite,
+  IInviteDelete,
+} from "../interfaces/inviteInterface";
 import { inviteModel } from "../models/invitesModel";
 
 export class InviteRepository {
@@ -22,12 +25,13 @@ export class InviteRepository {
     try {
       const existingInvite = await inviteModel.findByIdAndUpdate(
         inviteDelete.id,
-        {},
+        {
+          status: inviteDelete.status,
+        }
       );
       if (!existingInvite) {
         throw new Error("Invite not found");
       }
-      await inviteModel.findByIdAndDelete(inviteDelete.id);
       return true;
     } catch (error) {
       console.error(error);
@@ -57,12 +61,15 @@ export class InviteRepository {
     isLean: Boolean = false,
   ): Promise<IInvite | null> => {
     try {
-      const invite = inviteModel.findById(id);
-
-      if (invite && isLean) {
-        invite.lean();
+      let invite = inviteModel.findOne({ _id: id });
+      if (!invite) {
+        return null;
       }
-      return invite.exec();
+
+      if (isLean) {
+        invite.lean().exec();
+      }
+      return invite;
     } catch (error) {
       console.error(error);
       return null;

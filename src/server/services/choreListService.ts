@@ -60,7 +60,7 @@ export default class ChoreListService implements IChoreListService {
    * @return Array<IChoreList> | null
    */
   getAllDocumentsAsync = async (
-    ownerId: Types.ObjectId,
+    ownerId: string,
     search: any,
     pageIndex: any,
     pageSize: any,

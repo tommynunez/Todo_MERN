@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
 import ChorelistService from "../services/choreListService";
-import { Types } from "mongoose";
 
 export const createChorelistRoutes = (
   _chorelistService: ChorelistService,
@@ -18,7 +17,7 @@ export const createChorelistRoutes = (
     const { ownerId, search, pageIndex, pageSize } = _request.query;
 
     const response = await _chorelistService.getAllDocumentsAsync(
-      new Types.ObjectId(ownerId?.toString()),
+      ownerId?.toString() || "",
       search?.toString() || "",
       pageIndex || 0,
       pageSize || 10,
@@ -37,7 +36,7 @@ export const createChorelistRoutes = (
    */
   router.get("/:id", async (_request: Request, _response: Response) => {
     const response = await _chorelistService.getByIdDocumentsAsync(
-      _request.params.id?.toString(),
+      _request.params.id
     );
 
     response

@@ -20,7 +20,6 @@ export interface IChoreListAdd {
   title: String;
   owner: Schema.Types.ObjectId;
   shareWith: Array<IShareWith>;
-  createdDate: Date;
 }
 
 export interface IChoreListUpdate {
@@ -42,7 +41,7 @@ export interface IChoreListService extends IService {
   deleteChorelistAsync: (id: string) => Promise<boolean>;
   getByIdDocumentsAsync: (id: string) => Promise<IChoreList | null>;
   getAllDocumentsAsync: (
-    ownerId: Types.ObjectId,
+    ownerId: string,
     search: any,
     pageIndex: any,
     pageSize: any,
