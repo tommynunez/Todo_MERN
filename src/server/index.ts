@@ -135,6 +135,7 @@ app.use(
 
 app.use(
   "/api/invite",
+  authenticatedMiddleware,
   createInviteRoutes(
     new InviteService(
       new ChoreListService(new ChoreRepository()),
