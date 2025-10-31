@@ -25,6 +25,8 @@ import { UserRepository } from "./repositories/userRepository";
 import { InviteService } from "./services/inviteService";
 import { InviteRepository } from "./repositories/inviteRepository";
 import { createInviteRoutes } from "./routes/inviteRoute";
+import { AuditlogService } from "./services/auditLogService";
+import { AuditLogRepository } from "./repositories/auditLogRepository";
 
 const app: Express = express();
 const port: number = 3000;
@@ -119,7 +121,9 @@ app.use(
   createTodoroutes(
     new TodoService(
       new TodoRepository(),
-      new ChoreListService(new ChoreRepository())
+      new ChoreListService(new ChoreRepository()),
+      new UserService(new UserRepository()),
+      new AuditlogService(new AuditLogRepository())
     )
   )
 );

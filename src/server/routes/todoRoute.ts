@@ -72,11 +72,15 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
         .status(400)
         .json({ response: "A todo needs to be assigned to a chore list" });
     }
+
     if (!mongoose.isValidObjectId(_request.body.choreListId)) {
       _response.status(400).json({ response: "choreList is not valid" });
     }
 
+
+
     const response = await _todoService.insertTodoAsync(
+      _request.user?.emailAddress ,
       _request.body.name,
       _request.body.choreListId
     );

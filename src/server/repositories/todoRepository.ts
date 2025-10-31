@@ -10,11 +10,13 @@ export class TodoRepository {
    * @returns
    */
   insertTodoAsync = async ({
+    userId,
     name,
     choreListId,
   }: ITodoAdd): Promise<boolean> => {
     try {
       const todo = new todoModel({
+        userId: userId,
         choreListId: choreListId,
         name: name,
         completed: false,
@@ -44,7 +46,7 @@ export class TodoRepository {
         {
           completed,
           completedDate: completed ? new Date() : null,
-        },
+        }
       );
       return true;
     } catch (error) {
@@ -93,7 +95,7 @@ export class TodoRepository {
   getTodosAsync = async (
     search: string,
     pageIndex: number,
-    pageSize: number,
+    pageSize: number
   ): Promise<Array<ITodo> | null> => {
     try {
       pageSize = pageSize ?? 0;

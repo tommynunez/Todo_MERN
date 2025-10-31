@@ -1,12 +1,18 @@
 import { TodoRepository } from "../repositories/todoRepository";
-import { ITodo, ITodoService } from "../interfaces/todoInterface";
+import { ITodo, ITodoService, ITodoUpdate } from "../interfaces/todoInterface";
 import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
+import { AuditlogService } from "./auditLogService";
+import UserService from "./userService";
+import { IAddAuditLog } from "../interfaces/auditLogInterface";
+import { SeverityLevel } from "mongodb";
 
 export default class TodoService implements ITodoService {
   constructor(
     private todoRepository: TodoRepository,
-    private choreListService: ChoreListService
+    private choreListService: ChoreListService,
+    private useraccountService: UserService,
+    private auditLogService: AuditlogService
   ) {}
 
   /**
@@ -15,12 +21,13 @@ export default class TodoService implements ITodoService {
    * @returns boolean
    */
   insertTodoAsync = async (
+    emailAddress: string,
     name: string,
     choreListId: Types.ObjectId
   ): Promise<boolean> => {
     try {
       const choreList = await this.choreListService.getByIdDocumentsAsync(
-        choreListId
+        choreListId?.toString()
       );
 
       if (!choreList) {
@@ -30,10 +37,23 @@ export default class TodoService implements ITodoService {
         return false;
       }
 
-      await await this.todoRepository.insertTodoAsync({
-        name,
-        choreListId,
-      });
+      const user = await this.useraccountService.getUserbyEmailAddressAsync(
+        emailAddress
+      );
+
+      if (user) {
+        const userId = user?.id;
+        await this.todoRepository.insertTodoAsync({
+          userId,
+          name,
+          choreListId,
+        });
+      }
+
+      this.auditLogService.insertAuditlog({
+        message: `User ${user?.id.ToString()}`,
+        severity: SeverityLevel.,
+      } as IAddAuditLog);
       return true;
     } catch (error) {
       console.error(error);
@@ -49,9 +69,12 @@ export default class TodoService implements ITodoService {
    */
   updateTodoAsync = async (
     name: string,
-    completed: boolean,
+    completed: boolean
   ): Promise<boolean> =>
-    await this.todoRepository.updateTodoAsync({ name, completed });
+    await this.todoRepository.updateTodoAsync({
+      name,
+      completed,
+    } as ITodoUpdate);
 
   /**
    * Delete a todo Todo
@@ -79,7 +102,7 @@ export default class TodoService implements ITodoService {
   getAllTodosAsync = async (
     search: any,
     pageIndex: any,
-    pageSize: any,
+    pageSize: any
   ): Promise<Array<ITodo> | null> =>
     await this.todoRepository.getTodosAsync(search, pageIndex, pageSize);
 }

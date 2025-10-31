@@ -3,6 +3,11 @@ import { ITodo } from "../interfaces/todoInterface";
 
 const todoSchema = new Schema<ITodo>(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "UserAccount",
+      reqiured: true,
+    },
     choreListId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ChoreList",
