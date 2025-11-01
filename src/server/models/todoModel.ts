@@ -1,5 +1,14 @@
 import mongoose, { Schema, model } from "mongoose";
-import { ITodo } from "../interfaces/todoInterface";
+import { IComplete, ITodo } from "../interfaces/todoInterface";
+
+const completeSchema = new Schema<IComplete>(
+  {
+    by: { type: String },
+    isCompleted: { type: Boolean },
+    completedDate: { type: Date },
+  },
+  { _id: false }
+);
 
 const todoSchema = new Schema<ITodo>(
   {
@@ -14,8 +23,7 @@ const todoSchema = new Schema<ITodo>(
       required: true,
     },
     name: { type: String, required: true, unique: false },
-    completed: { type: Boolean, required: true },
-    completedDate: { type: Date, required: false },
+    complete: [completeSchema],
   },
   { timestamps: true }
 );

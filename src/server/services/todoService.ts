@@ -4,7 +4,10 @@ import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
 import { AuditlogService } from "./auditLogService";
 import UserService from "./userService";
-import { IAddAuditLog } from "../interfaces/auditLogInterface";
+import {
+  IAddAuditLog,
+  IAuditLogMessage,
+} from "../interfaces/auditLogInterface";
 import { SeverityLevel } from "mongodb";
 
 export default class TodoService implements ITodoService {
@@ -50,10 +53,10 @@ export default class TodoService implements ITodoService {
         });
       }
 
-      this.auditLogService.insertAuditlog({
+      this.auditLogService.log({
         message: `User ${user?.id.ToString()}`,
-        severity: SeverityLevel.,
-      } as IAddAuditLog);
+        severity: SeverityLevel.INFORMATIONAL,
+      } as IAuditLogMessage);
       return true;
     } catch (error) {
       console.error(error);
@@ -69,10 +72,12 @@ export default class TodoService implements ITodoService {
    */
   updateTodoAsync = async (
     name: string,
+    emailAddress: string,
     completed: boolean
   ): Promise<boolean> =>
     await this.todoRepository.updateTodoAsync({
       name,
+      emailAddress,
       completed,
     } as ITodoUpdate);
 

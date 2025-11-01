@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import TodoService from "../services/todoService";
 import mongoose from "mongoose";
+import { IUserAccount } from "../interfaces/userInterface";
 
 export const createTodoroutes = (_todoService: TodoService): Router => {
   const router: Router = Router();
@@ -27,7 +28,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     const response = await _todoService.getAllTodosAsync(
       search,
       pageIndex,
-      pageSize,
+      pageSize
     );
     response
       ? _response.status(200).json({ response, status: 200 })
@@ -50,7 +51,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    */
   router.get("/:id", async (_request: Request, _response: Response) => {
     const response = await _todoService.getByIdTodosAsync(
-      _request.params.id?.toString(),
+      _request.params.id?.toString()
     );
     response
       ? _response.status(200).json({ response, status: 2000 })
@@ -76,11 +77,12 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     if (!mongoose.isValidObjectId(_request.body.choreListId)) {
       _response.status(400).json({ response: "choreList is not valid" });
     }
+    console.log(_request);
 
-
+    const user = _request.user as IUserAccount;
 
     const response = await _todoService.insertTodoAsync(
-      _request.user?.emailAddress ,
+      user.emailAddress,
       _request.body.name,
       _request.body.choreListId
     );
@@ -103,8 +105,9 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    */
   router.put("/:id", async (_request: Request, _response: Response) => {
     const response = await _todoService.updateTodoAsync(
+      "",
       _request.body.name,
-      _request.body,
+      _request.body
     );
     response
       ? _response.status(200).json({ response: response, status: 200 })
@@ -121,7 +124,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    */
   router.delete("/:id", async (_request: Request, _response: Response) => {
     const response = await _todoService.deleteTodoAsync(
-      parseInt(_request.params.id),
+      parseInt(_request.params.id)
     );
     response
       ? _response.status(200).json({ response: response, status: 200 })

@@ -19,8 +19,6 @@ export class TodoRepository {
         userId: userId,
         choreListId: choreListId,
         name: name,
-        completed: false,
-        completedDate: null,
       });
 
       await todo.save();
@@ -37,6 +35,7 @@ export class TodoRepository {
    * @returns
    */
   updateTodoAsync = async ({
+    emailAddress,
     name,
     completed,
   }: ITodoUpdate): Promise<boolean> => {
@@ -44,8 +43,11 @@ export class TodoRepository {
       await todoModel.findOneAndUpdate(
         { name },
         {
-          completed,
-          completedDate: completed ? new Date() : null,
+          complete:{
+            by: emailAddress,
+            completed,
+            completedDate: completed ? new Date() : null,
+          }
         }
       );
       return true;
