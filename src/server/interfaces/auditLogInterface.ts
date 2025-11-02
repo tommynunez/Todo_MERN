@@ -3,9 +3,6 @@ import { SeverityLevel } from "mongodb";
 export interface IAuditLog {
   severity: string;
   message: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
 }
 
 export interface IAuditLogMessage {

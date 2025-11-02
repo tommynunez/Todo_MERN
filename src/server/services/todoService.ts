@@ -4,10 +4,7 @@ import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
 import { AuditlogService } from "./auditLogService";
 import UserService from "./userService";
-import {
-  IAddAuditLog,
-  IAuditLogMessage,
-} from "../interfaces/auditLogInterface";
+import { IAuditLogMessage } from "../interfaces/auditLogInterface";
 import { SeverityLevel } from "mongodb";
 
 export default class TodoService implements ITodoService {

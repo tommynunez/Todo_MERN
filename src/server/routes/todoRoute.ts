@@ -30,9 +30,12 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
       pageIndex,
       pageSize
     );
-    response
-      ? _response.status(200).json({ response, status: 200 })
-      : _response.sendStatus(500);
+
+    if (response) {
+      return _response.status(200).json({ response, status: 200 });
+    } else {
+      return _response.sendStatus(500);
+    }
   });
 
   /**
@@ -53,9 +56,11 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     const response = await _todoService.getByIdTodosAsync(
       _request.params.id?.toString()
     );
-    response
-      ? _response.status(200).json({ response, status: 2000 })
-      : _response.sendStatus(500);
+    if (response) {
+      return _response.status(200).json({ response, status: 2000 });
+    } else {
+      _response.sendStatus(404);
+    }
   });
 
   /**
@@ -74,21 +79,25 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
         .json({ response: "A todo needs to be assigned to a chore list" });
     }
 
-    if (!mongoose.isValidObjectId(_request.body.choreListId)) {
-      _response.status(400).json({ response: "choreList is not valid" });
+    if (mongoose.isValidObjectId(_request.body.choreListId) == false) {
+      return _response
+        .status(400)
+        .json({ response: "choreListId is not valid" })
+        .send();
     }
-    console.log(_request);
 
     const user = _request.user as IUserAccount;
-
     const response = await _todoService.insertTodoAsync(
       user.emailAddress,
       _request.body.name,
       _request.body.choreListId
     );
-    response
-      ? _response.status(201).json({ response: response, status: 201 })
-      : _response.sendStatus(500);
+
+    if (response) {
+      return _response.status(201).json({ response: response, status: 201 });
+    } else {
+      return _response.sendStatus(500);
+    }
   });
 
   /**
@@ -109,9 +118,12 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
       _request.body.name,
       _request.body
     );
-    response
-      ? _response.status(200).json({ response: response, status: 200 })
-      : _response.sendStatus(500);
+
+    if (response) {
+      return _response.status(200).json({ response: response, status: 200 });
+    } else {
+      return _response.sendStatus(500);
+    }
   });
 
   /**
@@ -126,9 +138,12 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     const response = await _todoService.deleteTodoAsync(
       parseInt(_request.params.id)
     );
-    response
-      ? _response.status(200).json({ response: response, status: 200 })
-      : _response.sendStatus(500);
+
+    if (response) {
+      _response.status(200).json({ response: response, status: 200 });
+    } else {
+      _response.sendStatus(500);
+    }
   });
 
   return router;
