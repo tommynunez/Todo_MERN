@@ -107,7 +107,6 @@ export class ChoreRepository {
       const response =
         (await choreListModel
           .find({
-            _id: search,
             title: {
               $regex: search,
               $options: "i",
