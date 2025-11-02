@@ -38,14 +38,18 @@ export const createChorelistRoutes = (
    * Returns: 200 with the chorelist item or 500 on error
    */
   router.get("/:id", async (_request: Request, _response: Response) => {
-    const response = await _chorelistService.getByIdDocumentsAsync(
-      _request.params.id
-    );
+    const user = _request.user as IUserAccount;
 
+    console.log(user.id, _request.params.id);
+    const response = await _chorelistService.getByIdDocumentsAsync(
+      _request.params.id,
+      user.id
+    );
+    console.log(response);
     if (response) {
       return _response.status(200).json({ response, status: 200 });
     } else {
-      return _response.sendStatus(500);
+      return _response.sendStatus(404);
     }
   });
 

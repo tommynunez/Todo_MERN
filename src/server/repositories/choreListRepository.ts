@@ -18,7 +18,6 @@ export class ChoreRepository {
       const newChoreList = new choreListModel({
         title: choreList.title,
         owner: choreList.owner,
-        shareWith: choreList.shareWith,
       });
       await newChoreList.save();
       return true;
@@ -36,7 +35,7 @@ export class ChoreRepository {
    */
   updateChorelistAsync = async (
     id: string,
-    choreList: IChoreListUpdate,
+    choreList: IChoreListUpdate
   ): Promise<boolean> => {
     try {
       await choreListModel.findByIdAndUpdate(
@@ -45,7 +44,7 @@ export class ChoreRepository {
           title: choreList.title,
           shareWith: choreList.shareWith,
           updatedDate: choreList.updatedDate,
-        },
+        }
       );
       return true;
     } catch (error) {
@@ -74,9 +73,15 @@ export class ChoreRepository {
    * @param id
    * @returns
    */
-  getDocumentbyIdAsync = async (id: string): Promise<IChoreList | null> => {
+  getDocumentbyIdAsync = async (
+    id: string,
+    owner: string
+  ): Promise<IChoreList | null> => {
     try {
-      const response = await choreListModel.findById(id);
+      const response = await choreListModel.findOne({
+        _id: new Types.ObjectId(id),
+        owner: owner,
+      });
       return response;
     } catch (error) {
       console.log(error);
@@ -96,12 +101,13 @@ export class ChoreRepository {
     ownerId: string,
     search: string,
     pageIndex: number,
-    pageSize: number,
+    pageSize: number
   ): Promise<Array<IChoreList> | null> => {
     try {
       const response =
         (await choreListModel
           .find({
+            _id: search,
             title: {
               $regex: search,
               $options: "i",

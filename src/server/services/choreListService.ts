@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import {
   IChoreList,
   IChoreListAdd,
@@ -47,8 +48,11 @@ export default class ChoreListService implements IChoreListService {
    * @param id
    * @return IChoreList | null
    */
-  getByIdDocumentsAsync = async (id: string): Promise<IChoreList | null> => {
-    return await this.choreRepository.getDocumentbyIdAsync(id);
+  getByIdDocumentsAsync = async (
+    id: string,
+    owner: string
+  ): Promise<IChoreList | null> => {
+    return await this.choreRepository.getDocumentbyIdAsync(id, owner);
   };
 
   /**
