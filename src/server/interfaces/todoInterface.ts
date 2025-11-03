@@ -28,15 +28,16 @@ export interface ITodoUpdate {
 
 export interface ITodoService extends IService {
   insertTodoAsync: (
+    ownerId: string,
     emailAddress: string,
     name: string,
-    choreList: Types.ObjectId
-  ) => Promise<boolean>;
+    choreListId: string
+  ) => Promise<Document | boolean>;
   updateTodoAsync: (
     emailAddress: string,
     name: string,
     completed: boolean
-  ) => Promise<boolean>;
+  ) => Promise<Document | boolean>;
   deleteTodoAsync: (id: number) => Promise<boolean>;
   getByIdTodosAsync: (name: string) => Promise<ITodo | null>;
   getAllTodosAsync: (

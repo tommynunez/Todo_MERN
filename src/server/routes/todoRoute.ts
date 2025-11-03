@@ -34,7 +34,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     if (response) {
       return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.status(500).json({ status: false });
+      return _response.status(404).json({ status: false });
     }
   });
 
@@ -88,6 +88,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
 
     const user = _request.user as IUserAccount;
     const response = await _todoService.insertTodoAsync(
+      user.id,
       user.emailAddress,
       _request.body.name,
       _request.body.choreListId

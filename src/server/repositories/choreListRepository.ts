@@ -88,7 +88,7 @@ export class ChoreRepository {
     try {
       const response = await choreListModel.findOne({
         _id: new Types.ObjectId(id),
-        owner: owner,
+        owner: new Types.ObjectId(owner),
       });
       return response;
     } catch (error) {

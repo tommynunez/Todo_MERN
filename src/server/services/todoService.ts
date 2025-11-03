@@ -1,6 +1,5 @@
 import { TodoRepository } from "../repositories/todoRepository";
 import { ITodo, ITodoService, ITodoUpdate } from "../interfaces/todoInterface";
-import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
 import { AuditlogService } from "./auditLogService";
 import UserService from "./userService";
@@ -21,13 +20,15 @@ export default class TodoService implements ITodoService {
    * @returns boolean
    */
   insertTodoAsync = async (
+    ownerId: string,
     emailAddress: string,
     name: string,
-    choreListId: Types.ObjectId
-  ): Promise<boolean> => {
+    choreListId: string
+  ): Promise<Document | boolean> => {
     try {
       const choreList = await this.choreListService.getByIdDocumentsAsync(
-        choreListId?.toString()
+        ownerId,
+        choreListId
       );
 
       if (!choreList) {
@@ -42,7 +43,7 @@ export default class TodoService implements ITodoService {
       );
 
       if (user) {
-        const userId = user?.id;
+        const userId = user.id;
         await this.todoRepository.insertTodoAsync({
           userId,
           name,
@@ -71,7 +72,7 @@ export default class TodoService implements ITodoService {
     name: string,
     emailAddress: string,
     completed: boolean
-  ): Promise<boolean> =>
+  ): Promise<Document | boolean> =>
     await this.todoRepository.updateTodoAsync({
       name,
       emailAddress,

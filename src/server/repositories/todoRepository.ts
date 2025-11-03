@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { ITodo, ITodoAdd, ITodoUpdate } from "../interfaces/todoInterface";
 import { todoModel } from "../models/todoModel";
 
@@ -13,16 +14,15 @@ export class TodoRepository {
     userId,
     name,
     choreListId,
-  }: ITodoAdd): Promise<boolean> => {
+  }: ITodoAdd): Promise<Document | boolean> => {
     try {
       const todo = new todoModel({
-        userId: userId,
-        choreListId: choreListId,
+        userId: new Types.ObjectId(userId),
+        choreListId: new Types.ObjectId(choreListId),
         name: name,
       });
 
-      await todo.save();
-      return true;
+      return await todo.save();
     } catch (error) {
       console.error(error);
       return false;
@@ -38,16 +38,16 @@ export class TodoRepository {
     emailAddress,
     name,
     completed,
-  }: ITodoUpdate): Promise<boolean> => {
+  }: ITodoUpdate): Promise<Document | boolean> => {
     try {
       await todoModel.findOneAndUpdate(
         { name },
         {
-          complete:{
+          complete: {
             by: emailAddress,
             completed,
             completedDate: completed ? new Date() : null,
-          }
+          },
         }
       );
       return true;
@@ -64,8 +64,14 @@ export class TodoRepository {
    */
   deleteTodoAsync = async (id: number): Promise<boolean> => {
     try {
-      await todoModel.findOneAndDelete({ id });
-      return true;
+      const result = await todoModel.findOneAndDelete({
+        _id: new Types.ObjectId(id),
+      });
+      if (result) {
+        return true;
+      }
+
+      return false;
     } catch (error) {
       console.error(error);
       return false;

@@ -12,7 +12,7 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
     if (response) {
       return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.status(500).json({ status: false });
+      return _response.status(404).json({ status: false });
     }
   });
 
