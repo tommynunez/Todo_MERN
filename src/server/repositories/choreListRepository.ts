@@ -13,14 +13,15 @@ export class ChoreRepository {
    * @param choreList
    * @returns
    */
-  insertChorelistAsync = async (choreList: IChoreListAdd): Promise<boolean> => {
+  insertChorelistAsync = async (
+    choreList: IChoreListAdd
+  ): Promise<Document | boolean> => {
     try {
       const newChoreList = new choreListModel({
         title: choreList.title,
         owner: choreList.owner,
       });
-      await newChoreList.save();
-      return true;
+      return await newChoreList.save();
     } catch (error) {
       console.error(error);
       return false;
@@ -60,8 +61,15 @@ export class ChoreRepository {
    */
   deleteChorelistAsync = async (id: string): Promise<boolean> => {
     try {
-      await choreListModel.findOneAndDelete({ id });
-      return true;
+      const result = await choreListModel.findOneAndDelete({
+        _id: new Types.ObjectId(id),
+      });
+
+      if (result) {
+        return true;
+      }
+
+      return false;
     } catch (error) {
       console.error(error);
       return false;

@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import ChorelistService from "../services/choreListService";
 import { IUserAccount } from "../interfaces/userInterface";
+import { Document } from "mongoose";
 
 export const createChorelistRoutes = (
   _chorelistService: ChorelistService
@@ -15,19 +16,20 @@ export const createChorelistRoutes = (
    * Returns: 200 with list of chorelist items or 500 on error
    */
   router.get("/", async (_request: Request, _response: Response) => {
-    const { ownerId, search, pageIndex, pageSize } = _request.query;
+    const { search, pageIndex, pageSize } = _request.query;
+    const user = _request.user as IUserAccount;
 
     const response = await _chorelistService.getAllDocumentsAsync(
-      ownerId?.toString() || "",
+      user.id,
       search?.toString() || "",
       pageIndex || 0,
       pageSize || 10
     );
 
     if (response) {
-      _response.status(200).json({ response, status: 200 });
+      _response.status(200).json({ status: true, data: response });
     } else {
-      _response.sendStatus(500);
+      _response.status(404).json({ status: false });
     }
   });
 
@@ -40,16 +42,15 @@ export const createChorelistRoutes = (
   router.get("/:id", async (_request: Request, _response: Response) => {
     const user = _request.user as IUserAccount;
 
-    console.log(user.id, _request.params.id);
     const response = await _chorelistService.getByIdDocumentsAsync(
       _request.params.id,
       user.id
     );
-    console.log(response);
+
     if (response) {
-      return _response.status(200).json({ response, status: 200 });
+      return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(404);
+      return _response.status(404).json({ status: false });
     }
   });
 
@@ -79,9 +80,9 @@ export const createChorelistRoutes = (
     });
 
     if (response) {
-      return _response.status(201).json({ response, status: 201 });
+      return _response.status(201).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(500);
+      return _response.status(500).json({ status: false });
     }
   });
 
@@ -103,9 +104,9 @@ export const createChorelistRoutes = (
     );
 
     if (response) {
-      return _response.status(200).json({ response, status: 200 });
+      return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(500);
+      return _response.status(500).json({ status: false });
     }
   });
 
@@ -122,9 +123,9 @@ export const createChorelistRoutes = (
       _request.params.id?.toString()
     );
     if (response) {
-      return _response.status(200).json({ response, status: 200 });
+      return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(500);
+      return _response.status(500).json({ status: false });
     }
   });
 

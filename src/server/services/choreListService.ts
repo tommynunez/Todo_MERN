@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import {
   IChoreList,
   IChoreListAdd,
@@ -15,7 +14,9 @@ export default class ChoreListService implements IChoreListService {
    * @param choreList
    * @return boolean
    */
-  insertChorelistAsync = async (choreList: IChoreListAdd): Promise<boolean> => {
+  insertChorelistAsync = async (
+    choreList: IChoreListAdd
+  ): Promise<Document | boolean> => {
     return await this.choreRepository.insertChorelistAsync(choreList);
   };
 

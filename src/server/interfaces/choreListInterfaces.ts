@@ -29,7 +29,9 @@ export interface IChoreListDelete {
 }
 
 export interface IChoreListService extends IService {
-  insertChorelistAsync: (choreList: IChoreListAdd) => Promise<boolean>;
+  insertChorelistAsync: (
+    choreList: IChoreListAdd
+  ) => Promise<Document | boolean>;
   updateChorelistAsync: (
     id: string,
     choreList: IChoreListUpdate

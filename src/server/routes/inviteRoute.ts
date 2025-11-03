@@ -10,18 +10,18 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
       new ObjectId(_request.params.id?.toString())
     );
     if (response) {
-      return _response.status(200).json({ response, status: 200 });
+      return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(500);
+      return _response.status(500).json({ status: false });
     }
   });
 
   router.post("/invite", async (_request: Request, _response: Response) => {
     const response = await _inviteService.createInviteAsync(_request.body);
     if (response) {
-      return _response.status(200).json({ response, status: 200 });
+      return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(500);
+      return _response.status(500).json({ status: false });
     }
   });
 
@@ -29,9 +29,9 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
     const response = await _inviteService.inactivateInviteAsync(_request.body);
 
     if (response) {
-      return _response.status(200).json({ response, status: 200 });
+      return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(500);
+      return _response.status(500).json({ status: false });
     }
   });
 
@@ -40,9 +40,9 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
       _request.body
     );
     if (response) {
-      return _response.status(200).json({ response, status: 200 });
+      return _response.status(200).json({ status: true, data: response });
     } else {
-      return _response.sendStatus(500);
+      return _response.status(500).json({ status: false });
     }
   });
   return router;
