@@ -1,8 +1,10 @@
 import { Request, Response, Router } from "express";
 import ChorelistService from "../services/choreListService";
+import { IUserAccount } from "../interfaces/userInterface";
+import { Document } from "mongoose";
 
 export const createChorelistRoutes = (
-  _chorelistService: ChorelistService,
+  _chorelistService: ChorelistService
 ): Router => {
   const router: Router = Router();
   /**
@@ -14,18 +16,21 @@ export const createChorelistRoutes = (
    * Returns: 200 with list of chorelist items or 500 on error
    */
   router.get("/", async (_request: Request, _response: Response) => {
-    const { ownerId, search, pageIndex, pageSize } = _request.query;
+    const { search, pageIndex, pageSize } = _request.query;
+    const user = _request.user as IUserAccount;
 
     const response = await _chorelistService.getAllDocumentsAsync(
-      ownerId?.toString() || "",
+      user.id,
       search?.toString() || "",
       pageIndex || 0,
-      pageSize || 10,
+      pageSize || 10
     );
 
-    response
-      ? _response.status(200).json({ response, status: 200 })
-      : _response.sendStatus(500);
+    if (response) {
+      _response.status(200).json({ status: true, data: response });
+    } else {
+      _response.status(404).json({ status: false });
+    }
   });
 
   /**
@@ -35,13 +40,18 @@ export const createChorelistRoutes = (
    * Returns: 200 with the chorelist item or 500 on error
    */
   router.get("/:id", async (_request: Request, _response: Response) => {
+    const user = _request.user as IUserAccount;
+
     const response = await _chorelistService.getByIdDocumentsAsync(
-      _request.params.id
+      _request.params.id,
+      user.id
     );
 
-    response
-      ? _response.status(200).json({ response, status: 200 })
-      : _response.sendStatus(500);
+    if (response) {
+      return _response.status(200).json({ status: true, data: response });
+    } else {
+      return _response.status(404).json({ status: false });
+    }
   });
 
   /**
@@ -62,12 +72,18 @@ export const createChorelistRoutes = (
    * Response: { response: true, status: 200 }
    */
   router.post("/", async (_request: Request, _response: Response) => {
-    const response = await _chorelistService.insertChorelistAsync(
-      _request.body,
-    );
-    response
-      ? _response.status(200).json({ response, status: 200 })
-      : _response.sendStatus(500);
+    const user = _request.user as IUserAccount;
+
+    const response = await _chorelistService.insertChorelistAsync({
+      title: _request.body.title,
+      owner: user.id,
+    });
+
+    if (response) {
+      return _response.status(201).json({ status: true, data: response });
+    } else {
+      return _response.status(500).json({ status: false });
+    }
   });
 
   /**
@@ -84,12 +100,14 @@ export const createChorelistRoutes = (
   router.put("/:id", async (_request: Request, _response: Response) => {
     const response = await _chorelistService.updateChorelistAsync(
       _request.params.id?.toString(),
-      _request.body,
+      _request.body
     );
 
-    response
-      ? _response.status(200).json({ response, status: 200 })
-      : _response.sendStatus(500);
+    if (response) {
+      return _response.status(200).json({ status: true, data: response });
+    } else {
+      return _response.status(500).json({ status: false });
+    }
   });
 
   /**
@@ -102,11 +120,13 @@ export const createChorelistRoutes = (
    */
   router.delete("/:id", async (_request: Request, _response: Response) => {
     const response = await _chorelistService.deleteChorelistAsync(
-      _request.params.id?.toString(),
+      _request.params.id?.toString()
     );
-    response
-      ? _response.status(200).json({ response, status: 200 })
-      : _response.sendStatus(500);
+    if (response) {
+      return _response.status(200).json({ status: true, data: response });
+    } else {
+      return _response.status(500).json({ status: false });
+    }
   });
 
   return router;

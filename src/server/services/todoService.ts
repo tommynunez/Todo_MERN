@@ -1,10 +1,9 @@
 import { TodoRepository } from "../repositories/todoRepository";
 import { ITodo, ITodoService, ITodoUpdate } from "../interfaces/todoInterface";
-import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
 import { AuditlogService } from "./appliactionLogService";
 import UserService from "./userService";
-import { IAddAuditLog } from "../interfaces/auditLogInterface";
+import { IAuditLogMessage } from "../interfaces/auditLogInterface";
 import { SeverityLevel } from "mongodb";
 
 export default class TodoService implements ITodoService {
@@ -21,13 +20,15 @@ export default class TodoService implements ITodoService {
    * @returns boolean
    */
   insertTodoAsync = async (
+    ownerId: string,
     emailAddress: string,
     name: string,
-    choreListId: Types.ObjectId
-  ): Promise<boolean> => {
+    choreListId: string
+  ): Promise<Document | boolean> => {
     try {
       const choreList = await this.choreListService.getByIdDocumentsAsync(
-        choreListId?.toString()
+        ownerId,
+        choreListId
       );
 
       if (!choreList) {
@@ -44,7 +45,7 @@ export default class TodoService implements ITodoService {
       );
 
       if (user) {
-        const userId = user?.id;
+        const userId = user.id;
         await this.todoRepository.insertTodoAsync({
           userId,
           name,
@@ -52,10 +53,10 @@ export default class TodoService implements ITodoService {
         });
       }
 
-      this.auditLogService.insertAuditlog({
+      this.auditLogService.log({
         message: `User ${user?.id.ToString()}`,
         severity: SeverityLevel.INFORMATIONAL,
-      } as IAddAuditLog);
+      } as IAuditLogMessage);
       return true;
     } catch (error) {
       console.error(error);
@@ -71,10 +72,12 @@ export default class TodoService implements ITodoService {
    */
   updateTodoAsync = async (
     name: string,
+    emailAddress: string,
     completed: boolean
-  ): Promise<boolean> =>
+  ): Promise<Document | boolean> =>
     await this.todoRepository.updateTodoAsync({
       name,
+      emailAddress,
       completed,
     } as ITodoUpdate);
 

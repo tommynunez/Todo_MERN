@@ -1,11 +1,10 @@
 import { Schema, model } from "mongoose";
 import { IAuditLog } from "../interfaces/auditLogInterface";
-import { SeverityLevel } from "mongodb";
 
 export const auditLogSchema = new Schema<IAuditLog>(
   {
-    severity: { Type: SeverityLevel, required: true },
-    message: { Type: String, required: true },
+    severity: { type: String, required: true },
+    message: { type: String, required: true },
   },
   { timestamps: true }
 );

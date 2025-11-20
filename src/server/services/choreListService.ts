@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import {
   IChoreList,
   IChoreListAdd,
@@ -15,7 +14,9 @@ export default class ChoreListService implements IChoreListService {
    * @param choreList
    * @return boolean
    */
-  insertChorelistAsync = async (choreList: IChoreListAdd): Promise<boolean> => {
+  insertChorelistAsync = async (
+    choreList: IChoreListAdd
+  ): Promise<Document | boolean> => {
     return await this.choreRepository.insertChorelistAsync(choreList);
   };
 
@@ -28,7 +29,7 @@ export default class ChoreListService implements IChoreListService {
    */
   updateChorelistAsync = async (
     id: string,
-    choreList: IChoreListUpdate,
+    choreList: IChoreListUpdate
   ): Promise<boolean> => {
     return this.choreRepository.updateChorelistAsync(id, choreList);
   };
@@ -48,8 +49,11 @@ export default class ChoreListService implements IChoreListService {
    * @param id
    * @return IChoreList | null
    */
-  getByIdDocumentsAsync = async (id: string): Promise<IChoreList | null> => {
-    return await this.choreRepository.getDocumentbyIdAsync(id);
+  getByIdDocumentsAsync = async (
+    id: string,
+    owner: string
+  ): Promise<IChoreList | null> => {
+    return await this.choreRepository.getDocumentbyIdAsync(id, owner);
   };
 
   /**
@@ -63,13 +67,13 @@ export default class ChoreListService implements IChoreListService {
     ownerId: string,
     search: any,
     pageIndex: any,
-    pageSize: any,
+    pageSize: any
   ): Promise<Array<IChoreList> | null> => {
     return await this.choreRepository.getDocumentsAsync(
       ownerId,
       search,
       pageIndex,
-      pageSize,
+      pageSize
     );
   };
 }
