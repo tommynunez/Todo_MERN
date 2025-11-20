@@ -2,7 +2,7 @@ import { TodoRepository } from "../repositories/todoRepository";
 import { ITodo, ITodoService, ITodoUpdate } from "../interfaces/todoInterface";
 import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
-import { AuditlogService } from "./auditLogService";
+import { AuditlogService } from "./appliactionLogService";
 import UserService from "./userService";
 import { IAddAuditLog } from "../interfaces/auditLogInterface";
 import { SeverityLevel } from "mongodb";
@@ -31,9 +31,11 @@ export default class TodoService implements ITodoService {
       );
 
       if (!choreList) {
-        console.warn(
-          "The chore list doesn't exist, request could not be completed."
-        );
+        this.auditLogService.warn({
+          severity: SeverityLevel.WARNING,
+          message:
+            "The chore list doesn't exist, request could not be completed.",
+        });
         return false;
       }
 
@@ -52,7 +54,7 @@ export default class TodoService implements ITodoService {
 
       this.auditLogService.insertAuditlog({
         message: `User ${user?.id.ToString()}`,
-        severity: SeverityLevel.,
+        severity: SeverityLevel.INFORMATIONAL,
       } as IAddAuditLog);
       return true;
     } catch (error) {

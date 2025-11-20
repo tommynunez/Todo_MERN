@@ -13,7 +13,7 @@ export interface IAuditLogMessage {
   message: string;
 }
 
-export interface IAddAuditLog extends IAuditLog {}
+export interface IAddAuditLog extends IAuditLogMessage {}
 
 export interface IAuditLogService {
   insertAuditlog: (addAuditlog: IAddAuditLog) => Promise<boolean>;

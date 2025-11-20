@@ -1,4 +1,3 @@
-import { SeverityLevel } from "mongodb";
 import {
   IAddAuditLog,
   IAuditLogMessage,
@@ -23,7 +22,7 @@ export class AuditlogService implements IAuditLogService {
   };
 
   debug = (logMessage: IAuditLogMessage) => {
-    this.insertAuditlog({severity: SeverityLevel.DEBUG, logMessage.message})
+    this.insertAuditlog(logMessage);
     console.debug("Application Debug Log: ", logMessage);
   };
   error = (logMessage: IAuditLogMessage) => {

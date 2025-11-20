@@ -25,7 +25,7 @@ import { UserRepository } from "./repositories/userRepository";
 import { InviteService } from "./services/inviteService";
 import { InviteRepository } from "./repositories/inviteRepository";
 import { createInviteRoutes } from "./routes/inviteRoute";
-import { AuditlogService } from "./services/auditLogService";
+import { AuditlogService } from "./services/appliactionLogService";
 import { AuditLogRepository } from "./repositories/auditLogRepository";
 
 const app: Express = express();
