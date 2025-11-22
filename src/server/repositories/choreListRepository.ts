@@ -115,6 +115,7 @@ export class ChoreRepository {
       const response =
         (await choreListModel
           .find({
+            owner: ownerId,
             $or: [
               {
                 _id: Types.ObjectId.isValid(search)
@@ -122,7 +123,6 @@ export class ChoreRepository {
                   : undefined,
               },
               { title: { $regex: search, $options: "i" } },
-              { owner: ownerId },
             ],
           })
           .skip((pageIndex ?? 0) * (pageSize ?? 10))

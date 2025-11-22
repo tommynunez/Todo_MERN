@@ -28,8 +28,8 @@ export default class TodoService implements ITodoService {
   ): Promise<Document | boolean> => {
     try {
       const choreList = await this.choreListService.getByIdDocumentsAsync(
-        ownerId,
-        choreListId
+        choreListId,
+        ownerId
       );
 
       if (!choreList) {
@@ -55,7 +55,7 @@ export default class TodoService implements ITodoService {
       }
 
       this.auditLogService.log({
-        message: `User ${user?.id.ToString()}`,
+        message: `User ${user?.id.toString()}`,
         severity: SeverityLevel.INFORMATIONAL,
       } as IAuditLogMessage);
       return true;

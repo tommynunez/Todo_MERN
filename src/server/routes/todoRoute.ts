@@ -95,9 +95,12 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     );
 
     if (response) {
-      return _response.status(201).json({ status: true, data: response });
+      return _response
+        .status(201)
+        .location(`/chores/${chore._id}`)
+        .json({ status: response });
     } else {
-      return _response.status(500).json({ status: false });
+      return _response.status(500).json({ status: response });
     }
   });
 
