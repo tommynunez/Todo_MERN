@@ -23,16 +23,14 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": true
     //"esModuleInterop": true,
   },
   "include": ["src/**/*.ts", "environment.d.ts"],
-  "exclude": [
-    "node_modules",
-  ],
-  "types": [ "node" ],
+  "exclude": ["node_modules"],
+  "types": ["node"],
   "ts-node": {
     "files": true
   },
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

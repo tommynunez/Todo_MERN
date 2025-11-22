@@ -5,6 +5,7 @@ import { AuditlogService } from "./appliactionLogService";
 import UserService from "./userService";
 import { IAuditLogMessage } from "../interfaces/auditLogInterface";
 import { SeverityLevel } from "mongodb";
+import { Types } from "mongoose";
 
 export default class TodoService implements ITodoService {
   constructor(
@@ -32,11 +33,11 @@ export default class TodoService implements ITodoService {
       );
 
       if (!choreList) {
-        this.auditLogService.warn({
+        /*this.auditLogService.warn({
           severity: SeverityLevel.WARNING,
           message:
             "The chore list doesn't exist, request could not be completed.",
-        });
+        });*/
         return false;
       }
 
@@ -49,7 +50,7 @@ export default class TodoService implements ITodoService {
         await this.todoRepository.insertTodoAsync({
           userId,
           name,
-          choreListId,
+          choreListId: new Types.ObjectId(choreListId),
         });
       }
 

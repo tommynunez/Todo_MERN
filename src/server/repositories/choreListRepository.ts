@@ -115,14 +115,18 @@ export class ChoreRepository {
       const response =
         (await choreListModel
           .find({
-            title: {
-              $regex: search,
-              $options: "i",
-            },
-            owner: ownerId,
+            $or: [
+              {
+                _id: Types.ObjectId.isValid(search)
+                  ? new Types.ObjectId(search)
+                  : undefined,
+              },
+              { title: { $regex: search, $options: "i" } },
+              { owner: ownerId },
+            ],
           })
           .skip((pageIndex ?? 0) * (pageSize ?? 10))
-          .limit(pageSize)
+          .limit(pageSize ?? 10)
           .exec()) || [];
       return response;
     } catch (error) {

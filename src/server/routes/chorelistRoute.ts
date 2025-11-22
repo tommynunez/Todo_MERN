@@ -1,7 +1,6 @@
 import { Request, Response, Router } from "express";
 import ChorelistService from "../services/choreListService";
 import { IUserAccount } from "../interfaces/userInterface";
-import { Document } from "mongoose";
 
 export const createChorelistRoutes = (
   _chorelistService: ChorelistService
@@ -27,7 +26,9 @@ export const createChorelistRoutes = (
     );
 
     if (response) {
-      _response.status(200).json({ status: true, data: response });
+      _response
+        .status(200)
+        .json({ status: response.length > 0 ? true : false, data: response });
     } else {
       _response.status(404).json({ status: false });
     }

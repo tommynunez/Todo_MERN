@@ -65,7 +65,7 @@ export default class ChoreListService implements IChoreListService {
    */
   getAllDocumentsAsync = async (
     ownerId: string,
-    search: any,
+    search: string,
     pageIndex: any,
     pageSize: any
   ): Promise<Array<IChoreList> | null> => {
