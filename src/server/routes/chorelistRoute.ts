@@ -26,11 +26,13 @@ export const createChorelistRoutes = (
     );
 
     if (response) {
-      _response
+      return _response
         .status(200)
-        .json({ status: response.length > 0 ? true : false, data: response });
+        .json({ count: response.length, data: response, pageIndex, pageSize });
     } else {
-      _response.status(404).json({ status: false });
+      return _response
+        .status(404)
+        .json({ count: 0, data: response, pageIndex, pageSize });
     }
   });
 

@@ -95,12 +95,14 @@ export class TodoRepository {
 
   /**
    * Get all todo Todos with pagination
+   * @param userId
    * @param search
    * @param pageIndex
    * @param pageSize
    * @return Array<ITodo> | null
    */
   getTodosAsync = async (
+    userId: string,
     search: string,
     pageIndex: number,
     pageSize: number
@@ -109,11 +111,22 @@ export class TodoRepository {
       pageSize = pageSize ?? 0;
       pageIndex = pageIndex ?? 10;
 
-      const response = await todoModel
-        .find(search ? { name: search } : {})
-        .limit(pageSize)
-        .skip(pageIndex * pageSize)
-        .exec();
+      const response =
+        (await todoModel
+          .find({
+            userId: userId,
+            $or: [
+              {
+                _id: Types.ObjectId.isValid(search)
+                  ? new Types.ObjectId(search)
+                  : undefined,
+              },
+              { title: { $regex: search, $options: "i" } },
+            ],
+          })
+          .skip((pageIndex ?? 0) * (pageSize ?? 10))
+          .limit(pageSize ?? 10)
+          .exec()) || [];
 
       return response;
     } catch (error) {

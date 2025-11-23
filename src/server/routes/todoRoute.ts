@@ -26,15 +26,20 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     const { search, pageIndex, pageSize } = _request.query;
 
     const response = await _todoService.getAllTodosAsync(
+      (_request.user as IUserAccount).id,
       search,
       pageIndex,
       pageSize
     );
 
     if (response) {
-      return _response.status(200).json({ status: true, data: response });
+      return _response
+        .status(200)
+        .json({ count: response.length, data: response, pageIndex, pageSize });
     } else {
-      return _response.status(404).json({ status: false });
+      return _response
+        .status(404)
+        .json({ count: 0, data: response, pageIndex, pageSize });
     }
   });
 
@@ -95,10 +100,12 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     );
 
     if (response) {
-      return _response
-        .status(201)
-        .location(`/chores/${chore._id}`)
-        .json({ status: response });
+      return (
+        _response
+          .status(201)
+          //.location(`/todo/${chore._id}`)
+          .json({ status: response })
+      );
     } else {
       return _response.status(500).json({ status: response });
     }

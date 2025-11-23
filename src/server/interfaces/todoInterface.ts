@@ -41,6 +41,7 @@ export interface ITodoService extends IService {
   deleteTodoAsync: (id: number) => Promise<boolean>;
   getByIdTodosAsync: (name: string) => Promise<ITodo | null>;
   getAllTodosAsync: (
+    userId: any,
     search: any,
     pageIndex: any,
     pageSize: any

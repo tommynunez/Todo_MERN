@@ -100,15 +100,22 @@ export default class TodoService implements ITodoService {
 
   /**
    * Get all todo Todos with pagination
+   * @param ownerId
    * @param search
    * @param pageIndex
    * @param pageSize
    * @returns
    */
   getAllTodosAsync = async (
+    userId: any,
     search: any,
     pageIndex: any,
     pageSize: any
   ): Promise<Array<ITodo> | null> =>
-    await this.todoRepository.getTodosAsync(search, pageIndex, pageSize);
+    await this.todoRepository.getTodosAsync(
+      userId,
+      search,
+      pageIndex,
+      pageSize
+    );
 }
