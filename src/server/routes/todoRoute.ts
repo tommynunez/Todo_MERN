@@ -35,6 +35,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     if (response) {
       return _response
         .status(200)
+        .location(`/todo/`)
         .json({ count: response.length, data: response, pageIndex, pageSize });
     } else {
       return _response
@@ -62,9 +63,9 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
       _request.params.id?.toString()
     );
     if (response) {
-      return _response.status(200).json({ status: true, data: response });
+      return _response.status(200).json({ data: response });
     } else {
-      _response.status(404).json({ status: false });
+      _response.status(404);
     }
   });
 
@@ -131,9 +132,9 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     );
 
     if (response) {
-      return _response.status(200).json({ status: true, data: response });
+      return _response.status(200).json({ data: response });
     } else {
-      return _response.status(500).json({ status: false });
+      return _response.status(500);
     }
   });
 
@@ -151,9 +152,9 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     );
 
     if (response) {
-      _response.status(200).json({ status: true, data: response });
+      _response.status(200).json({ data: response });
     } else {
-      _response.status(500).json({ status: false });
+      _response.status(500);
     }
   });
 

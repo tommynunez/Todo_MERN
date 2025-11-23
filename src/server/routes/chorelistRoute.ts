@@ -51,9 +51,9 @@ export const createChorelistRoutes = (
     );
 
     if (response) {
-      return _response.status(200).json({ status: true, data: response });
+      return _response.status(200).json({ data: response });
     } else {
-      return _response.status(404).json({ status: false });
+      return _response.status(404);
     }
   });
 
@@ -83,9 +83,9 @@ export const createChorelistRoutes = (
     });
 
     if (response) {
-      return _response.status(201).json({ status: true, data: response });
+      return _response.status(201).json({ data: response });
     } else {
-      return _response.status(500).json({ status: false });
+      return _response.status(500);
     }
   });
 
@@ -107,9 +107,9 @@ export const createChorelistRoutes = (
     );
 
     if (response) {
-      return _response.status(200).json({ status: true, data: response });
+      return _response.status(200).json({ data: response });
     } else {
-      return _response.status(500).json({ status: false });
+      return _response.status(500);
     }
   });
 
@@ -126,9 +126,9 @@ export const createChorelistRoutes = (
       _request.params.id?.toString()
     );
     if (response) {
-      return _response.status(200).json({ status: true, data: response });
+      return _response.status(200).json({ data: response });
     } else {
-      return _response.status(500).json({ status: false });
+      return _response.status(500);
     }
   });
 
