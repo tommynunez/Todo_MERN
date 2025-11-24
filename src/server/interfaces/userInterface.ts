@@ -16,7 +16,7 @@ export interface IUserService extends IService {
   signin: (
     emailAddress: string,
     password: string,
-    user: any,
+    user: any
   ) => Promise<boolean>;
   getUserbyEmailAddressAsync: (emailAddress: string) => Promise<
     | (mongoose.Document<unknown, IUserAccount> &
@@ -26,4 +26,5 @@ export interface IUserService extends IService {
         }>)
     | null
   >;
+  confirmEmailAsync: (emailAddress: string, token: string) => Promise<boolean>;
 }

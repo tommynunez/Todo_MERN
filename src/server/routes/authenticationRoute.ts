@@ -2,9 +2,10 @@ import { NextFunction, Request, Response, Router } from "express";
 import UserService from "../services/userService";
 import passport from "passport";
 import { authenticatedMiddleware } from "../middleware/authenticatedMiddleware";
+import { sendEmail } from "../infrastructure/email/maileroo.wraper";
 
 export const createAuthenticationroutes = (
-  _userService: UserService,
+  _userService: UserService
 ): Router => {
   const router: Router = Router();
   /**
@@ -28,11 +29,15 @@ export const createAuthenticationroutes = (
 
       const userWasregistered = await _userService.signup(
         _request.body.emailAddress,
-        _request.body.password,
+        _request.body.password
       );
 
       if (userWasregistered) {
         _response.sendStatus(201);
+        await sendEmail("CONFIRM_EMAIL", _request.body.emailAddress, {
+          userName: _request.body.emailAddress,
+          confirmationLink: "https://yourapp.com/invite/abc123",
+        });
         return;
       } else {
         throw "User was not created";
@@ -80,9 +85,9 @@ export const createAuthenticationroutes = (
               return _response.sendStatus(200);
             });
           }
-        },
+        }
       )(_request, _response, _next);
-    },
+    }
   );
 
   /**
@@ -111,7 +116,23 @@ export const createAuthenticationroutes = (
           _response.sendStatus(200);
         });
       });
-    },
+    }
+  );
+
+  router.post(
+    "/confirm/email",
+    (_request: Request, _response: Response, next: NextFunction) => {
+      if (_request.body.emailAddress == null || _request.body.token == null) {
+        const errmsg = "Missing emailAddress or token";
+        _response.status(400).json({ errmsg });
+        return next(errmsg);
+      }
+
+      _userService.confirmEmailAsync(
+        _request.body.emailAddress,
+        _request.body.token
+      );
+    }
   );
 
   return router;

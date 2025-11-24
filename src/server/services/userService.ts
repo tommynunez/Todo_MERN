@@ -23,7 +23,7 @@ export default class UserService implements IUserService {
     const document = await this.userRepository.insertUseraccountAsync(
       emailAddress,
       hashedPassword,
-      salt,
+      salt
     );
 
     if (!document) {
@@ -48,7 +48,7 @@ export default class UserService implements IUserService {
           Required<{
             _id: unknown;
           }>)
-      | null,
+      | null
   ): Promise<boolean> => {
     //const salt = crypto.randomBytes(64);
     const hashedPassword = await crypto
@@ -103,7 +103,7 @@ export default class UserService implements IUserService {
   };
 
   getUserbyEmailAddressAsync = async (
-    emailAddress: string,
+    emailAddress: string
   ): Promise<
     | (mongoose.Document<unknown, IUserAccount> &
         IUserAccount &
@@ -112,4 +112,11 @@ export default class UserService implements IUserService {
         }>)
     | null
   > => await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
+
+  confirmEmailAsync = async (
+    emailAddress: string,
+    token: string
+  ): Promise<boolean> => {
+    throw new Error("Method not implemented.");
+  };
 }
