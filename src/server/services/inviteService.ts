@@ -16,12 +16,13 @@ import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
 import { IChoreListUpdate } from "../interfaces/choreListInterfaces";
 import { Role } from "../constants/Roles";
+import { sendEmail } from "../infrastructure/email/maileroo.wraper";
 
 export class InviteService implements IInviteService {
   constructor(
     private choreListService: ChoreListService,
     private userService: UserService,
-    private inviteRepository: InviteRepository,
+    private inviteRepository: InviteRepository
   ) {}
 
   createInviteAsync = async (invite: IInviteAdd): Promise<boolean> => {
@@ -56,15 +57,15 @@ export class InviteService implements IInviteService {
     await this.inviteRepository.getInvitebyIdAsync(id);
 
   inactivateInviteAsync = async (
-    inviteDelete: IInviteDelete,
+    inviteDelete: IInviteDelete
   ): Promise<boolean> =>
     await this.inviteRepository.inactivateInviteAsync(inviteDelete);
 
   verifyInviteandUpdateAsync = async (
-    invite: IInviteUpdate,
+    invite: IInviteUpdate
   ): Promise<boolean> => {
     const existingInvite = await this.inviteRepository.getInvitebyTokenAsync(
-      invite.token,
+      invite.token
     );
     if (!existingInvite) {
       throw new Error("Invite not found");
@@ -74,11 +75,11 @@ export class InviteService implements IInviteService {
 
     const wasTokenResent = await this.resendInviteonExpiretokensAsync(
       decodedToken,
-      existingInvite,
+      existingInvite
     );
     const wasTokenRevoked = await this.revokedTokenAsync(
       decodedToken,
-      existingInvite,
+      existingInvite
     );
 
     if (wasTokenResent || wasTokenRevoked) {
@@ -92,12 +93,12 @@ export class InviteService implements IInviteService {
     const wasListUpdated = await this.addInvitedUserToChoreListAsync(
       decodedToken.email,
       decodedToken.listId,
-      decodedToken.role,
+      decodedToken.role
     );
 
     if (!wasListUpdated) {
       console.error(
-        `Couldn't add user to the chore list ${decodedToken.listId}`,
+        `Couldn't add user to the chore list ${decodedToken.listId}`
       );
       return false;
     }
@@ -108,7 +109,7 @@ export class InviteService implements IInviteService {
   private addInvitedUserToChoreListAsync = async (
     email: string,
     listId: string,
-    role: Role,
+    role: Role
   ) => {
     const user = await this.userService.getUserbyEmailAddressAsync(email);
 
@@ -119,7 +120,7 @@ export class InviteService implements IInviteService {
 
   private sendInviteAsync = async (invite: IInviteAdd): Promise<string> => {
     const userDoc = await this.userService.getUserbyEmailAddressAsync(
-      invite.email,
+      invite.email
     );
     let token = "";
     invite.status = InviteStatuses.Pending;
@@ -127,22 +128,32 @@ export class InviteService implements IInviteService {
     //user exists, lets send the email for the chore list invite
     if (userDoc) {
       console.log(
-        `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`,
+        `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`
       );
       token = await generateInviteToken(
         invite.listId,
         invite.email,
         invite.role,
-        InviteTypes.ChoreList,
+        InviteTypes.ChoreList
       );
 
       invite.type = InviteTypes.ChoreList;
-
-      //Todo: send email logic would go here
+      //send email to user with invite link
+      await sendEmail("INVITE_EMAIL", userDoc.emailAddress, {
+        inviterName: invite.inviterName,
+        recipientName: invite.email,
+        inviteLink: "https://yourapp.com/invite/abc123",
+      });
     } else {
       //user will need to signup first
       invite.type = InviteTypes.Registration;
-      //Todo: send email to have the user signup
+
+      //send email to have the user signup
+      await sendEmail("INVITE_REGISTRATION_EMAIL", invite.email, {
+        inviterName: invite.inviterName,
+        recipientName: invite.email,
+        registrationLink: "https://yourapp.com/invite/abc123",
+      });
     }
 
     return token;
@@ -150,7 +161,7 @@ export class InviteService implements IInviteService {
 
   private resendInviteonExpiretokensAsync = async (
     decodedToken: InvitePayload,
-    existingInvite: IInvite,
+    existingInvite: IInvite
   ): Promise<Boolean> => {
     if (decodedToken.status == InviteStatuses.Expired) {
       existingInvite.status = InviteStatuses.Expired;
@@ -161,7 +172,7 @@ export class InviteService implements IInviteService {
         existingInvite.listId,
         existingInvite.email,
         existingInvite.role,
-        InviteTypes.ChoreList,
+        InviteTypes.ChoreList
       );
 
       await this.inviteRepository.createInviteAsync({
@@ -181,7 +192,7 @@ export class InviteService implements IInviteService {
 
   private revokedTokenAsync = async (
     decodedToken: InvitePayload,
-    existingInvite: IInvite,
+    existingInvite: IInvite
   ): Promise<Boolean> => {
     if (decodedToken.status === InviteStatuses.Revoked) {
       console.log("Invalid token payload");

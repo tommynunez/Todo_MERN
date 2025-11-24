@@ -21,6 +21,7 @@ export interface IInviteResponse {
 }
 
 export interface IInviteAdd {
+  inviterName: string;
   email: string;
   listId: Types.ObjectId;
   role: Role;
