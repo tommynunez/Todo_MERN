@@ -5,13 +5,14 @@ import { InvitePayload } from "../interfaces/inviteInterface";
 import { InviteStatuses } from "../constants/InviteStatuses";
 import { InviteType } from "../constants/InviteType";
 
-export const generateInviteToken = (
+export const generateToken = (
   listId: Types.ObjectId,
   email: string,
   role: Role,
   type: InviteType,
+  jwtSecret?: string
 ): string => {
-  if (!process.env.NODE_INVITE_JWT_SECRET) {
+  if (!jwtSecret) {
     throw new Error("JWT secret is not defined");
   }
 
@@ -22,20 +23,23 @@ export const generateInviteToken = (
       role,
       type,
     },
-    process.env.NODE_INVITE_JWT_SECRET,
-    { expiresIn: "1h" },
+    jwtSecret,
+    { expiresIn: "1h" }
   );
 
   return token;
 };
 
-export const verifyInviteToken = (token: string): InvitePayload => {
-  if (!process.env.NODE_INVITE_JWT_SECRET) {
+export const verifyToken = (
+  token: string,
+  jwtSecret: string
+): InvitePayload => {
+  if (!jwtSecret) {
     throw new Error("JWT secret is not defined");
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.NODE_INVITE_JWT_SECRET);
+    const decoded = jwt.verify(token, jwtSecret);
     return decoded as InvitePayload;
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {

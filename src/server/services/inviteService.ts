@@ -1,5 +1,4 @@
 import { InviteRepository } from "../repositories/inviteRepository";
-import { generateInviteToken, verifyInviteToken } from "../utils/inviteToken";
 import {
   IInviteService,
   IInvite,
@@ -17,6 +16,7 @@ import ChoreListService from "./choreListService";
 import { IChoreListUpdate } from "../interfaces/choreListInterfaces";
 import { Role } from "../constants/Roles";
 import { sendEmail } from "../infrastructure/email/maileroo.wraper";
+import { generateToken, verifyToken } from "../utils/Token";
 
 export class InviteService implements IInviteService {
   constructor(
@@ -71,7 +71,10 @@ export class InviteService implements IInviteService {
       throw new Error("Invite not found");
     }
 
-    const decodedToken = await verifyInviteToken(existingInvite.token);
+    const decodedToken = await verifyToken(
+      existingInvite.token,
+      process.env.NODE_INVITE_JWT_SECRET
+    );
 
     const wasTokenResent = await this.resendInviteonExpiretokensAsync(
       decodedToken,
@@ -130,7 +133,7 @@ export class InviteService implements IInviteService {
       console.log(
         `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`
       );
-      token = await generateInviteToken(
+      token = await generateToken(
         invite.listId,
         invite.email,
         invite.role,
