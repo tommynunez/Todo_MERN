@@ -1,14 +1,14 @@
-import mongoose, { Types } from "mongoose";
+import { model, Schema } from "mongoose";
 import { IInvite } from "../interfaces/inviteInterface";
 import { Roles } from "../constants/Roles";
 import { TokenStatuses } from "../constants/TokenStatuses";
 import { InviteTypes } from "../constants/InviteType";
 
-const inviteSchema = new mongoose.Schema(
+const inviteSchema = new Schema<IInvite>(
   {
     email: { type: String, required: true },
     listId: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "ChoreList",
     },
@@ -24,4 +24,4 @@ const inviteSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const inviteModel = mongoose.model<IInvite>("Invite", inviteSchema);
+export const inviteModel = model<IInvite>("Invite", inviteSchema);

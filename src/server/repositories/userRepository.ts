@@ -8,6 +8,7 @@ export class UserRepository {
     emailAddress: string,
     password: string,
     salt: string,
+    status: string,
     token?: string,
     isEmailConfirmed: boolean = false
   ): Promise<Document | undefined> => {
@@ -16,6 +17,7 @@ export class UserRepository {
         emailAddress: emailAddress,
         password: password,
         salt: salt,
+        status: status,
         isEmailConfirmed: isEmailConfirmed,
         token: token || "",
         createdDate: Date.now(),

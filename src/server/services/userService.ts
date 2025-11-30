@@ -6,6 +6,7 @@ import { emailRegex, passwordRegex } from "../utils/regex";
 import mongoose from "mongoose";
 import { generateEmailConfirmationToken, verifyToken } from "../utils/token";
 import { sendEmail } from "../infrastructure/email/maileroo.wraper";
+import { TokenStatuses } from "../constants/TokenStatuses";
 
 export default class UserService implements IUserService {
   constructor(private userRepository: UserRepository) {}
@@ -27,6 +28,7 @@ export default class UserService implements IUserService {
       emailAddress,
       hashedPassword,
       salt,
+      TokenStatuses.Pending,
       token
     );
 
@@ -123,25 +125,86 @@ export default class UserService implements IUserService {
   > => await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
 
   confirmEmailAsync = async (token: string): Promise<boolean> => {
+    if (!token) {
+      throw new Error("Token is required.");
+    }
     const user = await this.userRepository.getUserbyTokenAsync(token);
-
     if (user) {
-      const emailAddress = user.emailAddress;
-      const decodedToken = await verifyToken(token, process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET);
-      const newToken = await generateEmailConfirmationToken(
-        emailAddress,
-        process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
-      );
-
-      
-
-      await sendEmail("CONFIRM_EMAIL", emailAddress, {
-        userName: emailAddress,
-        confirmationLink: `https://yourapp.com/confirm/email?token=${newToken}`,
-      });
-      return true;
+      const isTokenInValid = await this.handleTokenAsync(token, user);
+      if (isTokenInValid) {
+        console.log("Email confirmation token was successful");
+        user.isEmailConfirmed = true;
+        user.status = TokenStatuses.Accepted;
+        await user.save();
+        return true;
+      } else {
+        console.error("Email confirmation token was not successful");
+        return false;
+      }
     }
 
-    throw new Error("Method not implemented.");
+    return false;
+  };
+
+  private handleTokenAsync = async (
+    token: string,
+    user: IUserAccount
+  ): Promise<Boolean> => {
+    const decodedToken = await verifyToken(
+      token,
+      process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
+    );
+
+    const isExpiredemailSent = await this.handleExpiredTokenAsync(
+      decodedToken,
+      user
+    );
+
+    const isRevokedemailSent = await this.handleRevokedTokenAsync(
+      decodedToken,
+      user
+    );
+
+    if (!isExpiredemailSent || !isRevokedemailSent) {
+      user.emailConfirmationAttempts += 1;
+      await user.save();
+      return false;
+    }
+
+    return true;
+  };
+
+  private handleExpiredTokenAsync = async (
+    decodedToken: any,
+    user: IUserAccount
+  ): Promise<Boolean> => {
+    if (decodedToken.status === TokenStatuses.Expired) {
+      user.status = TokenStatuses.Expired;
+      await user.save();
+
+      const newToken = await generateEmailConfirmationToken(
+        user.emailAddress,
+        process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
+      );
+      await sendEmail("CONFIRM_EMAIL", user.emailAddress, {
+        userName: user.emailAddress,
+        confirmationLink: `https://yourapp.com/confirm/email?token=${newToken}`,
+      });
+      return false;
+    }
+    return true;
+  };
+
+  private handleRevokedTokenAsync = async (
+    decodedToken: any,
+    user: IUserAccount
+  ): Promise<Boolean> => {
+    if (decodedToken.status === TokenStatuses.Revoked) {
+      console.error("Email confirmation token has been revoked");
+      user.status = TokenStatuses.Revoked;
+      await user.save();
+      return false;
+    }
+    return true;
   };
 }

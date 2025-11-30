@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
 import { Role } from "../constants/Roles";
 import { InvitePayload } from "../interfaces/inviteInterface";
-import { InviteStatuses } from "../constants/TokenStatuses";
+import { TokenStatuses } from "../constants/TokenStatuses";
 import { InviteType } from "../constants/InviteType";
 
 export const generateInviteToken = (
@@ -59,10 +59,10 @@ export const verifyToken = (
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       console.log("The invite token has expired");
-      return { status: InviteStatuses.Expired } as InvitePayload;
+      return { status: TokenStatuses.Expired } as InvitePayload;
     } else {
       console.log("An error occurred while verifying the invite token:", error);
-      return { status: InviteStatuses.Revoked } as InvitePayload;
+      return { status: TokenStatuses.Revoked } as InvitePayload;
     }
   }
 };

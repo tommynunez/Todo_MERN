@@ -118,17 +118,14 @@ export const createAuthenticationroutes = (
 
   router.post(
     "/confirm/email",
-    (_request: Request, _response: Response, next: NextFunction) => {
-      if (_request.body.emailAddress == null || _request.body.token == null) {
-        const errmsg = "Missing emailAddress or token";
+    async (_request: Request, _response: Response, next: NextFunction) => {
+      if (_request.body.token == null) {
+        const errmsg = "Missing token";
         _response.status(400).json({ errmsg });
         return next(errmsg);
       }
 
-      _userService.confirmEmailAsync(
-        _request.body.emailAddress,
-        _request.body.token
-      );
+      await _userService.confirmEmailAsync(_request.body.token);
     }
   );
 
