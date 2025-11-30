@@ -1,15 +1,16 @@
 import mongoose, { Types } from "mongoose";
 import { Role } from "../constants/Roles";
-import { InviteStatus } from "../constants/InviteStatuses";
+import { TokenStatus } from "../constants/TokenStatuses";
 import { InviteType } from "../constants/InviteType";
 import { IService } from "./service";
 
 export interface IInvite extends mongoose.Document {
+  inviterName: string;
   email: string;
   listId: Types.ObjectId;
   role: Role;
   type: InviteType;
-  status: InviteStatus;
+  status: TokenStatus;
   token: string;
 }
 
@@ -17,7 +18,7 @@ export interface IInviteResponse {
   listId: Types.ObjectId;
   role: Role;
   type: InviteType;
-  status: InviteStatus;
+  status: TokenStatus;
 }
 
 export interface IInviteAdd {
@@ -26,7 +27,7 @@ export interface IInviteAdd {
   listId: Types.ObjectId;
   role: Role;
   type: InviteType;
-  status: InviteStatus;
+  status: TokenStatus;
   token: string;
 }
 
@@ -36,7 +37,7 @@ export interface IInviteUpdate {
 
 export interface IInviteDelete {
   id: Types.ObjectId;
-  status: InviteStatus;
+  status: TokenStatus;
   updatedAt: Date;
 }
 
@@ -45,7 +46,7 @@ export interface InvitePayload {
   email: string;
   role: Role;
   type: InviteType;
-  status: InviteStatus;
+  status: TokenStatus;
 }
 
 export interface IInviteService extends IService {

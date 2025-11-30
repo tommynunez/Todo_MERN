@@ -2,10 +2,10 @@ import jwt from "jsonwebtoken";
 import { Types } from "mongoose";
 import { Role } from "../constants/Roles";
 import { InvitePayload } from "../interfaces/inviteInterface";
-import { InviteStatuses } from "../constants/InviteStatuses";
+import { InviteStatuses } from "../constants/TokenStatuses";
 import { InviteType } from "../constants/InviteType";
 
-export const generateToken = (
+export const generateInviteToken = (
   listId: Types.ObjectId,
   email: string,
   role: Role,
@@ -16,7 +16,7 @@ export const generateToken = (
     throw new Error("JWT secret is not defined");
   }
 
-  const token = jwt.sign(
+  return jwt.sign(
     {
       listId,
       email,
@@ -26,8 +26,23 @@ export const generateToken = (
     jwtSecret,
     { expiresIn: "1h" }
   );
+};
 
-  return token;
+export const generateEmailConfirmationToken = (
+  email: string,
+  jwtSecret?: string
+): string => {
+  if (!jwtSecret) {
+    throw new Error("JWT secret is not defined");
+  }
+
+  return jwt.sign(
+    {
+      email,
+    },
+    jwtSecret,
+    { expiresIn: "1h" }
+  );
 };
 
 export const verifyToken = (

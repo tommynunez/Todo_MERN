@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   readonly NODE_MONGO_DB_URL: string;
   readonly NODE_SESSION_SECRET: string;
   readonly NODE_INVITE_JWT_SECRET: string;
+  readonly NODE_EMAIL_CONFIRMATION_JWT_SECRET: string;
   readonly NODE_INVITE_JWT_EXPIRES_IN: string;
   readonly NODE_MAILEROO_INVITE_EMAIL_TEMPLATE_ID: string;
   readonly NODE_MAILEROO_REGISTRATION_INVITE_EMAIL_TEMPLATE_ID: string;

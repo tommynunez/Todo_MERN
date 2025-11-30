@@ -3,6 +3,7 @@ import UserService from "../services/userService";
 import passport from "passport";
 import { authenticatedMiddleware } from "../middleware/authenticatedMiddleware";
 import { sendEmail } from "../infrastructure/email/maileroo.wraper";
+import { generateEmailConfirmationToken } from "../utils/token";
 
 export const createAuthenticationroutes = (
   _userService: UserService
@@ -34,10 +35,6 @@ export const createAuthenticationroutes = (
 
       if (userWasregistered) {
         _response.sendStatus(201);
-        await sendEmail("CONFIRM_EMAIL", _request.body.emailAddress, {
-          userName: _request.body.emailAddress,
-          confirmationLink: "https://yourapp.com/invite/abc123",
-        });
         return;
       } else {
         throw "User was not created";

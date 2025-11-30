@@ -4,6 +4,8 @@ import { IUserAccount, IUserService } from "../interfaces/userInterface";
 import { UserRepository } from "../repositories/userRepository";
 import { emailRegex, passwordRegex } from "../utils/regex";
 import mongoose from "mongoose";
+import { generateEmailConfirmationToken, verifyToken } from "../utils/token";
+import { sendEmail } from "../infrastructure/email/maileroo.wraper";
 
 export default class UserService implements IUserService {
   constructor(private userRepository: UserRepository) {}
@@ -20,15 +22,22 @@ export default class UserService implements IUserService {
       .pbkdf2Sync(password, salt, 100000, 64, "sha512")
       .toString("hex");
 
+    const token = await generateEmailConfirmationToken(emailAddress);
     const document = await this.userRepository.insertUseraccountAsync(
       emailAddress,
       hashedPassword,
-      salt
+      salt,
+      token
     );
 
     if (!document) {
       return false;
     }
+
+    await sendEmail("CONFIRM_EMAIL", emailAddress, {
+      userName: emailAddress,
+      confirmationLink: `https://yourapp.com/confirm/email?token=${token}`,
+    });
     return true;
   };
 
@@ -113,10 +122,26 @@ export default class UserService implements IUserService {
     | null
   > => await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
 
-  confirmEmailAsync = async (
-    emailAddress: string,
-    token: string
-  ): Promise<boolean> => {
+  confirmEmailAsync = async (token: string): Promise<boolean> => {
+    const user = await this.userRepository.getUserbyTokenAsync(token);
+
+    if (user) {
+      const emailAddress = user.emailAddress;
+      const decodedToken = await verifyToken(token, process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET);
+      const newToken = await generateEmailConfirmationToken(
+        emailAddress,
+        process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
+      );
+
+      
+
+      await sendEmail("CONFIRM_EMAIL", emailAddress, {
+        userName: emailAddress,
+        confirmationLink: `https://yourapp.com/confirm/email?token=${newToken}`,
+      });
+      return true;
+    }
+
     throw new Error("Method not implemented.");
   };
 }

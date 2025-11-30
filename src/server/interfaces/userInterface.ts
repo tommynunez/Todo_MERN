@@ -5,6 +5,8 @@ export interface IUserAccount extends mongoose.Document {
   emailAddress: string;
   password: string;
   salt: string;
+  isEmailConfirmed: boolean;
+  token: string;
   lastSignedIn: Date;
   createdDate: Date;
   updatedDate: Date;

@@ -8,12 +8,16 @@ export class UserRepository {
     emailAddress: string,
     password: string,
     salt: string,
+    token?: string,
+    isEmailConfirmed: boolean = false
   ): Promise<Document | undefined> => {
     try {
       const user = new userModel({
         emailAddress: emailAddress,
         password: password,
         salt: salt,
+        isEmailConfirmed: isEmailConfirmed,
+        token: token || "",
         createdDate: Date.now(),
         updatedDate: Date.now(),
       });
@@ -29,7 +33,7 @@ export class UserRepository {
   };
 
   getUserbyEmailAddressAsync = async (
-    emailAddress: string,
+    emailAddress: string
   ): Promise<
     | (mongoose.Document<unknown, IUserAccount> &
         IUserAccount &
@@ -46,6 +50,24 @@ export class UserRepository {
     }
   };
 
+  getUserbyTokenAsync = async (
+    token: string
+  ): Promise<
+    | (mongoose.Document<unknown, IUserAccount> &
+        IUserAccount &
+        Required<{
+          _id: unknown;
+        }>)
+    | null
+  > => {
+    try {
+      const document = await userModel.findOne({ token: token });
+      return document;
+    } catch (error: any) {
+      return null;
+    }
+  };
+
   updateLastLoggedInAsync = async (
     document:
       | (mongoose.Document<unknown, IUserAccount> &
@@ -53,7 +75,7 @@ export class UserRepository {
           Required<{
             _id: unknown;
           }>)
-      | null,
+      | null
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -62,7 +84,7 @@ export class UserRepository {
       await userModel.findByIdAndUpdate(
         { id: document.id },
         { lastSignedIn: new Date(), updatedDate: new Date() },
-        { upsert: false, new: false },
+        { upsert: false, new: false }
       );
       return true;
     } catch (error: any) {

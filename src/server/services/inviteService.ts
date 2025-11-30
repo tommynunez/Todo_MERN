@@ -9,14 +9,14 @@ import {
   IInviteResponse,
 } from "../interfaces/inviteInterface";
 import UserService from "./userService";
-import { InviteStatuses } from "../constants/InviteStatuses";
+import { TokenStatuses } from "../constants/TokenStatuses";
 import { InviteTypes } from "../constants/InviteType";
 import { Types } from "mongoose";
 import ChoreListService from "./choreListService";
 import { IChoreListUpdate } from "../interfaces/choreListInterfaces";
 import { Role } from "../constants/Roles";
 import { sendEmail } from "../infrastructure/email/maileroo.wraper";
-import { generateToken, verifyToken } from "../utils/Token";
+import { generateInviteToken, verifyToken } from "../utils/token";
 
 export class InviteService implements IInviteService {
   constructor(
@@ -91,7 +91,7 @@ export class InviteService implements IInviteService {
 
     console.log("Invite token was successful");
     // Update the invite details
-    existingInvite.status = InviteStatuses.Accepted;
+    existingInvite.status = TokenStatuses.Accepted;
 
     const wasListUpdated = await this.addInvitedUserToChoreListAsync(
       decodedToken.email,
@@ -126,14 +126,14 @@ export class InviteService implements IInviteService {
       invite.email
     );
     let token = "";
-    invite.status = InviteStatuses.Pending;
+    invite.status = TokenStatuses.Pending;
 
     //user exists, lets send the email for the chore list invite
     if (userDoc) {
       console.log(
         `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`
       );
-      token = await generateToken(
+      token = await generateInviteToken(
         invite.listId,
         invite.email,
         invite.role,
@@ -145,7 +145,7 @@ export class InviteService implements IInviteService {
       await sendEmail("INVITE_EMAIL", userDoc.emailAddress, {
         inviterName: invite.inviterName,
         recipientName: invite.email,
-        inviteLink: "https://yourapp.com/invite/abc123",
+        inviteLink: "https://yourapp.com?token=" + token,
       });
     } else {
       //user will need to signup first
@@ -155,7 +155,7 @@ export class InviteService implements IInviteService {
       await sendEmail("INVITE_REGISTRATION_EMAIL", invite.email, {
         inviterName: invite.inviterName,
         recipientName: invite.email,
-        registrationLink: "https://yourapp.com/invite/abc123",
+        registrationLink: "https://yourapp.com?token=" + token,
       });
     }
 
@@ -166,8 +166,8 @@ export class InviteService implements IInviteService {
     decodedToken: InvitePayload,
     existingInvite: IInvite
   ): Promise<Boolean> => {
-    if (decodedToken.status == InviteStatuses.Expired) {
-      existingInvite.status = InviteStatuses.Expired;
+    if (decodedToken.status == TokenStatuses.Expired) {
+      existingInvite.status = TokenStatuses.Expired;
       existingInvite.isNew = false;
       await existingInvite.save();
 
@@ -184,10 +184,15 @@ export class InviteService implements IInviteService {
         role: existingInvite.role,
         token: token,
         type: existingInvite.type,
-        status: InviteStatuses.Pending,
+        status: TokenStatuses.Pending,
       } as IInvite);
 
-      //Todo: send new token
+      //send new token
+      await sendEmail("INVITE_EMAIL", existingInvite.email, {
+        inviterName: existingInvite.inviterName,
+        recipientName: existingInvite.email,
+        inviteLink: "https://yourapp.com?token=" + token,
+      });
       return true;
     }
     return false;
@@ -197,9 +202,9 @@ export class InviteService implements IInviteService {
     decodedToken: InvitePayload,
     existingInvite: IInvite
   ): Promise<Boolean> => {
-    if (decodedToken.status === InviteStatuses.Revoked) {
+    if (decodedToken.status === TokenStatuses.Revoked) {
       console.log("Invalid token payload");
-      existingInvite.status = InviteStatuses.Revoked;
+      existingInvite.status = TokenStatuses.Revoked;
       existingInvite.isNew = false;
       await existingInvite.save();
       return false;
