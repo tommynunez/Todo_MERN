@@ -136,6 +136,10 @@ export default class UserService implements IUserService {
         user.isEmailConfirmed = true;
         user.status = TokenStatuses.Accepted;
         await user.save();
+
+        await sendEmail("WELCOME_EMAIL", user.emailAddress, {
+          userName: user.emailAddress,
+        });
         return true;
       } else {
         console.error("Email confirmation token was not successful");
