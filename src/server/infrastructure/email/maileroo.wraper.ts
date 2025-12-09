@@ -1,6 +1,7 @@
 import { MailerooClient, EmailAddress } from "maileroo-sdk";
 import emailConfig from "./email.config.json";
-
+import { loadEnv } from "../../config/environment";
+loadEnv();
 if (!process.env.NODE_MAILEROO_API_KEY) {
   throw new Error("Missing Maileroo API key");
 }

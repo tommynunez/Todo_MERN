@@ -23,7 +23,10 @@ export default class UserService implements IUserService {
       .pbkdf2Sync(password, salt, 100000, 64, "sha512")
       .toString("hex");
 
-    const token = await generateEmailConfirmationToken(emailAddress);
+    const token = await generateEmailConfirmationToken(
+      emailAddress,
+      process.env.NODE_SESSION_SECRET
+    );
     const document = await this.userRepository.insertUseraccountAsync(
       emailAddress,
       hashedPassword,
