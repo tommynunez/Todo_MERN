@@ -59,9 +59,10 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
           const user = await userService.getUserbyEmailAddressAsync(
             usernameField
           );
+
           if (!user) {
             return cb(null, false, {
-              message: "Incorrect email address or password.",
+              message: "Email address or password is incorrect!",
             });
           }
 

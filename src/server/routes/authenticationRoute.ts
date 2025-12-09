@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import UserService from "../services/userService";
+import ChorelistService from "../services/choreListService";
 import passport from "passport";
 import { authenticatedMiddleware } from "../middleware/authenticatedMiddleware";
-import { sendEmail } from "../infrastructure/email/maileroo.wraper";
-import { generateEmailConfirmationToken } from "../utils/token";
 
 export const createAuthenticationroutes = (
-  _userService: UserService
+  _userService: UserService,
+  _chorelistService: ChorelistService
 ): Router => {
   const router: Router = Router();
   /**
@@ -34,10 +34,30 @@ export const createAuthenticationroutes = (
       );
 
       if (userWasregistered) {
-        _response.sendStatus(201);
-        return;
+        const user = await _userService.getUserbyEmailAddressAsync(
+          _request.body.emailAddress
+        );
+
+        if (user && user._id) {
+          await _chorelistService.insertChorelistAsync({
+            title: "My Chore List",
+            owner: user.id,
+          });
+
+          // sign in the user and establish a session
+          _request.logIn(user, (err: any) => {
+            if (err) {
+              console.error("Auto-login after signup failed:", err);
+              return _response.status(500).json({ errmsg: "Login failed" });
+            }
+
+            return _response.sendStatus(201);
+          });
+        } else {
+          return _response.status(500).json({ errmsg: "User not found" });
+        }
       } else {
-        throw "User was not created";
+        throw new Error("User was not created");
       }
     } catch (error) {
       console.log(error);

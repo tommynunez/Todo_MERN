@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { InviteService } from "../services/inviteService";
 import { ObjectId } from "mongodb";
-import { IInvite, IInviteAdd } from "../interfaces/inviteInterface";
+import { IInviteAdd } from "../interfaces/inviteInterface";
 import { IUserAccount } from "../interfaces/userInterface";
 
 export const createInviteRoutes = (_inviteService: InviteService): Router => {

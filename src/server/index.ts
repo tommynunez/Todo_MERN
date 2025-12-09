@@ -27,6 +27,7 @@ import { InviteRepository } from "./repositories/inviteRepository";
 import { createInviteRoutes } from "./routes/inviteRoute";
 import { AuditlogService } from "./services/appliactionLogService";
 import { AuditLogRepository } from "./repositories/auditLogRepository";
+import { emailConfirmationMiddleware } from "./middleware/emailConfirmedMiddleware";
 
 const app: Express = express();
 const port: number = 3000;
@@ -109,7 +110,10 @@ app.get("/health", (_request: Request, _response: Response) => {
  */
 app.use(
   "/api/authentication",
-  createAuthenticationroutes(new UserService(new UserRepository()))
+  createAuthenticationroutes(
+    new UserService(new UserRepository()),
+    new ChoreListService(new ChoreRepository())
+  )
 );
 
 /**k
@@ -134,12 +138,17 @@ app.use(
 app.use(
   "/api/chorelists",
   authenticatedMiddleware,
+  emailConfirmationMiddleware,
   createChorelistRoutes(new ChoreListService(new ChoreRepository()))
 );
 
+/**
+ * Invite controller entrypoint using express router
+ */
 app.use(
   "/api/invite",
   authenticatedMiddleware,
+  emailConfirmationMiddleware,
   createInviteRoutes(
     new InviteService(
       new ChoreListService(new ChoreRepository()),

@@ -6,6 +6,7 @@ export const createChorelistRoutes = (
   _chorelistService: ChorelistService
 ): Router => {
   const router: Router = Router();
+
   /**
    * Get all chorelist items in a paginated manner
    * Query params:
