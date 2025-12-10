@@ -25,7 +25,7 @@ export default class UserService implements IUserService {
 
     const token = await generateEmailConfirmationToken(
       emailAddress,
-      process.env.NODE_SESSION_SECRET
+      process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
     );
     const document = await this.userRepository.insertUseraccountAsync(
       emailAddress,
