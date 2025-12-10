@@ -24,7 +24,7 @@ export const generateInviteToken = (
       type,
     },
     jwtSecret,
-    { expiresIn: "1h" }
+    { expiresIn: "48h" }
   );
 };
 
@@ -41,7 +41,7 @@ export const generateEmailConfirmationToken = (
       email,
     },
     jwtSecret,
-    { expiresIn: "1h" }
+    { expiresIn: "48h" }
   );
 };
 
