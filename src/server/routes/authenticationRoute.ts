@@ -149,5 +149,10 @@ export const createAuthenticationroutes = (
     }
   );
 
+  router.post(
+    "/forgotpassword",
+    async (_request: Request, _response: Response) => {}
+  );
+
   return router;
 };

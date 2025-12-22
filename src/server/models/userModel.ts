@@ -10,7 +10,7 @@ const userSchema = new Schema<IUserAccount>(
     token: { type: String, required: false },
     emailConfirmationAttempts: { type: Number, required: true, default: 0 },
     isEmailConfirmed: { type: Boolean, required: true, default: false },
-    status: {
+    tokenStatus: {
       type: String,
       enum: Object.values(TokenStatuses),
       required: true,

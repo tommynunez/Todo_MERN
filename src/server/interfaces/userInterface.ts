@@ -5,7 +5,7 @@ export interface IUserAccount extends mongoose.Document {
   emailAddress: string;
   password: string;
   salt: string;
-  status: string;
+  tokenStatus: string;
   emailConfirmationAttempts: number;
   isEmailConfirmed: boolean;
   token: string;
@@ -31,4 +31,11 @@ export interface IUserService extends IService {
     | null
   >;
   confirmEmailAsync: (emailAddress: string, token: string) => Promise<boolean>;
+  sendForgotpasswordEmailAsync: (emailAddress: string) => Promise<boolean>;
+  resetPasswordAsync: (
+    emailAddress: string,
+    token: string,
+    password: string,
+    confirmPassword: string
+  ) => Promise<boolean>;
 }

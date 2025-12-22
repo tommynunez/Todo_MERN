@@ -4,7 +4,7 @@ import { IUserAccount, IUserService } from "../interfaces/userInterface";
 import { UserRepository } from "../repositories/userRepository";
 import { emailRegex, passwordRegex } from "../utils/regex";
 import mongoose from "mongoose";
-import { generateEmailConfirmationToken, verifyToken } from "../utils/token";
+import { generateUserToken, verifyToken } from "../utils/token";
 import { sendEmail } from "../infrastructure/email/maileroo.wraper";
 import { TokenStatuses } from "../constants/TokenStatuses";
 
@@ -23,9 +23,9 @@ export default class UserService implements IUserService {
       .pbkdf2Sync(password, salt, 100000, 64, "sha512")
       .toString("hex");
 
-    const token = await generateEmailConfirmationToken(
+    const token = await generateUserToken(
       emailAddress,
-      process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
+      process.env.NODE_USER_JWT_SECRET
     );
     const document = await this.userRepository.insertUseraccountAsync(
       emailAddress,
@@ -137,7 +137,7 @@ export default class UserService implements IUserService {
       if (isTokenInValid) {
         console.log("Email confirmation token was successful");
         user.isEmailConfirmed = true;
-        user.status = TokenStatuses.Accepted;
+        user.tokenStatus = TokenStatuses.Accepted;
         await user.save();
 
         await sendEmail("WELCOME_EMAIL", user.emailAddress, {
@@ -154,13 +154,42 @@ export default class UserService implements IUserService {
     return false;
   };
 
+  sendForgotpasswordEmailAsync = async (
+    emailAddress: string
+  ): Promise<boolean> => {
+    const user = await this.userRepository.getUserbyEmailAddressAsync(
+      emailAddress
+    );
+    if (user) {
+      const token = generateUserToken(
+        user.emailAddress,
+        process.env.NODE_USER_JWT_SECRET
+      );
+      await sendEmail("FORGOT_PASSWORD_EMAIL", user.emailAddress, {
+        userName: user.emailAddress,
+        resetLink: `https://yourapp.com/reset/password?token=${token}`,
+      });
+      return true;
+    }
+    return false;
+  };
+
+  resetPasswordAsync = async (
+    emailAddress: string,
+    token: string,
+    password: string,
+    confirmPassword: string
+  ): Promise<boolean> => {
+    return true;
+  };
+
   private handleTokenAsync = async (
     token: string,
     user: IUserAccount
   ): Promise<Boolean> => {
     const decodedToken = await verifyToken(
       token,
-      process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
+      process.env.NODE_USER_JWT_SECRET
     );
 
     const isExpiredemailSent = await this.handleExpiredTokenAsync(
@@ -187,12 +216,12 @@ export default class UserService implements IUserService {
     user: IUserAccount
   ): Promise<Boolean> => {
     if (decodedToken.status === TokenStatuses.Expired) {
-      user.status = TokenStatuses.Expired;
+      user.tokenStatus = TokenStatuses.Expired;
       await user.save();
 
-      const newToken = await generateEmailConfirmationToken(
+      const newToken = generateUserToken(
         user.emailAddress,
-        process.env.NODE_EMAIL_CONFIRMATION_JWT_SECRET
+        process.env.NODE_USER_JWT_SECRET
       );
       await sendEmail("CONFIRM_EMAIL", user.emailAddress, {
         userName: user.emailAddress,
@@ -209,7 +238,7 @@ export default class UserService implements IUserService {
   ): Promise<Boolean> => {
     if (decodedToken.status === TokenStatuses.Revoked) {
       console.error("Email confirmation token has been revoked");
-      user.status = TokenStatuses.Revoked;
+      user.tokenStatus = TokenStatuses.Revoked;
       await user.save();
       return false;
     }

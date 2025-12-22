@@ -28,7 +28,7 @@ export const generateInviteToken = (
   );
 };
 
-export const generateEmailConfirmationToken = (
+export const generateUserToken = (
   email: string,
   jwtSecret?: string
 ): string => {
