@@ -142,6 +142,7 @@ export default class UserService implements IUserService {
 
         await sendEmail("WELCOME_EMAIL", user.emailAddress, {
           userName: user.emailAddress,
+          dashboardLink: `https://yourapp.com/dashboard`,
         });
         return true;
       } else {
