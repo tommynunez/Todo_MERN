@@ -76,6 +76,7 @@ export default class UserService implements IUserService {
       await this.userRepository.updateLastLoggedInAsync(user);
       return true;
     } else {
+      await this.userRepository.updateLoginCountAsync(user);
       return false;
     }
   };
@@ -136,9 +137,7 @@ export default class UserService implements IUserService {
       const isTokenInValid = await this.handleTokenAsync(token, user);
       if (isTokenInValid) {
         console.log("Email confirmation token was successful");
-        user.isEmailConfirmed = true;
-        user.tokenStatus = TokenStatuses.Accepted;
-        await user.save();
+        await this.userRepository.enableEmailconfirmationAsync(user);
 
         await sendEmail("WELCOME_EMAIL", user.emailAddress, {
           userName: user.emailAddress,
@@ -209,9 +208,7 @@ export default class UserService implements IUserService {
       .pbkdf2Sync(password, salt, 100000, 64, "sha512")
       .toString("hex");
 
-    user.password = hashedPassword;
-    user.salt = salt;
-    await user.save();
+    await this.userRepository.resetPasswordAsync(user, hashedPassword, salt);
 
     return [true, user];
   };
@@ -236,9 +233,10 @@ export default class UserService implements IUserService {
     );
 
     if (!isExpiredemailSent || !isRevokedemailSent) {
-      user.emailConfirmationAttempts += 1;
-      await user.save();
-      return false;
+      await this.userRepository.updateEmailconfirmedCountAsync(
+        user,
+        user.emailConfirmationAttempts + 1
+      );
     }
 
     return true;
@@ -249,8 +247,7 @@ export default class UserService implements IUserService {
     user: IUserAccount
   ): Promise<Boolean> => {
     if (decodedToken.status === TokenStatuses.Expired) {
-      user.tokenStatus = TokenStatuses.Expired;
-      await user.save();
+      await this.userRepository.revokeTokenAsync(user);
 
       const newToken = generateUserToken(
         user.emailAddress,
@@ -271,8 +268,7 @@ export default class UserService implements IUserService {
   ): Promise<Boolean> => {
     if (decodedToken.status === TokenStatuses.Revoked) {
       console.error("Email confirmation token has been revoked");
-      user.tokenStatus = TokenStatuses.Revoked;
-      await user.save();
+      await this.userRepository.revokeTokenAsync(user);
       return false;
     }
     return true;
