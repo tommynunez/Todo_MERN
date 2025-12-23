@@ -37,5 +37,5 @@ export interface IUserService extends IService {
     token: string,
     password: string,
     confirmPassword: string
-  ) => Promise<boolean>;
+  ) => Promise<[success: boolean, user: IUserAccount]>;
 }

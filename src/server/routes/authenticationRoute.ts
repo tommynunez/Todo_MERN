@@ -151,7 +151,62 @@ export const createAuthenticationroutes = (
 
   router.post(
     "/forgotpassword",
-    async (_request: Request, _response: Response) => {}
+    async (_request: Request, _response: Response) => {
+      if (_request.body.emailAddress == null) {
+        const errmsg = "Missing email address";
+        _response.status(400).json({ errmsg });
+        return;
+      }
+
+      const user = await _userService.getUserbyEmailAddressAsync(
+        _request.body.emailAddress
+      );
+      if (user == null || _request.body.emailAddress != user.emailAddress) {
+        _response.status(400).json({
+          errmsg:
+            "If an account with that email exists, you will receive an email with instructions.",
+        });
+        return;
+      }
+
+      await _userService.sendForgotpasswordEmailAsync(
+        _request.body.emailAddress
+      );
+    }
+  );
+
+  router.put(
+    "/forgotpassword",
+    async (_request: Request, _response: Response) => {
+      const query = _request.query;
+      if (query.token == null) {
+        _response.status(400).json({ errmsg: "Missing token" });
+        return;
+      }
+
+      if (_request.body.password != _request.body.confirmPassword) {
+        _response.status(400).json({ errmsg: "Passwords do not match" });
+        return;
+      }
+
+      const [isPasswordReset, user] = await _userService.resetPasswordAsync(
+        query.token.toString(),
+        _request.body.password
+      );
+
+      if (isPasswordReset) {
+        _request.logIn(user, (err: any) => {
+          if (err) {
+            console.error("Auto-login after password reset failed:", err);
+            return _response.status(500).json({ errmsg: "Login failed" });
+          }
+        });
+        _response.status(200).json({ response: true });
+      } else {
+        _response.status(400).json({ response: false });
+      }
+      return;
+    }
   );
 
   return router;

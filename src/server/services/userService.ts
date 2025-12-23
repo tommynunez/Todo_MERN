@@ -175,12 +175,45 @@ export default class UserService implements IUserService {
   };
 
   resetPasswordAsync = async (
-    emailAddress: string,
     token: string,
-    password: string,
-    confirmPassword: string
-  ): Promise<boolean> => {
-    return true;
+    password: string
+  ): Promise<[success: boolean, user: IUserAccount]> => {
+    const decodedToken = await verifyToken(
+      token,
+      process.env.NODE_USER_JWT_SECRET
+    );
+
+    const user = await this.userRepository.getUserbyEmailAddressAsync(
+      decodedToken.email
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const isExpiredemailSent = await this.handleExpiredTokenAsync(
+      decodedToken,
+      user
+    );
+    const isRevokedemailSent = await this.handleRevokedTokenAsync(
+      decodedToken,
+      user
+    );
+
+    if (!isExpiredemailSent || !isRevokedemailSent) {
+      return [false, user];
+    }
+
+    const salt = crypto.randomBytes(64).toString("hex");
+    const hashedPassword = await crypto
+      .pbkdf2Sync(password, salt, 100000, 64, "sha512")
+      .toString("hex");
+
+    user.password = hashedPassword;
+    user.salt = salt;
+    await user.save();
+
+    return [true, user];
   };
 
   private handleTokenAsync = async (
