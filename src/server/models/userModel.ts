@@ -8,13 +8,15 @@ const userSchema = new Schema<IUserAccount>(
     password: { type: String, required: true },
     salt: { type: String, required: true },
     token: { type: String, required: false },
-    emailConfirmationAttempts: { type: Number, required: true, default: 0 },
     isEmailConfirmed: { type: Boolean, required: true, default: false },
     tokenStatus: {
       type: String,
       enum: Object.values(TokenStatuses),
       required: true,
     },
+    emailConfirmationAttempts: { type: Number, required: true, default: 0 },
+    loginAttempts: { type: Number, required: true, default: 0 },
+    isLockedOut: { type: Boolean, required: true, default: false },
     lastSignedIn: { type: Date, required: false },
   },
   {

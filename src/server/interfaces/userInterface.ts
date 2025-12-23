@@ -6,9 +6,11 @@ export interface IUserAccount extends mongoose.Document {
   password: string;
   salt: string;
   tokenStatus: string;
-  emailConfirmationAttempts: number;
-  isEmailConfirmed: boolean;
   token: string;
+  isEmailConfirmed: boolean;
+  emailConfirmationAttempts: number;
+  loginAttempts: number;
+  isLockedOut: boolean;
   lastSignedIn: Date;
   createdDate: Date;
   updatedDate: Date;

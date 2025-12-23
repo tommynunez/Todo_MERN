@@ -145,7 +145,14 @@ export const createAuthenticationroutes = (
         return next(errmsg);
       }
 
-      await _userService.confirmEmailAsync(_request.body.token);
+      const isEmailConfirmed = await _userService.confirmEmailAsync(
+        _request.body.token
+      );
+      if (isEmailConfirmed) {
+        _response.status(200).json({ response: true });
+      } else {
+        _response.status(400).json({ response: false });
+      }
     }
   );
 
