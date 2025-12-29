@@ -252,4 +252,25 @@ export class UserRepository {
       return false;
     }
   };
+
+  isAccountLockedOutAsync = async (
+    document:
+      | (mongoose.Document<unknown, IUserAccount> &
+          IUserAccount &
+          Required<{
+            _id: unknown;
+          }>)
+      | null
+  ): Promise<boolean> => {
+    try {
+      if (!document) {
+        throw "document is undefined";
+      }
+      const user = await userModel.findById(document._id);
+      return user?.isLockedOut || false;
+    } catch (error: any) {
+      console.error(error);
+      return false;
+    }
+  };
 }

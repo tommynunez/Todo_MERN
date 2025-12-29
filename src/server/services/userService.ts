@@ -69,6 +69,10 @@ export default class UserService implements IUserService {
       .pbkdf2Sync(password, user?.salt || "", 100000, 64, "sha512")
       .toString("hex");
 
+    if (!user) {
+      return false;
+    }
+
     if (
       emailAddress == user?.emailAddress &&
       hashedPassword.toString() == user.password
@@ -77,6 +81,8 @@ export default class UserService implements IUserService {
       return true;
     } else {
       await this.userRepository.updateLoginCountAsync(user);
+      //check if user is locked out
+      await this.sendAccountLockedoutEmailAsync(user);
       return false;
     }
   };
@@ -272,5 +278,33 @@ export default class UserService implements IUserService {
       return false;
     }
     return true;
+  };
+
+  private sendAccountLockedoutEmailAsync = async (
+    user:
+      | (mongoose.Document<unknown, IUserAccount> &
+          IUserAccount &
+          Required<{
+            _id: unknown;
+          }>)
+      | null
+  ): Promise<void> => {
+    if (!user) {
+      return;
+    }
+
+    if (await this.userRepository.isAccountLockedOutAsync(user)) {
+      console.error("User is locked out due to multiple failed login attempts");
+
+      const token = generateUserToken(
+        user.emailAddress,
+        process.env.NODE_USER_JWT_SECRET
+      );
+
+      await sendEmail("ACCOUNT_LOCKED_EMAIL", user.emailAddress, {
+        userName: user.emailAddress,
+        resetLink: `https://yourapp.com/confirm/email?token=${token}`,
+      });
+    }
   };
 }
