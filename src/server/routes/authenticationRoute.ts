@@ -88,12 +88,12 @@ export const createAuthenticationroutes = (
       passport.authenticate(
         "local",
         { session: true },
-        (err: any, user?: Express.User | false | null) => {
+        (err: any, user?: Express.User | false | null, message?: any) => {
           if (err) {
             return _next(err);
           }
           if (!user) {
-            return _response.sendStatus(401);
+            return _response.status(401).json({ errmsg: message?.message });
           } else {
             _request.logIn(user, (err) => {
               if (err) {
@@ -161,24 +161,24 @@ export const createAuthenticationroutes = (
     async (_request: Request, _response: Response) => {
       if (_request.body.emailAddress == null) {
         const errmsg = "Missing email address";
-        _response.status(400).json({ errmsg });
-        return;
+        return _response.status(400).json({ errmsg });
       }
 
       const user = await _userService.getUserbyEmailAddressAsync(
         _request.body.emailAddress
       );
       if (user == null || _request.body.emailAddress != user.emailAddress) {
-        _response.status(400).json({
+        return _response.status(200).json({
           errmsg:
             "If an account with that email exists, you will receive an email with instructions.",
         });
-        return;
       }
 
       await _userService.sendForgotpasswordEmailAsync(
         _request.body.emailAddress
       );
+
+      return _response.status(200).json({ response: true });
     }
   );
 
@@ -187,13 +187,11 @@ export const createAuthenticationroutes = (
     async (_request: Request, _response: Response) => {
       const query = _request.query;
       if (query.token == null) {
-        _response.status(400).json({ errmsg: "Missing token" });
-        return;
+        return _response.status(400).json({ errmsg: "Missing token" });
       }
 
       if (_request.body.password != _request.body.confirmPassword) {
-        _response.status(400).json({ errmsg: "Passwords do not match" });
-        return;
+        return _response.status(400).json({ errmsg: "Passwords do not match" });
       }
 
       const [isPasswordReset, user] = await _userService.resetPasswordAsync(
@@ -208,11 +206,10 @@ export const createAuthenticationroutes = (
             return _response.status(500).json({ errmsg: "Login failed" });
           }
         });
-        _response.status(200).json({ response: true });
+        return _response.status(200).json({ response: true });
       } else {
-        _response.status(400).json({ response: false });
+        return _response.status(400).json({ response: false });
       }
-      return;
     }
   );
 

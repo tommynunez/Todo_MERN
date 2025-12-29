@@ -66,6 +66,12 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
             });
           }
 
+          if (user.isLockedOut) {
+            return cb(null, false, {
+              message: "Account is locked out. Please reset your password.",
+            });
+          }
+
           const isUserauthenticated = await userService.signin(
             usernameField,
             passwordField,
