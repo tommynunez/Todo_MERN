@@ -28,9 +28,9 @@ export class UserRepository {
       return user;
     } catch (error: any) {
       if (error.errorResponse.code === 11000) {
-        throw "Please try a different emailAddress";
+        throw new Error("Please try a different emailAddress");
       } else {
-        throw "We could not create account. Please try again.";
+        throw new Error("We could not create account. Please try again.");
       }
     }
   };
@@ -49,6 +49,7 @@ export class UserRepository {
       const document = await userModel.findOne({ emailAddress: emailAddress });
       return document;
     } catch (error: any) {
+      console.error(error);
       return null;
     }
   };
@@ -67,6 +68,7 @@ export class UserRepository {
       const document = await userModel.findOne({ token: token });
       return document;
     } catch (error: any) {
+      console.error(error);
       return null;
     }
   };
@@ -85,12 +87,17 @@ export class UserRepository {
         throw "document is undefined";
       }
       await userModel.findByIdAndUpdate(
-        { id: document.id },
-        { lastSignedIn: new Date(), updatedDate: new Date() },
-        { upsert: false, new: false }
+        document._id,
+        {
+          loginAttempts: 0,
+          lastSignedIn: new Date(),
+          updatedDate: new Date(),
+        },
+        { new: false }
       );
       return true;
     } catch (error: any) {
+      console.error(error);
       return false;
     }
   };
@@ -108,16 +115,21 @@ export class UserRepository {
       if (!document) {
         throw "document is undefined";
       }
+
+      const loginAttempts = document.loginAttempts + 1;
+
       await userModel.findByIdAndUpdate(
-        { id: document.id },
+        document._id,
         {
-          failedLoginCount: (document.loginAttempts += 1),
+          loginAttempts: loginAttempts,
+          isLockedOut: loginAttempts >= 3,
           updatedDate: new Date(),
         },
-        { upsert: false, new: false }
+        { new: false }
       );
       return true;
     } catch (error: any) {
+      console.error(error);
       return false;
     }
   };
@@ -138,16 +150,19 @@ export class UserRepository {
         throw "document is undefined";
       }
       await userModel.findByIdAndUpdate(
-        { id: document.id },
+        document._id,
         {
           password: hashedPassword,
           salt: salt,
+          loginAttempts: 0,
+          isLockedOut: false,
           updatedDate: new Date(),
         },
-        { upsert: false, new: false }
+        { new: false }
       );
       return true;
     } catch (error: any) {
+      console.error(error);
       return false;
     }
   };
@@ -167,15 +182,16 @@ export class UserRepository {
         throw "document is undefined";
       }
       await userModel.findByIdAndUpdate(
-        { id: document.id },
+        document._id,
         {
           emailConfirmationAttempts: count,
           updatedDate: new Date(),
         },
-        { upsert: false, new: false }
+        { new: false }
       );
       return true;
     } catch (error: any) {
+      console.error(error);
       return false;
     }
   };
@@ -194,16 +210,17 @@ export class UserRepository {
         throw "document is undefined";
       }
       await userModel.findByIdAndUpdate(
-        { id: document.id },
+        document._id,
         {
           isEmailConfirmed: true,
           tokenStatus: TokenStatuses.Accepted,
           updatedDate: new Date(),
         },
-        { upsert: false, new: false }
+        { new: false }
       );
       return true;
     } catch (error: any) {
+      console.error(error);
       return false;
     }
   };
@@ -222,15 +239,16 @@ export class UserRepository {
         throw "document is undefined";
       }
       await userModel.findByIdAndUpdate(
-        { id: document.id },
+        document._id,
         {
           tokenStatus: TokenStatuses.Expired,
           updatedDate: new Date(),
         },
-        { upsert: false, new: false }
+        { new: false }
       );
       return true;
     } catch (error: any) {
+      console.error(error);
       return false;
     }
   };
