@@ -6,7 +6,7 @@ import { authenticatedMiddleware } from "../middleware/authenticatedMiddleware";
 
 export const createAuthenticationroutes = (
   _userService: UserService,
-  _chorelistService: ChorelistService
+  _chorelistService: ChorelistService,
 ): Router => {
   const router: Router = Router();
   /**
@@ -30,12 +30,12 @@ export const createAuthenticationroutes = (
 
       const userWasregistered = await _userService.signup(
         _request.body.emailAddress,
-        _request.body.password
+        _request.body.password,
       );
 
       if (userWasregistered) {
         const user = await _userService.getUserbyEmailAddressAsync(
-          _request.body.emailAddress
+          _request.body.emailAddress,
         );
 
         if (user && user._id) {
@@ -85,26 +85,31 @@ export const createAuthenticationroutes = (
   router.post(
     "/signin",
     (_request: Request, _response: Response, _next: NextFunction) => {
-      passport.authenticate(
-        "local",
-        { session: true },
-        (err: any, user?: Express.User | false | null, message?: any) => {
-          if (err) {
-            return _next(err);
-          }
-          if (!user) {
-            return _response.status(401).json({ errmsg: message?.message });
-          } else {
-            _request.logIn(user, (err) => {
-              if (err) {
-                return _next(err);
-              }
-              return _response.sendStatus(200);
-            });
-          }
-        }
-      )(_request, _response, _next);
-    }
+      try {
+        passport.authenticate(
+          "local",
+          { session: true },
+          (err: any, user?: Express.User | false | null, message?: any) => {
+            if (err) {
+              return _next(err);
+            }
+            if (!user) {
+              return _response.status(401).json({ errmsg: message?.message });
+            } else {
+              _request.logIn(user, (err) => {
+                if (err) {
+                  return _next(err);
+                }
+                return _response.sendStatus(200);
+              });
+            }
+          },
+        )(_request, _response, _next);
+      } catch (error) {
+        console.error("Error during signin:", error);
+        return _response.status(500).json({ errmsg: "Internal server error" });
+      }
+    },
   );
 
   /**
@@ -124,93 +129,114 @@ export const createAuthenticationroutes = (
     "/logout",
     authenticatedMiddleware,
     (_request: Request, _response: Response, next: NextFunction) => {
-      _request.logout(function (error: any) {
-        if (error) {
-          return next(error);
-        }
-        _request.session.destroy(() => {
-          _response.clearCookie("connect.sid", { path: "/" });
-          _response.sendStatus(200);
+      try {
+        _request.logout(function (error: any) {
+          if (error) {
+            return next(error);
+          }
+          _request.session.destroy(() => {
+            _response.clearCookie("connect.sid", { path: "/" });
+            _response.sendStatus(200);
+          });
         });
-      });
-    }
+      } catch (error) {
+        console.error("Error during logout:", error);
+        next(error);
+      }
+    },
   );
 
   router.post(
     "/confirm/email",
     async (_request: Request, _response: Response, next: NextFunction) => {
-      if (_request.body.token == null) {
-        const errmsg = "Missing token";
-        _response.status(400).json({ errmsg });
-        return next(errmsg);
-      }
+      try {
+        if (_request.body.token == null) {
+          const errmsg = "Missing token";
+          _response.status(400).json({ errmsg });
+          return next(errmsg);
+        }
 
-      const isEmailConfirmed = await _userService.confirmEmailAsync(
-        _request.body.token
-      );
-      if (isEmailConfirmed) {
-        _response.status(200).json({ response: true });
-      } else {
-        _response.status(400).json({ response: false });
+        const isEmailConfirmed = await _userService.confirmEmailAsync(
+          _request.body.token,
+        );
+        if (isEmailConfirmed) {
+          _response.status(200).json({ response: true });
+        } else {
+          _response.status(400).json({ response: false });
+        }
+      } catch (error) {
+        console.error("Error during email confirmation:", error);
+        return _response.status(500).json({ errmsg: "Internal server error" });
       }
-    }
+    },
   );
 
   router.post(
     "/forgotpassword",
     async (_request: Request, _response: Response) => {
-      if (_request.body.emailAddress == null) {
-        const errmsg = "Missing email address";
-        return _response.status(400).json({ errmsg });
+      try {
+        if (_request.body.emailAddress == null) {
+          const errmsg = "Missing email address";
+          return _response.status(400).json({ errmsg });
+        }
+        const user = await _userService.getUserbyEmailAddressAsync(
+          _request.body.emailAddress,
+        );
+        if (user == null || _request.body.emailAddress != user.emailAddress) {
+          return _response.status(200).json({
+            errmsg:
+              "If an account with that email exists, you will receive an email with instructions.",
+          });
+        }
+
+        await _userService.sendForgotpasswordEmailAsync(
+          _request.body.emailAddress,
+        );
+
+        return _response.status(200).json({ response: true });
+      } catch (error) {
+        console.error(error);
+        return _response.status(500).json({ errmsg: "Internal server error" });
       }
-
-      const user = await _userService.getUserbyEmailAddressAsync(
-        _request.body.emailAddress
-      );
-      if (user == null || _request.body.emailAddress != user.emailAddress) {
-        return _response.status(200).json({
-          errmsg:
-            "If an account with that email exists, you will receive an email with instructions.",
-        });
-      }
-
-      await _userService.sendForgotpasswordEmailAsync(
-        _request.body.emailAddress
-      );
-
-      return _response.status(200).json({ response: true });
-    }
+    },
   );
 
   router.put(
     "/forgotpassword",
     async (_request: Request, _response: Response) => {
-      const query = _request.query;
-      if (query.token == null) {
-        return _response.status(400).json({ errmsg: "Missing token" });
-      }
+      try {
+        const query = _request.query;
+        if (query.token == null) {
+          return _response.status(400).json({ errmsg: "Missing token" });
+        }
 
-      if (_request.body.password != _request.body.confirmPassword) {
-        return _response.status(400).json({ errmsg: "Passwords do not match" });
-      }
+        if (_request.body.password != _request.body.confirmPassword) {
+          return _response
+            .status(400)
+            .json({ errmsg: "Passwords do not match" });
+        }
 
-      const [isPasswordReset, user] = await _userService.resetPasswordAsync(
-        query.token.toString(),
-        _request.body.password
-      );
+        const [isPasswordReset, user] = await _userService.resetPasswordAsync(
+          query.token.toString(),
+          _request.body.password,
+        );
 
-      if (isPasswordReset) {
-        _request.logIn(user, (err: any) => {
-          if (err) {
-            console.error("Auto-login after password reset failed:", err);
-            return _response.status(500).json({ errmsg: "Login failed" });
-          }
-        });
-        return _response.status(200).json({ response: true });
-      } else {
-        return _response.status(400).json({ response: false });
+        if (isPasswordReset) {
+          _request.logIn(user, (err: any) => {
+            if (err) {
+              console.error("Auto-login after password reset failed:", err);
+              return _response.status(500).json({ errmsg: "Login failed" });
+            }
+          });
+          return _response.status(200).json({ response: true });
+        } else {
+          return _response.status(400).json({ response: false });
+        }
+      } catch (error) {
+        console.error(error);
+        return _response.status(500).json({ errmsg: "Internal server error" });
       }
-    }
+    },
   );
 
   return router;

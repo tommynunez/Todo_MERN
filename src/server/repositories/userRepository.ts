@@ -11,7 +11,7 @@ export class UserRepository {
     salt: string,
     tokenStatus: string,
     token?: string,
-    isEmailConfirmed: boolean = false
+    isEmailConfirmed: boolean = false,
   ): Promise<Document | undefined> => {
     try {
       const user = new userModel({
@@ -36,7 +36,7 @@ export class UserRepository {
   };
 
   getUserbyEmailAddressAsync = async (
-    emailAddress: string
+    emailAddress: string,
   ): Promise<
     | (mongoose.Document<unknown, IUserAccount> &
         IUserAccount &
@@ -55,7 +55,7 @@ export class UserRepository {
   };
 
   getUserbyTokenAsync = async (
-    token: string
+    token: string,
   ): Promise<
     | (mongoose.Document<unknown, IUserAccount> &
         IUserAccount &
@@ -80,7 +80,7 @@ export class UserRepository {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -93,7 +93,7 @@ export class UserRepository {
           lastSignedIn: new Date(),
           updatedDate: new Date(),
         },
-        { new: false }
+        { new: false },
       );
       return true;
     } catch (error: any) {
@@ -109,7 +109,7 @@ export class UserRepository {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -125,7 +125,7 @@ export class UserRepository {
           isLockedOut: loginAttempts >= 3,
           updatedDate: new Date(),
         },
-        { new: false }
+        { new: false },
       );
       return true;
     } catch (error: any) {
@@ -143,7 +143,7 @@ export class UserRepository {
           }>)
       | null,
     hashedPassword: string,
-    salt: string
+    salt: string,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -158,7 +158,7 @@ export class UserRepository {
           isLockedOut: false,
           updatedDate: new Date(),
         },
-        { new: false }
+        { new: false },
       );
       return true;
     } catch (error: any) {
@@ -175,7 +175,7 @@ export class UserRepository {
             _id: unknown;
           }>)
       | null,
-    count: number
+    count: number,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -187,7 +187,7 @@ export class UserRepository {
           emailConfirmationAttempts: count,
           updatedDate: new Date(),
         },
-        { new: false }
+        { new: false },
       );
       return true;
     } catch (error: any) {
@@ -203,7 +203,7 @@ export class UserRepository {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -216,7 +216,7 @@ export class UserRepository {
           tokenStatus: TokenStatuses.Accepted,
           updatedDate: new Date(),
         },
-        { new: false }
+        { new: false },
       );
       return true;
     } catch (error: any) {
@@ -232,7 +232,7 @@ export class UserRepository {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -244,7 +244,7 @@ export class UserRepository {
           tokenStatus: TokenStatuses.Expired,
           updatedDate: new Date(),
         },
-        { new: false }
+        { new: false },
       );
       return true;
     } catch (error: any) {
@@ -260,7 +260,7 @@ export class UserRepository {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -268,6 +268,35 @@ export class UserRepository {
       }
       const user = await userModel.findById(document._id);
       return user?.isLockedOut || false;
+    } catch (error: any) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  updatetokenAsync = async (
+    document:
+      | (mongoose.Document<unknown, IUserAccount> &
+          IUserAccount &
+          Required<{
+            _id: unknown;
+          }>)
+      | null,
+    token: string,
+  ): Promise<boolean> => {
+    try {
+      if (!document) {
+        throw "document is undefined";
+      }
+      await userModel.findByIdAndUpdate(
+        document._id,
+        {
+          token: token,
+          updatedDate: new Date(),
+        },
+        { new: false },
+      );
+      return true;
     } catch (error: any) {
       console.error(error);
       return false;

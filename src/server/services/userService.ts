@@ -25,14 +25,14 @@ export default class UserService implements IUserService {
 
     const token = await generateUserToken(
       emailAddress,
-      process.env.NODE_USER_JWT_SECRET
+      process.env.NODE_USER_JWT_SECRET,
     );
     const document = await this.userRepository.insertUseraccountAsync(
       emailAddress,
       hashedPassword,
       salt,
       TokenStatuses.Pending,
-      token
+      token,
     );
 
     if (!document) {
@@ -62,7 +62,7 @@ export default class UserService implements IUserService {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<boolean> => {
     //const salt = crypto.randomBytes(64);
     const hashedPassword = await crypto
@@ -124,7 +124,7 @@ export default class UserService implements IUserService {
   };
 
   getUserbyEmailAddressAsync = async (
-    emailAddress: string
+    emailAddress: string,
   ): Promise<
     | (mongoose.Document<unknown, IUserAccount> &
         IUserAccount &
@@ -160,20 +160,21 @@ export default class UserService implements IUserService {
   };
 
   sendForgotpasswordEmailAsync = async (
-    emailAddress: string
+    emailAddress: string,
   ): Promise<boolean> => {
-    const user = await this.userRepository.getUserbyEmailAddressAsync(
-      emailAddress
-    );
+    const user =
+      await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
     if (user) {
       const token = generateUserToken(
         user.emailAddress,
-        process.env.NODE_USER_JWT_SECRET
+        process.env.NODE_USER_JWT_SECRET,
       );
       await sendEmail("FORGOT_PASSWORD_EMAIL", user.emailAddress, {
         userName: user.emailAddress,
         resetLink: `https://yourapp.com/reset/password?token=${token}`,
       });
+
+      await this.userRepository.updatetokenAsync(user, token);
       return true;
     }
     return false;
@@ -181,16 +182,14 @@ export default class UserService implements IUserService {
 
   resetPasswordAsync = async (
     token: string,
-    password: string
+    password: string,
   ): Promise<[success: boolean, user: IUserAccount]> => {
     const decodedToken = await verifyToken(
       token,
-      process.env.NODE_USER_JWT_SECRET
+      process.env.NODE_USER_JWT_SECRET,
     );
 
-    const user = await this.userRepository.getUserbyEmailAddressAsync(
-      decodedToken.email
-    );
+    const user = await this.userRepository.getUserbyTokenAsync(token);
 
     if (!user) {
       throw new Error("User not found");
@@ -198,11 +197,11 @@ export default class UserService implements IUserService {
 
     const isExpiredemailSent = await this.handleExpiredTokenAsync(
       decodedToken,
-      user
+      user,
     );
     const isRevokedemailSent = await this.handleRevokedTokenAsync(
       decodedToken,
-      user
+      user,
     );
 
     if (!isExpiredemailSent || !isRevokedemailSent) {
@@ -221,27 +220,27 @@ export default class UserService implements IUserService {
 
   private handleTokenAsync = async (
     token: string,
-    user: IUserAccount
+    user: IUserAccount,
   ): Promise<Boolean> => {
     const decodedToken = await verifyToken(
       token,
-      process.env.NODE_USER_JWT_SECRET
+      process.env.NODE_USER_JWT_SECRET,
     );
 
     const isExpiredemailSent = await this.handleExpiredTokenAsync(
       decodedToken,
-      user
+      user,
     );
 
     const isRevokedemailSent = await this.handleRevokedTokenAsync(
       decodedToken,
-      user
+      user,
     );
 
     if (!isExpiredemailSent || !isRevokedemailSent) {
       await this.userRepository.updateEmailconfirmedCountAsync(
         user,
-        user.emailConfirmationAttempts + 1
+        user.emailConfirmationAttempts + 1,
       );
     }
 
@@ -250,14 +249,14 @@ export default class UserService implements IUserService {
 
   private handleExpiredTokenAsync = async (
     decodedToken: any,
-    user: IUserAccount
+    user: IUserAccount,
   ): Promise<Boolean> => {
     if (decodedToken.status === TokenStatuses.Expired) {
       await this.userRepository.revokeTokenAsync(user);
 
       const newToken = generateUserToken(
         user.emailAddress,
-        process.env.NODE_USER_JWT_SECRET
+        process.env.NODE_USER_JWT_SECRET,
       );
       await sendEmail("CONFIRM_EMAIL", user.emailAddress, {
         userName: user.emailAddress,
@@ -270,7 +269,7 @@ export default class UserService implements IUserService {
 
   private handleRevokedTokenAsync = async (
     decodedToken: any,
-    user: IUserAccount
+    user: IUserAccount,
   ): Promise<Boolean> => {
     if (decodedToken.status === TokenStatuses.Revoked) {
       console.error("Email confirmation token has been revoked");
@@ -287,7 +286,7 @@ export default class UserService implements IUserService {
           Required<{
             _id: unknown;
           }>)
-      | null
+      | null,
   ): Promise<void> => {
     if (!user) {
       return;
@@ -298,7 +297,7 @@ export default class UserService implements IUserService {
 
       const token = generateUserToken(
         user.emailAddress,
-        process.env.NODE_USER_JWT_SECRET
+        process.env.NODE_USER_JWT_SECRET,
       );
 
       await sendEmail("ACCOUNT_LOCKED_EMAIL", user.emailAddress, {
