@@ -124,6 +124,11 @@ export default class UserService implements IUserService {
     return false;
   };
 
+  /**
+   * Method to get user by email address
+   * @param emailAddress
+   * @returns UserAccount or null
+   */
   getUserbyEmailAddressAsync = async (
     emailAddress: string,
   ): Promise<
@@ -135,6 +140,11 @@ export default class UserService implements IUserService {
     | null
   > => await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
 
+  /**
+   * Confirm email address token method
+   * @param token
+   * @returns Boolean
+   */
   confirmEmailAsync = async (token: string): Promise<boolean> => {
     if (!token) {
       throw new Error("Token is required.");
@@ -163,6 +173,11 @@ export default class UserService implements IUserService {
     return false;
   };
 
+  /**
+   * Send forgot password email
+   * @param emailAddress
+   * @returns Boolean
+   */
   sendForgotpasswordEmailAsync = async (
     emailAddress: string,
   ): Promise<boolean> => {
@@ -184,6 +199,12 @@ export default class UserService implements IUserService {
     return false;
   };
 
+  /**
+   * Reset user password method
+   * @param token
+   * @param password
+   * @returns [success: boolean, user: IUserAccount]
+   */
   resetPasswordAsync = async (
     token: string,
     password: string,
@@ -206,7 +227,14 @@ export default class UserService implements IUserService {
     return [false, user];
   };
   //#endregion
+
   //#region Private Methods
+  /**
+   * Handle forgot password token method
+   * @param token
+   * @param user
+   * @returns Boolean
+   */
   private handleForgotPasswordTokenAsync = async (
     token: string,
     user: IUserAccount,
@@ -241,6 +269,12 @@ export default class UserService implements IUserService {
     return true;
   };
 
+  /**
+   * Handle confirmation token method
+   * @param token
+   * @param user
+   * @returns Boolean
+   */
   private handleConfirmationtokenAsync = async (
     token: string,
     user: IUserAccount,
@@ -280,6 +314,12 @@ export default class UserService implements IUserService {
     return true;
   };
 
+  /**
+   * Handle expired token method
+   * @param decodedToken
+   * @param user
+   * @returns Boolean
+   */
   private handleExpiredTokenAsync = async (
     decodedToken: any,
     user: IUserAccount,
@@ -291,6 +331,12 @@ export default class UserService implements IUserService {
     return true;
   };
 
+  /**
+   * Handle revoked token method
+   * @param decodedToken
+   * @param user
+   * @returns Boolean
+   */
   private handleRevokedTokenAsync = async (
     decodedToken: any,
     user: IUserAccount,
@@ -303,6 +349,11 @@ export default class UserService implements IUserService {
     return true;
   };
 
+  /**
+   * Send account locked out email method
+   * @param user
+   * @returns Void
+   */
   private sendAccountLockedoutEmailAsync = async (
     user:
       | (mongoose.Document<unknown, IUserAccount> &
