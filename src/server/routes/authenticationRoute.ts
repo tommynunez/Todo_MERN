@@ -93,7 +93,7 @@ export const createAuthenticationroutes = (
             if (err) {
               return _next(err);
             }
-            if (!user) {
+                if (!user) {
               return _response.status(401).json({ errmsg: message?.message });
             } else {
               _request.logIn(user, (err) => {
