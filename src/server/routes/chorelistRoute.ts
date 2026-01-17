@@ -3,7 +3,7 @@ import ChorelistService from "../services/choreListService";
 import { IUserAccount } from "../interfaces/userInterface";
 
 export const createChorelistRoutes = (
-  _chorelistService: ChorelistService
+  _chorelistService: ChorelistService,
 ): Router => {
   const router: Router = Router();
 
@@ -18,22 +18,29 @@ export const createChorelistRoutes = (
   router.get("/", async (_request: Request, _response: Response) => {
     const { search, pageIndex, pageSize } = _request.query;
     const user = _request.user as IUserAccount;
+    try {
+      const response = await _chorelistService.getAllDocumentsAsync(
+        user.id,
+        search?.toString() || "",
+        pageIndex || 0,
+        pageSize || 10,
+      );
 
-    const response = await _chorelistService.getAllDocumentsAsync(
-      user.id,
-      search?.toString() || "",
-      pageIndex || 0,
-      pageSize || 10
-    );
-
-    if (response) {
-      return _response
-        .status(200)
-        .json({ count: response.length, data: response, pageIndex, pageSize });
-    } else {
-      return _response
-        .status(404)
-        .json({ count: 0, data: response, pageIndex, pageSize });
+      if (response) {
+        return _response.status(200).json({
+          count: response.length,
+          data: response,
+          pageIndex,
+          pageSize,
+        });
+      } else {
+        return _response
+          .status(404)
+          .json({ count: 0, data: response, pageIndex, pageSize });
+      }
+    } catch (error) {
+      console.error("Error fetching chorelist items:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 
@@ -45,16 +52,20 @@ export const createChorelistRoutes = (
    */
   router.get("/:id", async (_request: Request, _response: Response) => {
     const user = _request.user as IUserAccount;
+    try {
+      const response = await _chorelistService.getByIdDocumentsAsync(
+        _request.params.id,
+        user.id,
+      );
 
-    const response = await _chorelistService.getByIdDocumentsAsync(
-      _request.params.id,
-      user.id
-    );
-
-    if (response) {
-      return _response.status(200).json({ data: response });
-    } else {
-      return _response.status(404);
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(404);
+      }
+    } catch (error) {
+      console.error("Error fetching chorelist by ID:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 
@@ -77,16 +88,20 @@ export const createChorelistRoutes = (
    */
   router.post("/", async (_request: Request, _response: Response) => {
     const user = _request.user as IUserAccount;
+    try {
+      const response = await _chorelistService.insertChorelistAsync({
+        title: _request.body.title,
+        owner: user.id,
+      });
 
-    const response = await _chorelistService.insertChorelistAsync({
-      title: _request.body.title,
-      owner: user.id,
-    });
-
-    if (response) {
-      return _response.status(201).json({ data: response });
-    } else {
-      return _response.status(500);
+      if (response) {
+        return _response.status(201).json({ data: response });
+      } else {
+        return _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error creating chorelist:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 
@@ -102,15 +117,20 @@ export const createChorelistRoutes = (
    * Response: { response: true, status: 200 }
    */
   router.put("/:id", async (_request: Request, _response: Response) => {
-    const response = await _chorelistService.updateChorelistAsync(
-      _request.params.id?.toString(),
-      _request.body
-    );
+    try {
+      const response = await _chorelistService.updateChorelistAsync(
+        _request.params.id?.toString(),
+        _request.body,
+      );
 
-    if (response) {
-      return _response.status(200).json({ data: response });
-    } else {
-      return _response.status(500);
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error updating chorelist:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 
@@ -123,13 +143,18 @@ export const createChorelistRoutes = (
    * Response: { response: true, status: 200 }
    */
   router.delete("/:id", async (_request: Request, _response: Response) => {
-    const response = await _chorelistService.deleteChorelistAsync(
-      _request.params.id?.toString()
-    );
-    if (response) {
-      return _response.status(200).json({ data: response });
-    } else {
-      return _response.status(500);
+    try {
+      const response = await _chorelistService.deleteChorelistAsync(
+        _request.params.id?.toString(),
+      );
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error deleting chorelist:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 

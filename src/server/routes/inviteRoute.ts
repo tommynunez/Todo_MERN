@@ -8,13 +8,18 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
   const router: Router = Router();
 
   router.get("/:id", async (_request: Request, _response: Response) => {
-    const response = await _inviteService.getInvitebyIdAsync(
-      new ObjectId(_request.params.id?.toString())
-    );
-    if (response) {
-      return _response.status(200).json({ data: response });
-    } else {
-      return _response.status(404);
+    try {
+      const response = await _inviteService.getInvitebyIdAsync(
+        new ObjectId(_request.params.id?.toString()),
+      );
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(404);
+      }
+    } catch (error) {
+      console.error("Error fetching invite by ID:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 
@@ -24,33 +29,49 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
       ...(_request.body as IInviteAdd),
       inviterName: user?.emailAddress,
     };
-
-    const response = await _inviteService.createInviteAsync(inviteRequest);
-    if (response) {
-      return _response.status(200).json({ data: response });
-    } else {
-      return _response.status(500);
+    try {
+      const response = await _inviteService.createInviteAsync(inviteRequest);
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error creating invite:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 
   router.put("/:id", async (_request: Request, _response: Response) => {
-    const response = await _inviteService.inactivateInviteAsync(_request.body);
+    try {
+      const response = await _inviteService.inactivateInviteAsync(
+        _request.body,
+      );
 
-    if (response) {
-      return _response.status(200).json({ data: response });
-    } else {
-      return _response.status(500);
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error updating invite:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
 
   router.post("/validate", async (_request: Request, _response: Response) => {
-    const response = await _inviteService.verifyInviteandUpdateAsync(
-      _request.body
-    );
-    if (response) {
-      return _response.status(200).json({ data: response });
-    } else {
-      return _response.status(500);
+    try {
+      const response = await _inviteService.verifyInviteandUpdateAsync(
+        _request.body,
+      );
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error validating invite:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
     }
   });
   return router;

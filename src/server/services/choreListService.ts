@@ -8,14 +8,14 @@ import { ChoreRepository } from "../repositories/choreListRepository";
 
 export default class ChoreListService implements IChoreListService {
   constructor(private choreRepository: ChoreRepository) {}
-
+  //#region Public Methods
   /**
    * Create a new chore list document
    * @param choreList
    * @return boolean
    */
   insertChorelistAsync = async (
-    choreList: IChoreListAdd
+    choreList: IChoreListAdd,
   ): Promise<Document | boolean> => {
     return await this.choreRepository.insertChorelistAsync(choreList);
   };
@@ -29,7 +29,7 @@ export default class ChoreListService implements IChoreListService {
    */
   updateChorelistAsync = async (
     id: string,
-    choreList: IChoreListUpdate
+    choreList: IChoreListUpdate,
   ): Promise<boolean> => {
     return this.choreRepository.updateChorelistAsync(id, choreList);
   };
@@ -51,7 +51,7 @@ export default class ChoreListService implements IChoreListService {
    */
   getByIdDocumentsAsync = async (
     id: string,
-    owner: string
+    owner: string,
   ): Promise<IChoreList | null> => {
     return await this.choreRepository.getDocumentbyIdAsync(id, owner);
   };
@@ -67,13 +67,14 @@ export default class ChoreListService implements IChoreListService {
     ownerId: string,
     search: string,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ): Promise<Array<IChoreList> | null> => {
     return await this.choreRepository.getDocumentsAsync(
       ownerId,
       search,
       pageIndex,
-      pageSize
+      pageSize,
     );
   };
+  //#endregion
 }

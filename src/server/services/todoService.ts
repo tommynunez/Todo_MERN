@@ -12,9 +12,10 @@ export default class TodoService implements ITodoService {
     private todoRepository: TodoRepository,
     private choreListService: ChoreListService,
     private useraccountService: UserService,
-    private auditLogService: AuditlogService
+    private auditLogService: AuditlogService,
   ) {}
 
+  //#region Public Methods
   /**
    * Create a new todo Todo
    * @param name
@@ -24,12 +25,12 @@ export default class TodoService implements ITodoService {
     ownerId: string,
     emailAddress: string,
     name: string,
-    choreListId: string
+    choreListId: string,
   ): Promise<Document | boolean> => {
     try {
       const choreList = await this.choreListService.getByIdDocumentsAsync(
         choreListId,
-        ownerId
+        ownerId,
       );
 
       if (!choreList) {
@@ -41,9 +42,8 @@ export default class TodoService implements ITodoService {
         return false;
       }
 
-      const user = await this.useraccountService.getUserbyEmailAddressAsync(
-        emailAddress
-      );
+      const user =
+        await this.useraccountService.getUserbyEmailAddressAsync(emailAddress);
 
       if (user) {
         const userId = user.id;
@@ -74,7 +74,7 @@ export default class TodoService implements ITodoService {
   updateTodoAsync = async (
     name: string,
     emailAddress: string,
-    completed: boolean
+    completed: boolean,
   ): Promise<Document | boolean> =>
     await this.todoRepository.updateTodoAsync({
       name,
@@ -110,12 +110,13 @@ export default class TodoService implements ITodoService {
     userId: any,
     search: any,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ): Promise<Array<ITodo> | null> =>
     await this.todoRepository.getTodosAsync(
       userId,
       search,
       pageIndex,
-      pageSize
+      pageSize,
     );
+  //#endregion
 }
