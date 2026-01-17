@@ -11,6 +11,7 @@ import { TokenStatuses } from "../constants/TokenStatuses";
 export default class UserService implements IUserService {
   constructor(private userRepository: UserRepository) {}
 
+  //#region Public Methods
   /**
    * Method to signup a user
    * @param emailAddress
@@ -140,7 +141,10 @@ export default class UserService implements IUserService {
     }
     const user = await this.userRepository.getUserbyTokenAsync(token);
     if (user) {
-      const isTokenInValid = await this.handleTokenAsync(token, user);
+      const isTokenInValid = await this.handleConfirmationtokenAsync(
+        token,
+        user,
+      );
       if (isTokenInValid) {
         console.log("Email confirmation token was successful");
         await this.userRepository.enableEmailconfirmationAsync(user);
@@ -184,41 +188,60 @@ export default class UserService implements IUserService {
     token: string,
     password: string,
   ): Promise<[success: boolean, user: IUserAccount]> => {
-    const decodedToken = await verifyToken(
-      token,
-      process.env.NODE_USER_JWT_SECRET,
-    );
-
     const user = await this.userRepository.getUserbyTokenAsync(token);
 
     if (!user) {
       throw new Error("User not found");
     }
 
+    const isTokenValid = await this.handleForgotPasswordTokenAsync(token, user);
+    if (isTokenValid) {
+      const salt = crypto.randomBytes(64).toString("hex");
+      const hashedPassword = await crypto
+        .pbkdf2Sync(password, salt, 100000, 64, "sha512")
+        .toString("hex");
+      await this.userRepository.resetPasswordAsync(user, hashedPassword, salt);
+      return [true, user];
+    }
+    return [false, user];
+  };
+  //#endregion
+  //#region Private Methods
+  private handleForgotPasswordTokenAsync = async (
+    token: string,
+    user: IUserAccount,
+  ): Promise<Boolean> => {
+    const decodedToken = await verifyToken(
+      token,
+      process.env.NODE_USER_JWT_SECRET,
+    );
+
     const isExpiredemailSent = await this.handleExpiredTokenAsync(
       decodedToken,
       user,
     );
+
     const isRevokedemailSent = await this.handleRevokedTokenAsync(
       decodedToken,
       user,
     );
 
     if (!isExpiredemailSent || !isRevokedemailSent) {
-      return [false, user];
+      const newToken = generateUserToken(
+        user.emailAddress,
+        process.env.NODE_USER_JWT_SECRET,
+      );
+      await sendEmail("FORGOT_PASSWORD_EMAIL", user.emailAddress, {
+        userName: user.emailAddress,
+        resetLink: `https://yourapp.com/reset/password?token=${newToken}`,
+      });
+      return false;
     }
 
-    const salt = crypto.randomBytes(64).toString("hex");
-    const hashedPassword = await crypto
-      .pbkdf2Sync(password, salt, 100000, 64, "sha512")
-      .toString("hex");
-
-    await this.userRepository.resetPasswordAsync(user, hashedPassword, salt);
-
-    return [true, user];
+    return true;
   };
 
-  private handleTokenAsync = async (
+  private handleConfirmationtokenAsync = async (
     token: string,
     user: IUserAccount,
   ): Promise<Boolean> => {
@@ -242,6 +265,16 @@ export default class UserService implements IUserService {
         user,
         user.emailConfirmationAttempts + 1,
       );
+
+      const newToken = generateUserToken(
+        user.emailAddress,
+        process.env.NODE_USER_JWT_SECRET,
+      );
+      await sendEmail("CONFIRM_EMAIL", user.emailAddress, {
+        userName: user.emailAddress,
+        confirmationLink: `https://yourapp.com/confirm/email?token=${newToken}`,
+      });
+      return false;
     }
 
     return true;
@@ -253,15 +286,6 @@ export default class UserService implements IUserService {
   ): Promise<Boolean> => {
     if (decodedToken.status === TokenStatuses.Expired) {
       await this.userRepository.revokeTokenAsync(user);
-
-      const newToken = generateUserToken(
-        user.emailAddress,
-        process.env.NODE_USER_JWT_SECRET,
-      );
-      await sendEmail("CONFIRM_EMAIL", user.emailAddress, {
-        userName: user.emailAddress,
-        confirmationLink: `https://yourapp.com/confirm/email?token=${newToken}`,
-      });
       return false;
     }
     return true;
@@ -306,4 +330,5 @@ export default class UserService implements IUserService {
       });
     }
   };
+  //#endregion
 }
