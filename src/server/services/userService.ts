@@ -263,6 +263,7 @@ export default class UserService implements IUserService {
         userName: user.emailAddress,
         resetLink: `https://yourapp.com/reset/password?token=${newToken}`,
       });
+      await this.userRepository.updatetokenAsync(user, newToken);
       return false;
     }
 
