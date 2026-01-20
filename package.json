@@ -16,6 +16,9 @@
     "pretty": "npx prettier --write \"src/**/*.{ts,js,json}\""
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.7",
     "@rollup/plugin-replace": "^5.0.7",
     "@types/express-validator": "^2.20.33",
     "@types/mongoose": "^5.11.97",
@@ -38,7 +41,7 @@
     "pbkdf2": "^3.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "ts-node": "^10.9.2",
+    "ts-node": "^1.7.1",
     "tsconfig-paths": "^4.2.0",
     "vite-plugin-env-compatible": "^2.0.1",
     "vite-plugin-svgr": "^4.3.0"
@@ -60,8 +63,8 @@
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "jest": "^30.2.0",
-    "ts-jest": "^29.4.5",
+    "jest": "^26.5.3",
+    "ts-jest": "^26.5.6",
     "tsx": "^4.7.1",
     "typescript": "^5.2.2",
     "vite": "^7.1.7",
