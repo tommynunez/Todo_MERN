@@ -93,7 +93,7 @@ export const createAuthenticationroutes = (
             if (err) {
               return _next(err);
             }
-                if (!user) {
+            if (!user) {
               return _response.status(401).json({ errmsg: message?.message });
             } else {
               _request.logIn(user, (err) => {
@@ -236,6 +236,15 @@ export const createAuthenticationroutes = (
         console.error(error);
         return _response.status(500).json({ errmsg: "Internal server error" });
       }
+    },
+  );
+
+  router.get(
+    "/checkauth",
+    authenticatedMiddleware,
+    async (_request: Request, _response: Response) => {
+      console.log("User is authenticated", _request.user);
+      return _response.status(200).json({ response: true });
     },
   );
 
