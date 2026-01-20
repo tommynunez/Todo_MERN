@@ -1,0 +1,44 @@
+{
+  "INVITE_EMAIL": {
+    "id": "3702",
+    "fromEmail": "noreply@choremate.tonnect.app",
+    "fromDisplayName": "ChoreMate",
+    "subject": "You're invited to join ChoreMate!",
+    "requiredFields": ["recipientName", "inviterName", "inviteLink"]
+  },
+  "INVITE_REGISTRATION_EMAIL": {
+    "id": "3705",
+    "fromEmail": "noreply@choremate.tonnect.app",
+    "fromDisplayName": "ChoreMate",
+    "subject": "Complete your ChoreMate registration!",
+    "requiredFields": ["recipientName", "inviterName", "registrationLink"]
+  },
+  "CONFIRM_EMAIL": {
+    "id": "3708",
+    "fromEmail": "noreply@choremate.tonnect.app",
+    "fromDisplayName": "ChoreMate",
+    "subject": "Please confirm your email address",
+    "requiredFields": ["userName", "confirmationLink"]
+  },
+  "FORGOT_PASSWORD_EMAIL": {
+    "id": "3711",
+    "fromEmail": "noreply@choremate.tonnect.app",
+    "fromDisplayName": "ChoreMate",
+    "subject": "Reset your ChoreMate password",
+    "requiredFields": ["userName", "resetLink"]
+  },
+  "ACCOUNT_LOCKED_EMAIL": {
+    "id": "3714",
+    "fromEmail": "noreply@choremate.tonnect.app",
+    "fromDisplayName": "ChoreMate",
+    "subject": "Your ChoreMate account has been locked",
+    "requiredFields": ["userName", "resetLink"]
+  },
+  "WELCOME_EMAIL": {
+    "id": "3717",
+    "fromEmail": "noreply@choremate.tonnect.app",
+    "fromDisplayName": "ChoreMate",
+    "subject": "Welcome to ChoreMate!",
+    "requiredFields": ["userName", "dashboardLink"]
+  }
+}

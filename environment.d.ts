@@ -1,11 +1,22 @@
 declare global {
-	namespace NodeJS {
-		interface ProcessEnv {
-			NODE_MONGO_DB_URL: string;
-			NODE_ENV: 'development' | 'production' | 'local';
-			NODE_SESSION_SECRET: string;
-			NODE_USE_CSP?: true | false;
-		}
-	}
+  namespace NodeJS {
+    interface ProcessEnv {
+      NODE_MONGO_DB_URL: string;
+      NODE_ENV: "development" | "production" | "local";
+      NODE_SESSION_SECRET: string;
+      NODE_INVITE_JWT_SECRET: string;
+      NODE_USER_JWT_SECRET: string;
+      NODE_INVITE_JWT_EXPIRES_IN: string;
+      NODE_MAILEROO_INVITE_EMAIL_TEMPLATE_ID: string;
+      NODE_MAILEROO_REGISTRATION_INVITE_EMAIL_TEMPLATE_ID: string;
+      NODE_MAILEROO_CONFIRM_EMAIL_TEMPLATE_ID: string;
+      NODE_MAILEROO_FORGOT_PASSWORD_EMAIL_TEMPLATE_ID: string;
+      NODE_MAILEROO_ACCOUNT_LOCKED_EMAIL_TEMPLATE_ID: string;
+      NODE_MAILEROO_WELCOME_EMAIL_TEMPLATE_ID: string;
+      NODE_MAILEROO_API_KEY: string;
+      NODE_MAILEROO_API_URL: strin;
+      NODE_USE_CSP?: true | false;
+    }
+  }
 }
 export {};

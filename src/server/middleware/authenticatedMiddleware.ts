@@ -22,4 +22,4 @@ export const authenticatedMiddleware = (
     return _next();
   }
   _response.sendStatus(401);
-}
+};

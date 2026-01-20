@@ -1,28 +1,49 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from "mongoose";
+import { IService } from "./service";
+
+export interface IComplete extends mongoose.Document {
+  by: string;
+  isCompleted: boolean;
+  completedDate: Date;
+}
 
 export interface ITodo extends mongoose.Document {
-	name: string;
-	completed: boolean;
-	completedDate: Date;
+  userId: Types.ObjectId;
+  choreListId: Types.ObjectId;
+  name: string;
+  complete: [IComplete];
 }
 
 export interface ITodoAdd {
-	name: string;
+  userId: Types.ObjectId;
+  name: string;
+  choreListId: Types.ObjectId;
 }
 
 export interface ITodoUpdate {
-	name: string;
-	completed: boolean;
+  emailAddress: string;
+  name: string;
+  completed: boolean;
 }
 
-export interface ITodoService {
-	insertDocumentAsync: (name: string) => Promise<boolean>;
-	updateDocumentAsync: (name: string, completed: boolean) => Promise<boolean>;
-	deleteDocumentAsync: (id: number) => Promise<boolean>;
-	getByIdDocumentsAsync: (name: string) => Promise<ITodo | null>;
-	getAllDocumentsAsync: (
-		search: any,
-		pageIndex: any,
-		pageSize: any
-	) => Promise<Array<ITodo> | null>;
+export interface ITodoService extends IService {
+  insertTodoAsync: (
+    ownerId: string,
+    emailAddress: string,
+    name: string,
+    choreListId: string
+  ) => Promise<Document | boolean>;
+  updateTodoAsync: (
+    emailAddress: string,
+    name: string,
+    completed: boolean
+  ) => Promise<Document | boolean>;
+  deleteTodoAsync: (id: number) => Promise<boolean>;
+  getByIdTodosAsync: (name: string) => Promise<ITodo | null>;
+  getAllTodosAsync: (
+    userId: any,
+    search: any,
+    pageIndex: any,
+    pageSize: any
+  ) => Promise<Array<ITodo> | null>;
 }

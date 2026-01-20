@@ -1,119 +1,188 @@
-import { Request, Response, Router } from 'express';
-import TodoService from '../services/todoService';
+import { Request, Response, Router } from "express";
+import TodoService from "../services/todoService";
+import mongoose from "mongoose";
+import { IUserAccount } from "../interfaces/userInterface";
 
-const router: Router = Router();
-const _todoService = new TodoService();
+export const createTodoroutes = (_todoService: TodoService): Router => {
+  const router: Router = Router();
+  /**
+   * Get all todo items in a paginated manner
+   *
+   * Query params:
+   * search: string - search term to filter todo items by name
+   * pageIndex: number - page index for pagination (default: 0)
+   * pageSize: number - number of items per page (default: 10)
+   * Returns: 200 with list of todo items or 500 on error
+   * Example: GET /api/todos?search=task&pageIndex=0&pageSize=10
+   * Response: { response: Array<ITodo>, status: 200 }
+   * Get a single todo item by ID
+   * Path param:
+   * id: string - ID of the todo item
+   * Returns: 200 with the todo item or 500 on error
+   * Example: GET /api/todos/123
+   * Response: { response: ITodo, status: 200 }
+   */
+  router.get("/", async (_request: Request, _response: Response) => {
+    const { search, pageIndex, pageSize } = _request.query;
+    try {
+      const response = await _todoService.getAllTodosAsync(
+        (_request.user as IUserAccount).id,
+        search,
+        pageIndex,
+        pageSize,
+      );
 
-/**
- * Get all todo items in a paginated manner
- * 
- * Query params:
- * search: string - search term to filter todo items by name
- * pageIndex: number - page index for pagination (default: 0)
- * pageSize: number - number of items per page (default: 10)
- * Returns: 200 with list of todo items or 500 on error
- * Example: GET /api/todos?search=task&pageIndex=0&pageSize=10
- * Response: { response: Array<ITodo>, status: 200 }
- * Get a single todo item by ID
- * Path param:
- * id: string - ID of the todo item
- * Returns: 200 with the todo item or 500 on error
- * Example: GET /api/todos/123
- * Response: { response: ITodo, status: 200 }
- */
-router.get('/', async (_request: Request, _response: Response,) => {
-	try {
-		const { search, pageIndex, pageSize } = _request.query;
+      if (response) {
+        return _response.status(200).location(`/todo/`).json({
+          count: response.length,
+          data: response,
+          pageIndex,
+          pageSize,
+        });
+      } else {
+        return _response
+          .status(404)
+          .json({ count: 0, data: response, pageIndex, pageSize });
+      }
+    } catch (error) {
+      console.error("Error fetching todo items:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
+    }
+  });
 
-		const response = await _todoService.getAllDocumentsAsync(
-			search,
-			pageIndex,
-			pageSize
-		);
-		response
-			? _response.status(200).json({ response, status: 200 })
-			: _response.sendStatus(500);
-	} catch (error) {
-		console.log(error);
-	}
-});
+  /**
+   * Get a single todo item by ID
+   * Path param:
+   * id: string - ID of the todo item
+   * Returns: 200 with the todo item or 500 on error
+   * Example: GET /api/todos/123
+   * Response: { response: ITodo, status: 200 }
+   * Get a single todo item by ID
+   * Path param:
+   * 	id: string - ID of the todo item
+   * Returns: 200 with the todo item or 500 on error
+   * Example: GET /api/todos/123
+   * Response: { response: ITodo, status: 200 }
+   */
+  router.get("/:id", async (_request: Request, _response: Response) => {
+    try {
+      const response = await _todoService.getByIdTodosAsync(
+        _request.params.id?.toString(),
+      );
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        _response.status(404);
+      }
+    } catch (error) {
+      console.error("Error fetching todo item by ID:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
+    }
+  });
 
-/**
- * Get a single todo item by ID
- * Path param:
- * id: string - ID of the todo item
- * Returns: 200 with the todo item or 500 on error
- * Example: GET /api/todos/123
- * Response: { response: ITodo, status: 200 }
- * Get a single todo item by ID
- * Path param:
- * 	id: string - ID of the todo item
- * Returns: 200 with the todo item or 500 on error
- * Example: GET /api/todos/123
- * Response: { response: ITodo, status: 200 }
- */
-router.get('/:id', async (_request: Request, _response: Response) => {
-	const response = await _todoService.getByIdDocumentsAsync(
-		_request.params.id?.toString()
-	);
-	response
-		? _response.status(200).json({ response, status: 2000 })
-		: _response.sendStatus(500);
-});
+  /**
+   * Create a new todo item
+   * Body params:
+   * name: string - name of the todo item
+   * 	Returns: 201 on success or 500 on error
+   * Example: POST /api/todos
+   * Body: { name: "New Task" }
+   * Response: { response: true, status: 201 }
+   */
+  router.post("/", async (_request: Request, _response: Response) => {
+    if (!_request.body.choreListId) {
+      _response
+        .status(400)
+        .json({ response: "A todo needs to be assigned to a chore list" });
+    }
 
-/**
- * Create a new todo item
- * Body params:
- * name: string - name of the todo item
- * 	Returns: 201 on success or 500 on error
- * Example: POST /api/todos
- * Body: { name: "New Task" }
- * Response: { response: true, status: 201 }
-*/
-router.post('/', async (_request: Request, _response: Response) => {
-	const response = await _todoService.insertDocumentAsync(_request.body.name);
-	response
-		? _response.status(201).json({ response: response, status: 201 })
-		: _response.sendStatus(500);
-});
+    if (mongoose.isValidObjectId(_request.body.choreListId) == false) {
+      return _response
+        .status(400)
+        .json({ response: "choreListId is not valid" })
+        .send();
+    }
 
-/**
- * Update an existing todo item
- * Path param:
- * id: string - ID of the todo item to update
- * Body params:
- * name: string - new name of the todo item
- * completed: boolean - completion status of the todo item
- * Returns: 200 on success or 500 on error
- * Example: PUT /api/todos/123
- * Body: { name: "Updated Task", completed: true }
- * Response: { response: true, status: 200 }
- */
-router.put('/:id', async (_request: Request, _response: Response) => {
-	const response = await _todoService.updateDocumentAsync(
-		_request.body.name,
-		_request.body
-	);
-	response
-		? _response.status(200).json({ response: response, status: 200 })
-		: _response.sendStatus(500);
-});
+    try {
+      const user = _request.user as IUserAccount;
+      const response = await _todoService.insertTodoAsync(
+        user.id,
+        user.emailAddress,
+        _request.body.name,
+        _request.body.choreListId,
+      );
 
-/**
- * Delete a todo item by ID
- * Path param:
- * id: string - ID of the todo item to delete
- * Returns: 200 on success or 500 on error
- * Example: DELETE /api/todos/123
- * Response: { response: true, status: 200 }
- */
-router.delete('/:id', async (_request: Request, _response: Response) => {
-	const response = await _todoService.deleteDocumentAsync(
-		parseInt(_request.params.id)
-	);
-	response
-		? _response.status(200).json({ response: response, status: 200 })
-		: _response.sendStatus(500);
-});
+      if (response) {
+        return (
+          _response
+            .status(201)
+            //.location(`/todo/${chore._id}`)
+            .json({ status: response })
+        );
+      } else {
+        return _response.status(500).json({ status: response });
+      }
+    } catch (error) {
+      console.error("Error creating todo item:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
+    }
+  });
 
-export default router;
+  /**
+   * Update an existing todo item
+   * Path param:
+   * id: string - ID of the todo item to update
+   * Body params:
+   * name: string - new name of the todo item
+   * completed: boolean - completion status of the todo item
+   * Returns: 200 on success or 500 on error
+   * Example: PUT /api/todos/123
+   * Body: { name: "Updated Task", completed: true }
+   * Response: { response: true, status: 200 }
+   */
+  router.put("/:id", async (_request: Request, _response: Response) => {
+    try {
+      const response = await _todoService.updateTodoAsync(
+        "",
+        _request.body.name,
+        _request.body,
+      );
+
+      if (response) {
+        return _response.status(200).json({ data: response });
+      } else {
+        return _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error updating todo item:", error);
+      return _response.status(500).json({ errmsg: "Internal server error" });
+    }
+  });
+
+  /**
+   * Delete a todo item by ID
+   * Path param:
+   * id: string - ID of the todo item to delete
+   * Returns: 200 on success or 500 on error
+   * Example: DELETE /api/todos/123
+   * Response: { response: true, status: 200 }
+   */
+  router.delete("/:id", async (_request: Request, _response: Response) => {
+    try {
+      const response = await _todoService.deleteTodoAsync(
+        parseInt(_request.params.id),
+      );
+
+      if (response) {
+        _response.status(200).json({ data: response });
+      } else {
+        _response.status(500);
+      }
+    } catch (error) {
+      console.error("Error deleting todo item:", error);
+      _response.status(500).json({ errmsg: "Internal server error" });
+    }
+  });
+
+  return router;
+};

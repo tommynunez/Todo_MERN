@@ -1,57 +1,122 @@
-import {
-	deleteDocumentAsync,
-	getDocumentbyIdAsync,
-	getDocumentsAsync,
-	insertDocumentAsync,
-	updateDocumentAsync,
-} from '../models/todoModel';
-import { ITodo, ITodoService } from '../interfaces/todoInterface';
+import { TodoRepository } from "../repositories/todoRepository";
+import { ITodo, ITodoService, ITodoUpdate } from "../interfaces/todoInterface";
+import ChoreListService from "./choreListService";
+import { AuditlogService } from "./appliactionLogService";
+import UserService from "./userService";
+import { IAuditLogMessage } from "../interfaces/auditLogInterface";
+import { SeverityLevel } from "mongodb";
+import { Types } from "mongoose";
 
 export default class TodoService implements ITodoService {
-	constructor() {}
+  constructor(
+    private todoRepository: TodoRepository,
+    private choreListService: ChoreListService,
+    private useraccountService: UserService,
+    private auditLogService: AuditlogService,
+  ) {}
 
-	/**
-	 * Create a new todo document
-	 * @param name 
-	 * @returns boolean
-	 */
-	insertDocumentAsync = async (name: string): Promise<boolean> => await insertDocumentAsync({ name });
+  //#region Public Methods
+  /**
+   * Create a new todo Todo
+   * @param name
+   * @returns boolean
+   */
+  insertTodoAsync = async (
+    ownerId: string,
+    emailAddress: string,
+    name: string,
+    choreListId: string,
+  ): Promise<Document | boolean> => {
+    try {
+      const choreList = await this.choreListService.getByIdDocumentsAsync(
+        choreListId,
+        ownerId,
+      );
 
-	/**
-	 * Update a todo document 
-	 * @param name 
-	 * @param completed 
-	 * @returns 
-	 */
-	updateDocumentAsync = async (
-		name: string,
-		completed: boolean
-	): Promise<boolean> => await updateDocumentAsync({ name, completed });
+      if (!choreList) {
+        /*this.auditLogService.warn({
+          severity: SeverityLevel.WARNING,
+          message:
+            "The chore list doesn't exist, request could not be completed.",
+        });*/
+        return false;
+      }
 
-	/**
-	 * Delete a todo document
-	 * @param id 
-	 * @returns 
-	 */
-	deleteDocumentAsync = async (id: number): Promise<boolean> => await deleteDocumentAsync(id);
+      const user =
+        await this.useraccountService.getUserbyEmailAddressAsync(emailAddress);
 
-	/**
-	 * Get a todo document by id
-	 * @param id 
-	 * @returns 
-	 */
-	getByIdDocumentsAsync = async (id?: string): Promise<ITodo | null> => await getDocumentbyIdAsync(id);
-	
-	/**
-	 * Get all todo documents with pagination
-	 * @param search 
-	 * @param pageIndex 
-	 * @param pageSize 
-	 * @returns 
-	 */
-	getAllDocumentsAsync = async (
-		search: any,
-		pageIndex: any,
-		pageSize: any
-	): Promise<Array<ITodo> | null> => await getDocumentsAsync(search, pageIndex, pageSize);
+      if (user) {
+        const userId = user.id;
+        await this.todoRepository.insertTodoAsync({
+          userId,
+          name,
+          choreListId: new Types.ObjectId(choreListId),
+        });
+      }
+
+      this.auditLogService.log({
+        message: `User ${user?.id.toString()}`,
+        severity: SeverityLevel.INFORMATIONAL,
+      } as IAuditLogMessage);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  /**
+   * Update a todo Todo
+   * @param name
+   * @param completed
+   * @returns
+   */
+  updateTodoAsync = async (
+    name: string,
+    emailAddress: string,
+    completed: boolean,
+  ): Promise<Document | boolean> =>
+    await this.todoRepository.updateTodoAsync({
+      name,
+      emailAddress,
+      completed,
+    } as ITodoUpdate);
+
+  /**
+   * Delete a todo Todo
+   * @param id
+   * @returns
+   */
+  deleteTodoAsync = async (id: number): Promise<boolean> =>
+    await this.todoRepository.deleteTodoAsync(id);
+
+  /**
+   * Get a todo Todo by id
+   * @param id
+   * @returns
+   */
+  getByIdTodosAsync = async (id?: string): Promise<ITodo | null> =>
+    await this.todoRepository.getTodobyIdAsync(id);
+
+  /**
+   * Get all todo Todos with pagination
+   * @param ownerId
+   * @param search
+   * @param pageIndex
+   * @param pageSize
+   * @returns
+   */
+  getAllTodosAsync = async (
+    userId: any,
+    search: any,
+    pageIndex: any,
+    pageSize: any,
+  ): Promise<Array<ITodo> | null> =>
+    await this.todoRepository.getTodosAsync(
+      userId,
+      search,
+      pageIndex,
+      pageSize,
+    );
+  //#endregion
 }
