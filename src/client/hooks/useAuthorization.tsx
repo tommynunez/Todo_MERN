@@ -22,6 +22,7 @@ export const useAuthorization = () => {
       if (response) {
         //todo: maybe set a token or something
         console.log("Signup successful", response);
+        setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
       }

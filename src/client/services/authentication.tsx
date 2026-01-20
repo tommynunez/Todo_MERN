@@ -1,30 +1,37 @@
 import axios from "axios";
 
+interface IAuthenticationResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
+
 export interface IAuthenticationService {
-  login(email: string, password: string): Promise<boolean>;
+  login(email: string, password: string): Promise<IAuthenticationResponse>;
   signup(
     email: string,
     password: string,
     confirmPassword: string,
-  ): Promise<boolean>;
+  ): Promise<IAuthenticationResponse>;
   logout(): Promise<void>;
-  checkAuth(): Promise<boolean>;
-  resetPassword(email: string): Promise<boolean>;
+  checkAuth(): Promise<IAuthenticationResponse>;
+  resetPassword(email: string): Promise<IAuthenticationResponse>;
   confirmPasswordReset(
     token: string,
     newPassword: string,
     confirmPassword: string,
-  ): Promise<boolean>;
-  confirmEmail(token: string): Promise<boolean>;
+  ): Promise<IAuthenticationResponse>;
+  confirmEmail(token: string): Promise<IAuthenticationResponse>;
 }
 
 export default class AuthenticationService implements IAuthenticationService {
   constructor() {}
+
   async signup(
     email: string,
     password: string,
     confirmPassword: string,
-  ): Promise<boolean> {
+  ): Promise<IAuthenticationResponse> {
     try {
       const response = await axios.post("/api/auth/signup", {
         headers: { "Content-Type": "application/json" },
@@ -34,7 +41,30 @@ export default class AuthenticationService implements IAuthenticationService {
           confirmPassword,
         }),
       });
-      return response.status === 200;
+
+      if (response.status === 201) {
+        console.log("Signup response data:", response.data);
+        return {
+          success: true,
+          message: "Signup successful",
+        };
+      }
+
+      if (response.status === 400) {
+        console.error("Signup error response:", response.data);
+        return {
+          success: false,
+          error: response.data.message || "Signup failed",
+        };
+      }
+
+      if (response.status === 500) {
+        console.error("Signup server error response:", response.data);
+        return {
+          success: false,
+          error: response.data.errmsg || "Server error during signup",
+        };
+      }
     } catch (error) {
       throw new Error(`Signup failed: ${error}`);
     }
