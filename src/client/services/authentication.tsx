@@ -1,7 +1,7 @@
 import axios from "axios";
 import { response } from "express";
 
-interface IAuthenticationResponse {
+export interface IAuthenticationResponse {
   success: boolean;
   message?: string;
   error?: string;
@@ -16,8 +16,8 @@ export interface IAuthenticationService {
   ): Promise<IAuthenticationResponse>;
   logout(): Promise<IAuthenticationResponse>;
   checkAuth(): Promise<IAuthenticationResponse>;
-  resetPassword(email: string): Promise<IAuthenticationResponse>;
-  confirmPasswordReset(
+  forgotPassword(email: string): Promise<IAuthenticationResponse>;
+  resetPassword(
     token: string,
     newPassword: string,
     confirmPassword: string,
@@ -151,7 +151,7 @@ export default class AuthenticationService implements IAuthenticationService {
     }
   }
 
-  async resetPassword(email: string): Promise<IAuthenticationResponse> {
+  async forgotPassword(email: string): Promise<IAuthenticationResponse> {
     try {
       const response = await axiosInstance.post("/api/auth/forgotpassword", {
         email,
@@ -179,7 +179,7 @@ export default class AuthenticationService implements IAuthenticationService {
     }
   }
 
-  async confirmPasswordReset(
+  async resetPassword(
     token: string,
     newPassword: string,
     confirmPassword: string,
