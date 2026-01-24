@@ -95,6 +95,12 @@ export const createAuthenticationroutes = (
             }
             if (!user) {
               return _response.status(401).json({ errmsg: message?.message });
+            } else if (
+              message &&
+              message.message ==
+                "Account is locked out. Please reset your password."
+            ) {
+              return _response.status(423).json({ errmsg: message?.message });
             } else {
               _request.logIn(user, (err) => {
                 if (err) {
@@ -162,7 +168,7 @@ export const createAuthenticationroutes = (
         if (isEmailConfirmed) {
           _response.status(200).json({ response: true });
         } else {
-          _response.status(400).json({ response: false });
+          _response.status(422).json({ response: false });
         }
       } catch (error) {
         console.error("Error during email confirmation:", error);
@@ -212,7 +218,7 @@ export const createAuthenticationroutes = (
 
         if (_request.body.password != _request.body.confirmPassword) {
           return _response
-            .status(400)
+            .status(422)
             .json({ errmsg: "Passwords do not match" });
         }
 
@@ -227,8 +233,8 @@ export const createAuthenticationroutes = (
               console.error("Auto-login after password reset failed:", err);
               return _response.status(500).json({ errmsg: "Login failed" });
             }
+            return _response.status(200).json({ response: true });
           });
-          return _response.status(200).json({ response: true });
         } else {
           return _response.status(400).json({ response: false });
         }
@@ -244,7 +250,11 @@ export const createAuthenticationroutes = (
     authenticatedMiddleware,
     async (_request: Request, _response: Response) => {
       console.log("User is authenticated", _request.user);
-      return _response.status(200).json({ response: true });
+      if (_request.user) {
+        return _response.status(200).json({ response: true });
+      } else {
+        return _response.status(401).json({ response: false });
+      }
     },
   );
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { response } from "express";
 
 interface IAuthenticationResponse {
   success: boolean;
@@ -13,7 +14,7 @@ export interface IAuthenticationService {
     password: string,
     confirmPassword: string,
   ): Promise<IAuthenticationResponse>;
-  logout(): Promise<void>;
+  logout(): Promise<IAuthenticationResponse>;
   checkAuth(): Promise<IAuthenticationResponse>;
   resetPassword(email: string): Promise<IAuthenticationResponse>;
   confirmPasswordReset(
@@ -24,9 +25,13 @@ export interface IAuthenticationService {
   confirmEmail(token: string): Promise<IAuthenticationResponse>;
 }
 
+const axiosInstance = axios.create({
+  baseURL: "/api/auth",
+  headers: { "Content-Type": "application/json" },
+});
+
 export default class AuthenticationService implements IAuthenticationService {
   constructor() {}
-
   async signup(
     email: string,
     password: string,
@@ -49,65 +54,128 @@ export default class AuthenticationService implements IAuthenticationService {
           message: "Signup successful",
         };
       }
+      return { success: false, error: "Unexpected response status" };
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const { response } = error;
+        if (response.status === 400) {
+          console.error("Signup error response:", response.data);
+          return {
+            success: false,
+            error: response.data.message || "Signup failed",
+          };
+        }
 
-      if (response.status === 400) {
-        console.error("Signup error response:", response.data);
-        return {
-          success: false,
-          error: response.data.message || "Signup failed",
-        };
+        if (response.status === 500) {
+          console.error("Signup server error response:", response.data);
+          return {
+            success: false,
+            error: response.data.errmsg || "Server error during signup",
+          };
+        }
       }
+      return { success: false, error: `Signup failed: ${error}` };
+    }
+  }
 
-      if (response.status === 500) {
-        console.error("Signup server error response:", response.data);
-        return {
-          success: false,
-          error: response.data.errmsg || "Server error during signup",
-        };
+  async login(
+    email: string,
+    password: string,
+  ): Promise<IAuthenticationResponse> {
+    try {
+      const response = await axiosInstance.post(
+        "/api/auth/login",
+        {
+          email,
+          password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+
+      if (response.status === 200) {
+        return { success: true, message: "Login successful" };
       }
+      return { success: false, error: "Unexpected response status" };
     } catch (error) {
-      throw new Error(`Signup failed: ${error}`);
+      if (axios.isAxiosError(error) && error.response) {
+        const { response } = error;
+        if (response.status === 401) {
+          return { success: false, message: "Invalid credentials" };
+        }
+        if (response.status === 403) {
+          return { success: false, message: "Email not confirmed" };
+        }
+        if (response.status === 423) {
+          return { success: false, message: "Account locked" };
+        }
+        if (response.status === 500) {
+          return { success: false, error: "Server error during login" };
+        }
+      }
+      return { success: false, error: `Login failed: ${error}` };
     }
   }
 
-  async login(email: string, password: string): Promise<boolean> {
+  async logout(): Promise<IAuthenticationResponse> {
     try {
-      const response = await axios.post("/api/auth/login", {
+      await axiosInstance.post("/api/auth/logout");
+      return { success: true, message: "Logout successful" };
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const { response } = error;
+        if (response.status === 500) {
+          return { success: false, error: "Server error during logout" };
+        }
+      }
+      return { success: false, error: `Logout failed: ${error}` };
+    }
+  }
+
+  async checkAuth(): Promise<IAuthenticationResponse> {
+    try {
+      const response = await axiosInstance.get("/api/auth/check");
+      return {
+        success: true,
+        message: "Authenticated",
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const { response } = error;
+        if (response.status === 401) {
+          return { success: false, message: "Not authenticated" };
+        }
+      }
+      return { success: false, error: `Auth check failed: ${error}` };
+    }
+  }
+
+  async resetPassword(email: string): Promise<IAuthenticationResponse> {
+    try {
+      const response = await axiosInstance.post("/api/auth/forgotpassword", {
+        email,
         headers: { "Content-Type": "application/json" },
-        data: JSON.stringify({ email, password }),
       });
-      return response.status === 200;
+      return {
+        success: true,
+        message: "Password reset email sent",
+      };
     } catch (error) {
-      throw new Error(`Login failed: ${error}`);
-    }
-  }
+      if (axios.isAxiosError(error) && error.response) {
+        const { response } = error;
+        if (response.status === 400) {
+          return { success: false, error: "Missing token" };
+        }
 
-  async logout(): Promise<void> {
-    try {
-      await axios.post("/api/auth/logout");
-    } catch (error) {
-      throw new Error(`Logout failed: ${error}`);
-    }
-  }
-
-  async checkAuth(): Promise<boolean> {
-    try {
-      const response = await axios.get("/api/auth/check");
-      return response.status === 200;
-    } catch (error) {
-      throw new Error(`Auth check failed: ${error}`);
-    }
-  }
-
-  async resetPassword(email: string): Promise<boolean> {
-    try {
-      const response = await axios.post("/api/auth/reset-password", {
-        headers: { "Content-Type": "application/json" },
-        data: JSON.stringify({ email }),
-      });
-      return response.status === 200;
-    } catch (error) {
-      throw new Error(`Password reset failed: ${error}`);
+        if (response.status === 500) {
+          return {
+            success: false,
+            error: "Server error during password reset",
+          };
+        }
+      }
+      return { success: false, error: `Password reset failed: ${error}` };
     }
   }
 
@@ -115,27 +183,81 @@ export default class AuthenticationService implements IAuthenticationService {
     token: string,
     newPassword: string,
     confirmPassword: string,
-  ): Promise<boolean> {
+  ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axios.post("/api/auth/confirm-reset", {
-        headers: { "Content-Type": "application/json" },
-        data: JSON.stringify({ token, newPassword, confirmPassword }),
-      });
-      return response.status === 200;
+      const response = await axiosInstance.put(
+        "/api/auth/forgotpassword",
+        {
+          token,
+          newPassword,
+          confirmPassword,
+        },
+        { headers: { "Content-Type": "application/json" } },
+      );
+      return {
+        success: response.status === 200,
+        message:
+          response.status === 200
+            ? "Password reset successful"
+            : "Password reset failed",
+      };
     } catch (error) {
-      throw new Error(`Password reset confirmation failed: ${error}`);
+      if (axios.isAxiosError(error) && error.response) {
+        const { response } = error;
+        if (response.status === 400) {
+          return { success: false, error: "Missing/Expired token" };
+        }
+        if (response.status === 422) {
+          return { success: false, error: "Passwords do not match" };
+        }
+        if (response.status === 500) {
+          return {
+            success: false,
+            error: "Server error during password reset",
+          };
+        }
+      }
+      return { success: false, error: `Password reset failed: ${error}` };
     }
   }
 
-  async confirmEmail(token: string): Promise<boolean> {
+  async confirmEmail(token: string): Promise<IAuthenticationResponse> {
     try {
-      const response = await axios.post("/api/auth/confirm-email", {
-        headers: { "Content-Type": "application/json" },
-        data: JSON.stringify({ token }),
-      });
-      return response.status === 200;
+      const response = await axiosInstance.post(
+        "/api/auth/confirm-email",
+        {
+          token,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+      return {
+        success: response.status === 200,
+        message:
+          response.status === 200
+            ? "Email confirmed successfully"
+            : "Email confirmation failed",
+      };
     } catch (error) {
-      throw new Error(`Email confirmation failed: ${error}`);
+      if (axios.isAxiosError(error) && error.response) {
+        const { response } = error;
+        if (response.status === 400) {
+          return { success: false, error: "Missing token" };
+        }
+
+        if (response.status === 422) {
+          return { success: false, error: "Invalid or expired token" };
+        }
+
+        if (response.status === 500) {
+          return {
+            success: false,
+            error: "Server error during email confirmation",
+          };
+        }
+      }
+      return { success: false, error: `Email confirmation failed: ${error}` };
     }
   }
 }
