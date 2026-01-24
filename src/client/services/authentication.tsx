@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import axios from "axios";
 import { response } from "express";
 
@@ -26,7 +27,7 @@ export interface IAuthenticationService {
 }
 
 const axiosInstance = axios.create({
-  baseURL: "/api/auth",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/auth`,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -38,13 +39,10 @@ export default class AuthenticationService implements IAuthenticationService {
     confirmPassword: string,
   ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axios.post("/api/auth/signup", {
-        headers: { "Content-Type": "application/json" },
-        data: JSON.stringify({
-          email,
-          password,
-          confirmPassword,
-        }),
+      const response = await axiosInstance.post("/signup", {
+        email,
+        password,
+        confirmPassword,
       });
 
       if (response.status === 201) {
@@ -83,16 +81,10 @@ export default class AuthenticationService implements IAuthenticationService {
     password: string,
   ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post(
-        "/api/auth/login",
-        {
-          email,
-          password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      const response = await axiosInstance.post("/login", {
+        email,
+        password,
+      });
 
       if (response.status === 200) {
         return { success: true, message: "Login successful" };
@@ -120,7 +112,7 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async logout(): Promise<IAuthenticationResponse> {
     try {
-      await axiosInstance.post("/api/auth/logout");
+      await axiosInstance.post("/logout");
       return { success: true, message: "Logout successful" };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -135,7 +127,7 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async checkAuth(): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.get("/api/auth/check");
+      const response = await axiosInstance.get("/check");
       return {
         success: true,
         message: "Authenticated",
@@ -153,9 +145,8 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async forgotPassword(email: string): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post("/api/auth/forgotpassword", {
+      const response = await axiosInstance.post("/forgotpassword", {
         email,
-        headers: { "Content-Type": "application/json" },
       });
       return {
         success: true,
@@ -185,15 +176,11 @@ export default class AuthenticationService implements IAuthenticationService {
     confirmPassword: string,
   ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.put(
-        "/api/auth/forgotpassword",
-        {
-          token,
-          newPassword,
-          confirmPassword,
-        },
-        { headers: { "Content-Type": "application/json" } },
-      );
+      const response = await axiosInstance.put("/forgotpassword", {
+        token,
+        newPassword,
+        confirmPassword,
+      });
       return {
         success: response.status === 200,
         message:
@@ -223,15 +210,9 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async confirmEmail(token: string): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post(
-        "/api/auth/confirm-email",
-        {
-          token,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      const response = await axiosInstance.post("/confirm-email", {
+        token,
+      });
       return {
         success: response.status === 200,
         message:

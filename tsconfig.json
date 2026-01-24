@@ -26,7 +26,7 @@
     "noFallthroughCasesInSwitch": true
     //"esModuleInterop": true,
   },
-  "include": ["src/**/*.ts", "environment.d.ts"],
+  "include": ["src/**/*.ts", "environment.d.ts", "src/client/pages/home/index.tsx"],
   "exclude": ["node_modules"],
   "types": ["node"],
   "ts-node": {

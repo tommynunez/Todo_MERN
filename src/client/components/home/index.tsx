@@ -8,9 +8,9 @@ import {
   Button,
   Stack,
 } from "@mui/material";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export const UnauthenticatedLayout = () => {
+export const Home = () => {
   const navigate = useNavigate();
 
   return (
@@ -54,9 +54,7 @@ export const UnauthenticatedLayout = () => {
       </AppBar>
 
       {/* Main Content */}
-      <Container maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
-        <Outlet />
-      </Container>
+      <Container maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}></Container>
 
       {/* Footer */}
       <Box

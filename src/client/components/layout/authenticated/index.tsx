@@ -1,3 +1,7 @@
-export const Authenticated = () => {
-  return <div>Authenticated Layout</div>;
+export const AuthenticatedLayout = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return <div>Authenticated Layout {children}</div>;
 };

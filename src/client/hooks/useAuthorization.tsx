@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthenticationService from "../services/authentication";
 
 export const useAuthorization = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const checkAuthOnMount = async () => {
+      await checkAuthorization();
+    };
+    checkAuthOnMount();
+  }, []);
 
   const authService = new AuthenticationService();
 
