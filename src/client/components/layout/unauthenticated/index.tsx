@@ -1,113 +1,87 @@
-import { ReactNode } from "react";
-import {
-  AppBar,
-  Toolbar,
-  Container,
-  Box,
-  Typography,
-  Button,
-  Stack,
-} from "@mui/material";
-import { Outlet, useNavigate } from "react-router-dom";
+import React from "react";
+import { Card, Container, List, ListItemButton } from "@mui/material";
+import hero3 from "@assets/images/hero-bg/hero-5.jpg";
+import hero6 from "@assets/images/hero-bg/hero-1.jpg";
+import { Outlet, useLocation } from "react-router-dom";
 
 export const UnauthenticatedLayout = () => {
-  const navigate = useNavigate();
+  const currentPath = useLocation().pathname.replace("/", "");
+
+  const findBg = (path: string) => {
+    switch (path) {
+      case "email-confirmation":
+        return hero6;
+      case "forgot-password":
+        return hero6;
+      case "login":
+        return hero6;
+      case "reset-password":
+        return hero3;
+    }
+  };
+
+  const containerSize = () => {
+    switch (currentPath) {
+      case "registration":
+        return "md";
+      default:
+        return "sm";
+    }
+  };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "#f5f5f5",
-      }}
-    >
-      {/* Header/Navigation Bar */}
-      <AppBar position="static">
-        <Toolbar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: "bold", cursor: "pointer" }}
-            onClick={() => navigate("/")}
-          >
-            Chore Mate
-          </Typography>
-          <Stack direction="row" spacing={2}>
-            <Button
-              color="inherit"
-              onClick={() => navigate("/login")}
-              sx={{ textTransform: "none", fontSize: "1rem" }}
-            >
-              Login
-            </Button>
-            <Button
-              variant="outlined"
-              color="inherit"
-              onClick={() => navigate("/signup")}
-              sx={{ textTransform: "none", fontSize: "1rem" }}
-            >
-              Sign Up
-            </Button>
-          </Stack>
-        </Toolbar>
-      </AppBar>
-
-      {/* Main Content */}
-      <Container maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
-        <Outlet />
-      </Container>
-
-      {/* Footer */}
-      <Box
-        component="footer"
-        sx={{
-          backgroundColor: "#fff",
-          borderTop: "1px solid #e0e0e0",
-          py: 3,
-          mt: 4,
-        }}
-      >
-        <Container maxWidth="lg">
-          <Stack direction="row" spacing={4} sx={{ mb: 2 }}>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Todo MERN
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#666" }}>
-                Manage your tasks efficiently
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                Links
-              </Typography>
-              <Button
-                color="inherit"
-                size="small"
-                onClick={() => navigate("/")}
-              >
-                Home
-              </Button>
-              <Button
-                color="inherit"
-                size="small"
-                onClick={() => navigate("/login")}
-              >
-                Login
-              </Button>
-            </Box>
-          </Stack>
-          <Box sx={{ borderTop: "1px solid #e0e0e0", pt: 2, mt: 2 }}>
-            <Typography
-              variant="body2"
-              sx={{ color: "#999", textAlign: "center" }}
-            >
-              © 2026 Chore Mate. All rights reserved.
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
-    </Box>
+    <>
+      <div className="app-wrapper min-vh-100 bg-white">
+        <div className="hero-wrapper w-100 bg-composed-wrapper bg-light-pure min-vh-100">
+          <div className="flex-grow-1 w-100 d-flex align-items-center">
+            <div
+              className="bg-composed-wrapper--image opacity-6"
+              style={{ backgroundImage: "url(" + findBg(currentPath) + ")" }}
+            />
+            <div className="bg-composed-wrapper--bg bg-second opacity-7" />
+            <div className="bg-composed-wrapper--bg bg-premium-dark opacity-5" />
+            <div className="bg-composed-wrapper--content p-3 p-md-5">
+              <Container maxWidth={containerSize()}>
+                <Card className="rounded-sm modal-content p-3 bg-white-10">
+                  <Card className="rounded-sm shadow-none font-size-sm p-3 p-sm-0">
+                    <Outlet />
+                  </Card>
+                </Card>
+              </Container>
+            </div>
+          </div>
+          <div className="hero-footer w-100 pb-4">
+            <Container>
+              <div className="py-3 d-block d-lg-flex font-size-xs justify-content-between">
+                <div className="text-center d-block mb-3 mb-md-0 text-white">
+                  Copyright &copy; 2020 - UiFort.com
+                </div>
+                <List
+                  component="div"
+                  className="nav-transparent text-nowrap d-flex justify-content-center"
+                >
+                  <ListItemButton
+                    component="a"
+                    href="#/"
+                    onClick={(e) => e.preventDefault()}
+                    sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                  >
+                    Privacy Policy
+                  </ListItemButton>
+                  <ListItemButton
+                    component="a"
+                    href="#/"
+                    onClick={(e) => e.preventDefault()}
+                    sx={{ color: "rgba(255, 255, 255, 0.5)" }}
+                  >
+                    Terms of Service
+                  </ListItemButton>
+                </List>
+              </div>
+            </Container>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };

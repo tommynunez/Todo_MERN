@@ -1,6 +1,10 @@
 import { RouteObject, useRoutes } from "react-router-dom";
 import { HomePage } from "./pages/home";
 import { UnauthenticatedLayout } from "./components/layout/unauthenticated";
+import { LoginPage } from "./pages/login";
+import { ForgotPasswordPage } from "./pages/forgotpassword";
+import { ResetPasswordPage } from "./pages/resetpassword";
+import { EmailConfirmationPage } from "./pages/emailconfirmation";
 
 const unauthenticatedRoutes: RouteObject[] = [
   {
@@ -12,23 +16,19 @@ const unauthenticatedRoutes: RouteObject[] = [
     children: [
       {
         path: "/login",
-        element: <></>,
-      },
-      {
-        path: "/signup",
-        element: <></>,
+        element: <LoginPage />,
       },
       {
         path: "/forgot-password",
-        element: <></>,
+        element: <ForgotPasswordPage />,
       },
       {
         path: "/reset-password",
-        element: <></>,
+        element: <ResetPasswordPage />,
       },
       {
         path: "/confirm-email",
-        element: <></>,
+        element: <EmailConfirmationPage />,
       },
     ],
   },

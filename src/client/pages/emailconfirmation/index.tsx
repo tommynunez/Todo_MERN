@@ -1,3 +1,5 @@
+import { EmailConfirmation } from "../../components/authentication/emailconfirmation";
+
 export const EmailConfirmationPage = () => {
-  return <div>Email Confirmation Page</div>;
+  return <EmailConfirmation />;
 };
