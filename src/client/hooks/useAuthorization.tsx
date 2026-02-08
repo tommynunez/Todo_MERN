@@ -68,7 +68,7 @@ export const useAuthorization = () => {
       if (response.success) {
         //todo: maybe set a token or something
         console.log("Logout successful", response);
-        setIsAuthenticated(false);
+        setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
       }
@@ -84,7 +84,6 @@ export const useAuthorization = () => {
     try {
       setIsLoading(true);
       const authResponse = await authService.checkAuth();
-
       if (authResponse.success) {
         setIsAuthenticated(true);
       } else {

@@ -26,8 +26,9 @@ export interface IAuthenticationService {
   confirmEmail(token: string): Promise<IAuthenticationResponse>;
 }
 
+const baseURL = import.meta.env.VITE_API_URL || "";
 const axiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api/auth`,
+  baseURL: `${baseURL}/api/auth`,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -127,7 +128,8 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async checkAuth(): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.get("/check");
+      const response = await axiosInstance.get("/checkauth");
+      console.log("Check auth response:", response);
       return {
         success: true,
         message: "Authenticated",
