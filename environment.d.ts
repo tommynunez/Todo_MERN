@@ -14,7 +14,7 @@ declare global {
       NODE_MAILEROO_ACCOUNT_LOCKED_EMAIL_TEMPLATE_ID: string;
       NODE_MAILEROO_WELCOME_EMAIL_TEMPLATE_ID: string;
       NODE_MAILEROO_API_KEY: string;
-      NODE_MAILEROO_API_URL: strin;
+      NODE_MAILEROO_API_URL: string;
       NODE_USE_CSP?: true | false;
     }
   }
