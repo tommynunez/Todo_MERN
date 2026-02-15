@@ -6,9 +6,13 @@ export class TodoRepository {
   constructor() {}
 
   /**
-   * Create a new todo Todo
-   * @param param0
-   * @returns
+   * Creates and inserts a new todo document into the database
+   * @param userId - The ObjectId of the user who owns this todo
+   * @param name - The title/name of the todo item
+   * @param choreListId - The ObjectId of the chorelist this todo belongs to
+   * @returns Promise resolving to the created Document if successful, false otherwise
+   * @throws Will not throw but returns false if database error occurs
+   * @async
    */
   insertTodoAsync = async ({
     userId,
@@ -30,9 +34,13 @@ export class TodoRepository {
   };
 
   /**
-   * Update a todo Todo
-   * @param param0
-   * @returns
+   * Updates a todo item's completion status and metadata
+   * @param emailAddress - Email of the user completing the todo
+   * @param name - The name of the todo to update
+   * @param completed - Boolean indicating completion status
+   * @returns Promise resolving to true if update successful, false otherwise
+   * @throws Will not throw but returns false if database error occurs
+   * @async
    */
   updateTodoAsync = async ({
     emailAddress,
@@ -58,9 +66,11 @@ export class TodoRepository {
   };
 
   /**
-   * Delete a todo Todo
-   * @param id
-   * @returns
+   * Deletes a todo item from the database by its ID
+   * @param id - The unique ObjectId of the todo to delete
+   * @returns Promise resolving to true if deletion successful, false if not found or error
+   * @throws Will not throw but returns false if database error occurs
+   * @async
    */
   deleteTodoAsync = async (id: number): Promise<boolean> => {
     try {
@@ -79,9 +89,11 @@ export class TodoRepository {
   };
 
   /**
-   * Get a todo Todo by id
-   * @param id
-   * @returns
+   * Retrieves a single todo item by its unique identifier
+   * @param id - The unique ObjectId of the todo to retrieve (optional)
+   * @returns Promise resolving to the ITodo object if found, null otherwise
+   * @throws Will not throw but returns null if database error occurs
+   * @async
    */
   getTodobyIdAsync = async (id?: string): Promise<ITodo | null> => {
     try {

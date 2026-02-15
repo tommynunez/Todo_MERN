@@ -13,10 +13,12 @@ export default class UserService implements IUserService {
 
   //#region Public Methods
   /**
-   * Method to signup a user
-   * @param emailAddress
-   * @param password
-   * @returns Boolean
+   * Registers a new user account with email and password
+   * @param emailAddress - The email address for the new user account
+   * @param password - The password for the account (should be validated before calling)
+   * @returns Promise resolving to true if signup successful, false otherwise
+   * @throws May throw Error if email is already registered or if email send fails
+   * @async
    */
   signup = async (emailAddress: string, password: string): Promise<boolean> => {
     const salt = crypto.randomBytes(64).toString("hex");
@@ -48,11 +50,13 @@ export default class UserService implements IUserService {
   };
 
   /**
-   * Method to signin a user
-   * @param emailAddress
-   * @param password
-   * @param user
-   * @returns Boolean
+   * Authenticates a user by verifying email and password
+   * @param emailAddress - The email address of the user attempting to sign in
+   * @param password - The password provided by the user
+   * @param user - The user document retrieved from database or null
+   * @returns Promise resolving to true if authentication successful, false otherwise
+   * @throws Will not throw but returns false if credentials are invalid
+   * @async
    */
   signin = async (
     emailAddress: string,
@@ -88,7 +92,14 @@ export default class UserService implements IUserService {
     }
   };
 
-  // todo: make this a middleware for the signup route endpoint
+  /**
+   * Validates signup form fields from the request body
+   * @param _request - Express request object containing body data
+   * @param _response - Express response object for sending validation errors
+   * @returns Boolean - true if there are validation errors, false if all fields are valid
+   * @throws Will not throw but returns validation errors via response
+   * @todo This should be converted to middleware for the signup route endpoint
+   */
   validateSignupFields = (_request: Request, _response: Response): boolean => {
     if (!_request.body.emailAddress && _request.body.emailAddress.match()) {
       _response.status(400).json({ errmsg: "Please enter a username" });
@@ -125,9 +136,11 @@ export default class UserService implements IUserService {
   };
 
   /**
-   * Method to get user by email address
-   * @param emailAddress
-   * @returns UserAccount or null
+   * Retrieves a user account by their email address
+   * @param emailAddress - The email address to search for
+   * @returns Promise resolving to the IUserAccount document if found, null otherwise
+   * @throws Will not throw but returns null if database error occurs
+   * @async
    */
   getUserbyEmailAddressAsync = async (
     emailAddress: string,
@@ -141,9 +154,11 @@ export default class UserService implements IUserService {
   > => await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
 
   /**
-   * Confirm email address token method
-   * @param token
-   * @returns Boolean
+   * Confirms a user's email address using a verification token
+   * @param token - The email confirmation token
+   * @returns Promise resolving to true if confirmation successful, false otherwise
+   * @throws Error if token is not provided or other errors occur
+   * @async
    */
   confirmEmailAsync = async (token: string): Promise<boolean> => {
     if (!token) {
@@ -174,9 +189,11 @@ export default class UserService implements IUserService {
   };
 
   /**
-   * Send forgot password email
-   * @param emailAddress
-   * @returns Boolean
+   * Sends a password reset email to the user with a reset token
+   * @param emailAddress - The email address of the user requesting password reset
+   * @returns Promise resolving to true if email sent successfully, false if user not found
+   * @throws Will not throw but returns false if user doesn't exist
+   * @async
    */
   sendForgotpasswordEmailAsync = async (
     emailAddress: string,
@@ -200,10 +217,12 @@ export default class UserService implements IUserService {
   };
 
   /**
-   * Reset user password method
-   * @param token
-   * @param password
-   * @returns [success: boolean, user: IUserAccount]
+   * Resets a user's password using a valid reset token
+   * @param token - The password reset token
+   * @param password - The new password to set
+   * @returns Promise resolving to a tuple [success: boolean, user: IUserAccount]
+   * @throws Error if user is not found
+   * @async
    */
   resetPasswordAsync = async (
     token: string,
