@@ -56,7 +56,7 @@ export class TodoRepository {
             completed,
             completedDate: completed ? new Date() : null,
           },
-        }
+        },
       );
       return true;
     } catch (error) {
@@ -117,7 +117,7 @@ export class TodoRepository {
     userId: string,
     search: string,
     pageIndex: number,
-    pageSize: number
+    pageSize: number,
   ): Promise<Array<ITodo> | null> => {
     try {
       pageSize = pageSize ?? 0;
