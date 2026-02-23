@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import AuthenticationService from "../services/authentication";
+import AuthenticationService from "@services/authentication";
 
 export const useAuthorization = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -50,12 +50,15 @@ export const useAuthorization = () => {
         //todo: maybe set a token or something
         console.log("Login successful", response);
         setIsAuthenticated(true);
+        return { success: true, message: "Login successful" };
       } else {
         setIsAuthenticated(false);
+        return { success: false, message: "Invalid email or password" };
       }
     } catch (error) {
       console.error("Error during login:", error);
       setError(`Login failed. Please try again. ${error}`);
+      return { success: false, message: `Login failed. ${error}` };
     } finally {
       setIsLoading(false);
     }

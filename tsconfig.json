@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "lib": ["ES2022"],
@@ -23,10 +24,25 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
     //"esModuleInterop": true,
+
+    //path mapping for absolute imports
+    "paths": {
+      "@/*": ["src/*"],
+      "@assets/*": ["src/assets/*"],
+      "@hooks/*": ["src/client/hooks/*"],
+      "@components/*": ["src/client/components/*"],
+      "@services/*": ["src/client/services/*"],
+      "@pages/*": ["src/client/pages/*"]
+    }
   },
-  "include": ["src/**/*.ts", "environment.d.ts", "src/client/pages/home/index.tsx"],
+  "include": [
+    "src/**/*.ts",
+    "environment.d.ts",
+    "src/client/pages/home/index.tsx",
+    "src/client/components/authentication/login/login-input-field/index.tsx"
+  ],
   "exclude": ["node_modules"],
   "types": ["node"],
   "ts-node": {

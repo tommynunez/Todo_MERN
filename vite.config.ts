@@ -11,6 +11,10 @@ export default defineConfig(() => {
       alias: {
         "@": path.resolve(__dirname, "./src"),
         "@assets": path.resolve(__dirname, "./src/assets"),
+        "@hooks": path.resolve(__dirname, "./src/client/hooks"),
+        "@components": path.resolve(__dirname, "./src/client/components"),
+        "@services": path.resolve(__dirname, "./src/client/services"),
+        "@pages": path.resolve(__dirname, "./src/client/pages"),
       },
     },
     server: {

@@ -24,3 +24,13 @@ export function validateZipCode(value: string) {
   const re = /^\d{5}(?:[-\s]\d{4})?$/;
   return re.test(value);
 }
+
+export const clearErrorIfHasValue = (
+  value: string,
+  hasError: boolean,
+  setError: any,
+) => {
+  if (value && hasError) {
+    setError(false);
+  }
+};

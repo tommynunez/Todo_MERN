@@ -1,10 +1,10 @@
 import { RouteObject, useRoutes } from "react-router-dom";
 import { HomePage } from "./pages/home";
-import { UnauthenticatedLayout } from "./components/layout/unauthenticated";
-import { LoginPage } from "./pages/login";
-import { ForgotPasswordPage } from "./pages/forgotpassword";
-import { ResetPasswordPage } from "./pages/resetpassword";
-import { EmailConfirmationPage } from "./pages/emailconfirmation";
+import { UnauthenticatedLayout } from "@components/layout/unauthenticated";
+import { LoginPage } from "@pages/login";
+import { ForgotPasswordPage } from "@pages/forgot-password";
+import { ResetPasswordPage } from "@pages/reset-password";
+import { EmailConfirmationPage } from "@pages/email-confirmation";
 
 const unauthenticatedRoutes: RouteObject[] = [
   {
