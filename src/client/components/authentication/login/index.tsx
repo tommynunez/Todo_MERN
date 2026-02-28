@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material";
 import { Form } from "./login-form";
+import { usePreventBackButton } from "@hooks/usePreventBackButton";
 
 export const Login = () => {
   usePreventBackButton();
@@ -25,6 +26,3 @@ export const Login = () => {
     </>
   );
 };
-function usePreventBackButton() {
-  throw new Error("Function not implemented.");
-}

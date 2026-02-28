@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import { useLoginForm } from "@hooks/useLoginForm";
+import { clearErrorIfHasValue } from "@/client/helpers/validator";
 
 export const Form = () => {
   const {
@@ -26,13 +27,13 @@ export const Form = () => {
         handleSubmit(event);
       }}
     >
-      <div>
+      <>
         <TextField
           autoComplete="current-password"
           required={true}
           fullWidth
           variant="outlined"
-          id={"textfield-" + name}
+          id={"textfield-emailAddress"}
           type="text"
           label="Email address"
           name="emailAddress"
@@ -42,8 +43,8 @@ export const Form = () => {
           onBlur={(event: any) => {
             clearErrorIfHasValue(
               event.target.value,
-              passwordError,
-              setPasswordError,
+              emailAddressError,
+              setEmailAddressError,
             );
           }}
           onChange={(event: any) => {
@@ -69,7 +70,7 @@ export const Form = () => {
           required={true}
           fullWidth
           variant="outlined"
-          id={"textfield-" + name}
+          id={"textfield-password"}
           type="password"
           label="Password"
           name="password"
@@ -126,7 +127,7 @@ export const Form = () => {
             Sign up
           </Link>
         </div>
-      </div>
+      </>
     </form>
   );
 };

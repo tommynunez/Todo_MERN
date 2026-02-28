@@ -1,6 +1,4 @@
-/// <reference types="vite/client" />
 import axios from "axios";
-import { response } from "express";
 
 export interface IAuthenticationResponse {
   success: boolean;

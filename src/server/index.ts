@@ -40,7 +40,7 @@ app.use(
     parseUndefined: true,
     parseBoolean: true,
     parseNumber: true,
-  })
+  }),
 );
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -91,7 +91,7 @@ app.use(
     store: new MongoStore({
       mongoUrl: process.env.NODE_MONGO_DB_URL,
     }),
-  })
+  }),
 );
 
 configurePassport({ app, passportInstance: passport });
@@ -101,7 +101,7 @@ await openConnection();
 /**
  * Health check api
  */
-app.get("/health", (_request: Request, _response: Response) => {
+app.get("/api/health", (_request: Request, _response: Response) => {
   _response.sendStatus(200);
 });
 
@@ -112,8 +112,8 @@ app.use(
   "/api/authentication",
   createAuthenticationroutes(
     new UserService(new UserRepository()),
-    new ChoreListService(new ChoreRepository())
-  )
+    new ChoreListService(new ChoreRepository()),
+  ),
 );
 
 /**k
@@ -127,9 +127,9 @@ app.use(
       new TodoRepository(),
       new ChoreListService(new ChoreRepository()),
       new UserService(new UserRepository()),
-      new AuditlogService(new AuditLogRepository())
-    )
-  )
+      new AuditlogService(new AuditLogRepository()),
+    ),
+  ),
 );
 
 /**
@@ -139,7 +139,7 @@ app.use(
   "/api/chorelists",
   authenticatedMiddleware,
   emailConfirmationMiddleware,
-  createChorelistRoutes(new ChoreListService(new ChoreRepository()))
+  createChorelistRoutes(new ChoreListService(new ChoreRepository())),
 );
 
 /**
@@ -153,9 +153,9 @@ app.use(
     new InviteService(
       new ChoreListService(new ChoreRepository()),
       new UserService(new UserRepository()),
-      new InviteRepository()
-    )
-  )
+      new InviteRepository(),
+    ),
+  ),
 );
 
 /**
