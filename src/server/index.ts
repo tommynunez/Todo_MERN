@@ -53,13 +53,18 @@ const cspDirectives = {
   defaultSrc: ["'self'"],
   scriptSrc: isProd
     ? ["'self'"]
-    : ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+    : [
+        "'self'",
+        "'unsafe-eval'",
+        "'unsafe-inline'",
+        "'https://fonts.googleapis.com'",
+      ],
   connectSrc: isProd ? ["'self'"] : ["'self'", "ws:", "wss:"],
   styleSrc: ["'self'", "'unsafe-inline'"],
   imgSrc: isProd
     ? ["'self'", "data:", "blob:"]
     : ["'self'", "data:", "blob:", devClientOrigin],
-  fontSrc: ["'self'", "data:"],
+  fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
   objectSrc: ["'none'"],
   baseUri: ["'self'"],
   frameAncestors: ["'none'"],

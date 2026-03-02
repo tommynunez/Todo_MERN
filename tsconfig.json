@@ -9,6 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
     "declaration": true,
+    "types": ["node"],
 
     /* Bundler mode */
     "module": "ES2022",
@@ -44,7 +45,6 @@
     "src/client/hooks/usePreventBackButton.js"
   ],
   "exclude": ["node_modules"],
-  "types": ["node"],
   "ts-node": {
     "files": true
   },
