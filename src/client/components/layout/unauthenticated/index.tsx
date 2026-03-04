@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { AppBar } from "@/client/shared/AppBar";
-import Footer from "@/client/shared/Footer";
+import { AppBar, Footer } from "@/client/shared";
 
 export const UnauthenticatedLayout = () => {
   return (
