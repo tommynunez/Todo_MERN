@@ -23,7 +23,7 @@ export const Login = () => {
             >
               Forgot password?
             </Link>
-            <p className="text-gray-600 dark:text-vscode-text-secondary text-sm">
+            <P className="text-gray-600 dark:text-vscode-text-secondary text-sm">
               Don't have an account?{" "}
               <Link
                 to="/signup"
@@ -31,7 +31,7 @@ export const Login = () => {
               >
                 Sign up
               </Link>
-            </p>
+            </P>
           </div>
         </div>
       </div>

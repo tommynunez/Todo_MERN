@@ -1,6 +1,8 @@
 import { clearErrorIfHasValue } from "@/client/helpers/validator";
 import { useLoginForm } from "@hooks/useLoginForm";
 import { Input, Button } from "@/client/shared";
+import { useSnackbar } from "@/client/context/SnackbarContext";
+import { useEffect } from "react";
 
 export const Form = () => {
   const {
@@ -15,6 +17,13 @@ export const Form = () => {
     handleSubmit,
     hasErrors,
   } = useLoginForm();
+  const { showSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (hasErrors) {
+      showSnackbar("Please fix the errors in the form", { variant: "error" });
+    }
+  }, [hasErrors, showSnackbar]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
