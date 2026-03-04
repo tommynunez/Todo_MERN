@@ -40,6 +40,7 @@ export const Form = () => {
             setEmailAddressError,
           );
         }}
+        autoComplete="off"
         error={emailAddressError ? "Please enter a valid email address" : ""}
         required
       />
@@ -53,6 +54,7 @@ export const Form = () => {
           setPassword(e.target.value);
           clearErrorIfHasValue(e.target.value, passwordError, setPasswordError);
         }}
+        autoComplete="off"
         error={passwordError ? "Please enter your password" : ""}
         required
       />
