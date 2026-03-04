@@ -4,7 +4,7 @@ import Footer from "@/client/shared/Footer";
 
 export const UnauthenticatedLayout = () => {
   return (
-    <div className="min-h-screen flex dark:bg-gray-900 flex-col">
+    <div className="min-h-screen flex dark:bg-vscode-bg flex-col">
       <AppBar />
       <main className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-md">

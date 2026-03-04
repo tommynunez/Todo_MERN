@@ -1,43 +1,36 @@
+import { Link } from "react-router-dom";
 import { Form } from "./login-form";
 import { usePreventBackButton } from "@hooks/usePreventBackButton";
+import { H1, P } from "@/client/shared";
 
 export const Login = () => {
   usePreventBackButton();
   return (
-    <div className="min-h-screen bg-white dark:bg-ms-dark-900 flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="space-y-8">
-          {/* Logo/Header */}
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Login
-            </h1>
-            <p className="text-gray-600 dark:text-ms-dark-200">
-              Sign in to your Chore Mate account
-            </p>
+            <H1 className="mb-4">Login</H1>
+            <P>Sign in to your Chore Mate account</P>
           </div>
-
-          {/* Form Container */}
-          <div className="bg-gray-50 dark:bg-ms-dark-800 rounded-lg border border-gray-200 dark:border-ms-dark-700 p-8">
+          <div className="dark:bg-vscode-bg-secondary rounded-lg border border-gray-200 dark:border-vscode-border p-8">
             <Form />
           </div>
-
-          {/* Footer Links */}
           <div className="text-center space-y-2">
-            <a
-              href="/forgot-password"
-              className="text-ms-blue-500 hover:text-ms-blue-600 dark:hover:text-ms-blue-400 text-sm transition-colors"
+            <Link
+              to="/forgot-password"
+              className="text-ms-blue-500 hover:text-ms-blue-600 dark:hover:text-vscode-blue dark:text-vscode-blue text-sm transition-colors"
             >
               Forgot password?
-            </a>
-            <p className="text-gray-600 dark:text-ms-dark-200 text-sm">
+            </Link>
+            <p className="text-gray-600 dark:text-vscode-text-secondary text-sm">
               Don't have an account?{" "}
-              <a
-                href="/signup"
-                className="text-ms-blue-500 hover:text-ms-blue-600 dark:hover:text-ms-blue-400 font-medium transition-colors"
+              <Link
+                to="/signup"
+                className="text-ms-blue-500 hover:text-ms-blue-600 dark:hover:text-vscode-blue dark:text-vscode-blue font-medium transition-colors"
               >
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
         </div>

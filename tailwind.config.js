@@ -5,24 +5,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Microsoft Dark Mode Colors
-        "ms-dark": {
-          50: "#f8f8f8",
-          100: "#e1e1e1",
-          200: "#cccccc",
-          300: "#b4b4b4",
-          400: "#8a8a8a",
-          500: "#605e5c",
-          600: "#454549",
-          700: "#3f3f46",
-          800: "#2d2d30",
-          900: "#1e1e1e",
-          950: "#1a1a1a",
-        },
-        "ms-blue": {
-          500: "#0078d4",
-          600: "#0062ad",
-          700: "#004a94",
+        // VS Code Dark Theme Colors
+        vscode: {
+          bg: "#1e1e1e",
+          "bg-secondary": "#252526",
+          "input-bg": "#3c3c3c",
+          border: "#3e3e42",
+          text: "#d4d4d4",
+          "text-secondary": "#858585",
+          blue: "#007acc",
+          "status-bar": "#007acc",
         },
       },
     },
