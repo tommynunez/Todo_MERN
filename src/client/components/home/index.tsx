@@ -26,6 +26,7 @@ import { Features } from "./features";
 import { CtaFooter } from "./ctafooter";
 import { Audience } from "./audience";
 import { Stats } from "./stats";
+import { Hero } from "./hero";
 
 // ── Icon Mapping ─────────────────────────────────────────────────────────────
 
@@ -90,7 +91,7 @@ export const Home = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       {/* ── HERO ── */}
-      
+      <Hero handleGetStarted={handleGetStarted} iconMapping={IconMap} />
 
       {/* ── STATS BAR ── */}
       <Stats stats={stats} />

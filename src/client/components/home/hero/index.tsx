@@ -2,7 +2,12 @@ import { P } from "@/client/shared";
 import { Cta } from "@/client/shared/Cta";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
-export const Hero = () => {
+type HeroProps = {
+  handleGetStarted: () => void;
+  iconMapping: Record<string, React.ComponentType<{ className?: string }>>;
+};
+
+export const Hero = ({ handleGetStarted, iconMapping }: HeroProps) => {
   return (
     <section className="bg-gradient-to-br from-violet-600 via-violet-500 to-blue-500 text-white px-6 py-24 text-center">
       <span className="inline-block bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full mb-5 tracking-widest uppercase">
@@ -22,7 +27,8 @@ export const Hero = () => {
           { iconKey: "Users", text: "Real-Time Collaboration" },
           { iconKey: "ShieldCheck", text: "Works Everywhere" },
         ].map((badge) => {
-          const IconComponent = IconMap[badge.iconKey as keyof typeof IconMap];
+          const IconComponent =
+            iconMapping[badge.iconKey as keyof typeof iconMapping];
           return (
             <span
               key={badge.text}
