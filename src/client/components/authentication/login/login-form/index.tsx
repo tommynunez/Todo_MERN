@@ -59,7 +59,7 @@ export const Form = () => {
         required
       />
 
-      <Button type="submit" fullWidth className="mt-6">
+      <Button type="submit" fullWidth>
         Sign In
       </Button>
     </form>

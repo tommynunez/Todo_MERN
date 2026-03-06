@@ -7,10 +7,10 @@
       "label": "Faster task completion"
     },
     {
-      "icon": "Bell",
+      "icon": "ShieldCheck",
       "iconSize": "w-5 h-5",
-      "value": "80%",
-      "label": "Less back-and-forth"
+      "value": "$0",
+      "label": "to start"
     },
     {
       "icon": "ShieldCheck",
@@ -52,12 +52,16 @@
         }
       ],
       "color": {
-        "tab": "bg-violet-600 text-white border-violet-600",
-        "tabIdle": "text-violet-600 border-violet-200 hover:bg-violet-50",
-        "card": "border-violet-100",
-        "iconBg": "bg-violet-600",
-        "accent": "text-violet-600",
-        "badge": "bg-violet-100 text-violet-700"
+        "tab": { "bg": "#7c3aed", "text": "#ffffff", "border": "#7c3aed" },
+        "tabIdle": {
+          "text": "#7c3aed",
+          "border": "#ede9fe",
+          "hoverBg": "#f5f3ff"
+        },
+        "card": { "border": "#ede9fe" },
+        "iconBg": "#7c3aed",
+        "accent": "#7c3aed",
+        "badge": { "bg": "#ede9fe", "text": "#6d28d9" }
       }
     },
     {
@@ -92,12 +96,16 @@
         }
       ],
       "color": {
-        "tab": "bg-orange-500 text-white border-orange-500",
-        "tabIdle": "text-orange-500 border-orange-200 hover:bg-orange-50",
-        "card": "border-orange-100",
-        "iconBg": "bg-orange-500",
-        "accent": "text-orange-500",
-        "badge": "bg-orange-100 text-orange-700"
+        "tab": { "bg": "#f97316", "text": "#ffffff", "border": "#f97316" },
+        "tabIdle": {
+          "text": "#f97316",
+          "border": "#fed7aa",
+          "hoverBg": "#fff7ed"
+        },
+        "card": { "border": "#fed7aa" },
+        "iconBg": "#f97316",
+        "accent": "#f97316",
+        "badge": { "bg": "#fed7aa", "text": "#c2410c" }
       }
     },
     {
@@ -132,12 +140,16 @@
         }
       ],
       "color": {
-        "tab": "bg-emerald-500 text-white border-emerald-500",
-        "tabIdle": "text-emerald-600 border-emerald-200 hover:bg-emerald-50",
-        "card": "border-emerald-100",
-        "iconBg": "bg-emerald-500",
-        "accent": "text-emerald-600",
-        "badge": "bg-emerald-100 text-emerald-700"
+        "tab": { "bg": "#10b981", "text": "#ffffff", "border": "#10b981" },
+        "tabIdle": {
+          "text": "#059669",
+          "border": "#d1fae5",
+          "hoverBg": "#f0fdf4"
+        },
+        "card": { "border": "#d1fae5" },
+        "iconBg": "#10b981",
+        "accent": "#059669",
+        "badge": { "bg": "#d1fae5", "text": "#047857" }
       }
     },
     {
@@ -172,12 +184,16 @@
         }
       ],
       "color": {
-        "tab": "bg-blue-600 text-white border-blue-600",
-        "tabIdle": "text-blue-600 border-blue-200 hover:bg-blue-50",
-        "card": "border-blue-100",
-        "iconBg": "bg-blue-600",
-        "accent": "text-blue-600",
-        "badge": "bg-blue-100 text-blue-700"
+        "tab": { "bg": "#2563eb", "text": "#ffffff", "border": "#2563eb" },
+        "tabIdle": {
+          "text": "#2563eb",
+          "border": "#dbeafe",
+          "hoverBg": "#f0f9ff"
+        },
+        "card": { "border": "#dbeafe" },
+        "iconBg": "#2563eb",
+        "accent": "#2563eb",
+        "badge": { "bg": "#dbeafe", "text": "#1d4ed8" }
       }
     }
   ],
@@ -187,28 +203,28 @@
       "iconSize": "w-7 h-7",
       "label": "Households",
       "desc": "Manage chores & family schedules",
-      "color": "text-violet-500 bg-violet-50"
+      "color": { "text": "#8b5cf6", "bg": "#f5f3ff" }
     },
     {
       "icon": "GraduationCap",
       "iconSize": "w-7 h-7",
       "label": "Students",
       "desc": "Coordinate group projects",
-      "color": "text-orange-500 bg-orange-50"
+      "color": { "text": "#f97316", "bg": "#fff7ed" }
     },
     {
       "icon": "Rocket",
       "iconSize": "w-7 h-7",
       "label": "Startups",
       "desc": "Keep small teams agile",
-      "color": "text-emerald-500 bg-emerald-50"
+      "color": { "text": "#10b981", "bg": "#f0fdf4" }
     },
     {
       "icon": "Building2",
       "iconSize": "w-7 h-7",
       "label": "Companies",
       "desc": "Organize cross-team workflows",
-      "color": "text-blue-500 bg-blue-50"
+      "color": { "text": "#2563eb", "bg": "#f0f9ff" }
     }
   ]
 }
