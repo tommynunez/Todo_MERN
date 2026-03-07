@@ -70,10 +70,14 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Response: { response: ITodo, status: 200 }
    */
   router.get('/:id', async (_request: Request, _response: Response) => {
+    const { id } = _request.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+      return _response.status(400).json({ errmsg: 'Invalid todo id' });
+    }
+
     try {
-      const response = await _todoService.getByIdTodosAsync(
-        _request.params.id.toString(),
-      );
+      const response = await _todoService.getByIdTodosAsync(id.toString());
       if (response) {
         return _response.status(200).json({ data: response });
       }
@@ -144,10 +148,16 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Response: { response: true, status: 200 }
    */
   router.put('/:id', async (_request: Request, _response: Response) => {
+    const { id } = _request.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+      return _response.status(400).json({ errmsg: 'Invalid todo id' });
+    }
+
     try {
       const response = await _todoService.updateTodoAsync(
-        '',
         _request.body.name,
+        _request.body.emailAddress,
         _request.body,
       );
 
@@ -170,10 +180,14 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Response: { response: true, status: 200 }
    */
   router.delete('/:id', async (_request: Request, _response: Response) => {
+    const { id } = _request.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+      return _response.status(400).json({ errmsg: 'Invalid todo id' });
+    }
+
     try {
-      const response = await _todoService.deleteTodoAsync(
-        _request.params.id.toString(),
-      );
+      const response = await _todoService.deleteTodoAsync(id.toString());
 
       if (response) {
         _response.status(200).json({ data: response });
