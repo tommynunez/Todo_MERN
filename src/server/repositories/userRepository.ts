@@ -40,7 +40,7 @@ export class UserRepository {
       await user.save();
       return user;
     } catch (error: any) {
-      if (error.errorResponse.code ==== 11000) {
+      if (error.errorResponse.code === 11000) {
         throw new Error('Please try a different emailAddress');
       } else {
         throw new Error('We could not create account. Please try again.');

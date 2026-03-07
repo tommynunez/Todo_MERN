@@ -34,7 +34,8 @@ export class InviteService implements IInviteService {
   createInviteAsync = async (invite: IInviteAdd): Promise<boolean> => {
     // Logic to send an invite to the provided email
     try {
-      const hasInvitepending = await this.inviteRepository.getInvitebyEmailAsync(invite.email);
+      const hasInvitepending =
+        await this.inviteRepository.getInvitebyEmailAsync(invite.email);
       if (hasInvitepending) {
         return false;
       }
@@ -63,7 +64,8 @@ export class InviteService implements IInviteService {
    */
   getInvitebyIdAsync = async (
     id: Types.ObjectId,
-  ): Promise<IInviteResponse | null> => await this.inviteRepository.getInvitebyIdAsync(id);
+  ): Promise<IInviteResponse | null> =>
+    await this.inviteRepository.getInvitebyIdAsync(id);
 
   /**
    *  Inactivate an invite
@@ -72,7 +74,8 @@ export class InviteService implements IInviteService {
    */
   inactivateInviteAsync = async (
     inviteDelete: IInviteDelete,
-  ): Promise<boolean> => await this.inviteRepository.inactivateInviteAsync(inviteDelete);
+  ): Promise<boolean> =>
+    await this.inviteRepository.inactivateInviteAsync(inviteDelete);
 
   /**
    * Verify invite token and update chore list sharing
@@ -241,7 +244,7 @@ export class InviteService implements IInviteService {
     decodedToken: InvitePayload,
     existingInvite: IInvite,
   ): Promise<boolean> => {
-    if (decodedToken.status ==== TokenStatuses.Revoked) {
+    if (decodedToken.status === TokenStatuses.Revoked) {
       console.log('Invalid token payload');
       existingInvite.status = TokenStatuses.Revoked;
       existingInvite.isNew = false;

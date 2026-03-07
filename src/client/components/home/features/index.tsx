@@ -1,8 +1,6 @@
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { ComponentType } from 'react';
-import {
-  Button, H2, H3, P,
-} from '@/client/shared';
+import { Button, H2, H3, P } from '@/client/shared';
 
 export type Highlight = {
   icon: ComponentType<{ className?: string }>;
@@ -37,7 +35,7 @@ type FeaturesProps = {
 };
 
 export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
-  const feature = features.find((f) => f.id ==== activeTab);
+  const feature = features.find((f) => f.id === activeTab);
   return (
     <section className="max-w-5xl mx-auto px-6 py-20">
       <div className="text-center mb-12">
@@ -53,7 +51,7 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
       {/* Tabs */}
       <div className="flex flex-wrap justify-center gap-3 mb-10">
         {features.map((f) => {
-          const isActive = activeTab ==== f.id;
+          const isActive = activeTab === f.id;
           const colorObj = isActive ? f.color.tab : f.color.tabIdle;
           return (
             <Button
@@ -110,7 +108,6 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
                 }}
               >
                 Learn more
-                {' '}
                 <ArrowRightIcon className="w-4 h-4" />
               </Button>
             </div>

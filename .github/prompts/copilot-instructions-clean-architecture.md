@@ -48,7 +48,7 @@ export class User {
     public readonly email: Email,
     private name: UserName,
     private passwordHash: string,
-    public readonly createdAt: Date
+    public readonly createdAt: Date,
   ) {}
 
   static create(props: {
@@ -74,7 +74,7 @@ export class User {
         emailResult.data,
         nameResult.data,
         passwordHash,
-        new Date()
+        new Date(),
       ),
     };
   }
@@ -115,7 +115,7 @@ export class Email {
   }
 
   equals(other: Email): boolean {
-    return this.value ==== other.value;
+    return this.value === other.value;
   }
 }
 ```

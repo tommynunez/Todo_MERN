@@ -10,14 +10,14 @@ import * as dotenv from 'dotenv';
 export const loadEnv = () => {
   const nodeEnv = process.env.NODE_ENV ?? 'development';
   let candidates: string[];
-  if (nodeEnv ==== 'local') {
+  if (nodeEnv === 'local') {
     candidates = [
       '.env.local',
       '.env.development.local',
       '.env.development',
       '.env',
     ];
-  } else if (nodeEnv ==== 'development') {
+  } else if (nodeEnv === 'development') {
     candidates = ['.env.development.local', '.env.development', '.env'];
   } else {
     candidates = ['.env.production.local', '.env.production', '.env'];
