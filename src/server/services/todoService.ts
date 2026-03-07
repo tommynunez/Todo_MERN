@@ -46,10 +46,11 @@ export default class TodoService implements ITodoService {
         return false;
       }
 
-      const user = await this.useraccountService.getUserbyEmailAddressAsync(emailAddress);
+      const user =
+        await this.useraccountService.getUserbyEmailAddressAsync(emailAddress);
 
       if (user) {
-        const userId = user.id;
+        const userId = user._id;
         await this.todoRepository.insertTodoAsync({
           userId,
           name,
@@ -58,7 +59,7 @@ export default class TodoService implements ITodoService {
       }
 
       this.auditLogService.log({
-        message: `User ${user?.id.toString()}`,
+        message: `User ${user?._id.toString()}`,
         severity: SeverityLevel.INFORMATIONAL,
       } as IAuditLogMessage);
       return true;
@@ -80,11 +81,12 @@ export default class TodoService implements ITodoService {
     name: string,
     emailAddress: string,
     completed: boolean,
-  ): Promise<Document | boolean> => await this.todoRepository.updateTodoAsync({
-    name,
-    emailAddress,
-    completed,
-  } as ITodoUpdate);
+  ): Promise<Document | boolean> =>
+    await this.todoRepository.updateTodoAsync({
+      name,
+      emailAddress,
+      completed,
+    } as ITodoUpdate);
 
   /**
    * Deletes a todo item by its unique identifier
@@ -92,7 +94,8 @@ export default class TodoService implements ITodoService {
    * @returns Promise resolving to true if deletion was successful, false otherwise
    * @throws Will not throw but returns false if todo is not found
    */
-  deleteTodoAsync = async (id: number): Promise<boolean> => await this.todoRepository.deleteTodoAsync(id);
+  deleteTodoAsync = async (id: string): Promise<boolean> =>
+    await this.todoRepository.deleteTodoAsync(id);
 
   /**
    * Retrieves a specific todo item by its unique identifier
@@ -100,7 +103,8 @@ export default class TodoService implements ITodoService {
    * @returns Promise resolving to the ITodo object if found, null otherwise
    * @throws Will not throw but returns null if todo is not found
    */
-  getByIdTodosAsync = async (id?: string): Promise<ITodo | null> => await this.todoRepository.getTodobyIdAsync(id);
+  getByIdTodosAsync = async (id?: string): Promise<ITodo | null> =>
+    await this.todoRepository.getTodobyIdAsync(id);
 
   /**
    * Retrieves all todo items with pagination and optional search filtering
@@ -112,15 +116,16 @@ export default class TodoService implements ITodoService {
    * @throws Will not throw but returns null on database error
    */
   getAllTodosAsync = async (
-    userId: any,
-    search: any,
-    pageIndex: any,
-    pageSize: any,
-  ): Promise<Array<ITodo> | null> => await this.todoRepository.getTodosAsync(
-    userId,
-    search,
-    pageIndex,
-    pageSize,
-  );
+    userId: string,
+    search: string,
+    pageIndex: number,
+    pageSize: number,
+  ): Promise<Array<ITodo> | null> =>
+    await this.todoRepository.getTodosAsync(
+      userId,
+      search,
+      pageIndex,
+      pageSize,
+    );
   // #endregion
 }

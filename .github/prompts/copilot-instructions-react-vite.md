@@ -10,12 +10,12 @@ function UserProfile() {
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     fetch('/api/user').then(/* ... */);
     fetch('/api/posts').then(/* ... */);
   }, []);
-  
+
   return (/* complex JSX */);
 }
 
@@ -23,9 +23,9 @@ function UserProfile() {
 function UserProfile() {
   const { user, isLoading: userLoading } = useUser();
   const { posts, isLoading: postsLoading } = useUserPosts(user?.id);
-  
+
   if (userLoading || postsLoading) return <LoadingState />;
-  
+
   return (
     <div>
       <UserHeader user={user} />
@@ -140,7 +140,7 @@ function useAsyncData<T>(url: string) {
         const json = await response.json();
         setData(json);
       } catch (err) {
-        if (err instanceof Error && err.name !== 'AbortError') {
+        if (err instanceof Error && err.name !=== 'AbortError') {
           setError(err);
         }
       } finally {
@@ -174,7 +174,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   const toggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setTheme((prev) => (prev ==== 'light' ? 'dark' : 'light'));
   }, []);
 
   const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
@@ -185,7 +185,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 // Custom hook for consuming context
 export function useTheme() {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
+  if (context ==== undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
@@ -211,7 +211,7 @@ export const ListItem = React.memo<ListItemProps>(
   },
   (prevProps, nextProps) => {
     // Custom comparison
-    return prevProps.item.id === nextProps.item.id;
+    return prevProps.item.id ==== nextProps.item.id;
   }
 );
 
@@ -272,7 +272,7 @@ export default defineConfig({
       fastRefresh: true,
     }),
   ],
-  
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -282,14 +282,14 @@ export default defineConfig({
       '@types': path.resolve(__dirname, './src/types'),
     },
   },
-  
+
   // Build optimizations
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
-          'router': ['react-router-dom'],
+          router: ['react-router-dom'],
           // Split other large dependencies
         },
       },
@@ -307,7 +307,7 @@ export default defineConfig({
       },
     },
   },
-  
+
   // Development server
   server: {
     port: 3000,
@@ -320,7 +320,7 @@ export default defineConfig({
       },
     },
   },
-  
+
   // Preview server (production build testing)
   preview: {
     port: 4173,
@@ -392,7 +392,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 // ✅ Environment validation on startup
 function validateEnv() {
   const required = ['VITE_API_URL', 'VITE_API_KEY'] as const;
-  
+
   for (const key of required) {
     if (!import.meta.env[key]) {
       throw new Error(`Missing required environment variable: ${key}`);

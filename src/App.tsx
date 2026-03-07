@@ -10,11 +10,8 @@ function App() {
   } */
 
   return (
-    <>
-      {
-        /* isAuthenticated ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes /> */ <UnauthenticatedRoutes />
-      }
-    </>
+    /* isAuthenticated ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes /> */
+    <UnauthenticatedRoutes />
   );
 }
 

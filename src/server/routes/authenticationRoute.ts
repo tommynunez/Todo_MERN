@@ -1,6 +1,4 @@
-import {
-  NextFunction, Request, Response, Router,
-} from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import passport from 'passport';
 import UserService from '../services/userService';
 import ChorelistService from '../services/choreListService';
@@ -43,7 +41,7 @@ export const createAuthenticationroutes = (
         if (user && user._id) {
           await _chorelistService.insertChorelistAsync({
             title: 'My Chore List',
-            owner: user.id,
+            owner: user._id,
           });
 
           // sign in the user and establish a session
@@ -97,10 +95,11 @@ export const createAuthenticationroutes = (
             }
             if (!user) {
               return _response.status(401).json({ errmsg: message?.message });
-            } if (
-              message
-              && message.message
-                == 'Account is locked out. Please reset your password.'
+            }
+            if (
+              message &&
+              message.message ===
+                'Account is locked out. Please reset your password.'
             ) {
               return _response.status(423).json({ errmsg: message?.message });
             }
@@ -157,7 +156,7 @@ export const createAuthenticationroutes = (
     '/confirm/email',
     async (_request: Request, _response: Response, next: NextFunction) => {
       try {
-        if (_request.body.token == null) {
+        if (_request.body.token === null) {
           const errmsg = 'Missing token';
           _response.status(400).json({ errmsg });
           return next(errmsg);
@@ -182,14 +181,14 @@ export const createAuthenticationroutes = (
     '/forgotpassword',
     async (_request: Request, _response: Response) => {
       try {
-        if (_request.body.emailAddress == null) {
+        if (_request.body.emailAddress === null) {
           const errmsg = 'Missing email address';
           return _response.status(400).json({ errmsg });
         }
         const user = await _userService.getUserbyEmailAddressAsync(
           _request.body.emailAddress,
         );
-        if (user == null || _request.body.emailAddress != user.emailAddress) {
+        if (user === null || _request.body.emailAddress !== user.emailAddress) {
           return _response.status(200).json({
             errmsg:
               'If an account with that email exists, you will receive an email with instructions.',
@@ -213,18 +212,18 @@ export const createAuthenticationroutes = (
     async (_request: Request, _response: Response) => {
       try {
         const { query } = _request;
-        if (query.token == null) {
+        if (query.token === null) {
           return _response.status(400).json({ errmsg: 'Missing token' });
         }
 
-        if (_request.body.password != _request.body.confirmPassword) {
+        if (_request.body.password !== _request.body.confirmPassword) {
           return _response
             .status(422)
             .json({ errmsg: 'Passwords do not match' });
         }
 
         const [isPasswordReset, user] = await _userService.resetPasswordAsync(
-          query.token.toString(),
+          query.token?.toString() || '',
           _request.body.password,
         );
 

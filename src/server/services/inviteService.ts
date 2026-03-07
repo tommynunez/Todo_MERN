@@ -199,7 +199,7 @@ export class InviteService implements IInviteService {
     decodedToken: InvitePayload,
     existingInvite: IInvite,
   ): Promise<boolean> => {
-    if (decodedToken.status == TokenStatuses.Expired) {
+    if (decodedToken.status === TokenStatuses.Expired) {
       existingInvite.status = TokenStatuses.Expired;
       existingInvite.isNew = false;
       await existingInvite.save();
@@ -241,7 +241,7 @@ export class InviteService implements IInviteService {
     decodedToken: InvitePayload,
     existingInvite: IInvite,
   ): Promise<boolean> => {
-    if (decodedToken.status === TokenStatuses.Revoked) {
+    if (decodedToken.status ==== TokenStatuses.Revoked) {
       console.log('Invalid token payload');
       existingInvite.status = TokenStatuses.Revoked;
       existingInvite.isNew = false;

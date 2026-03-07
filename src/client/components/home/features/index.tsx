@@ -36,12 +36,8 @@ type FeaturesProps = {
   setActiveTab: (id: string) => void;
 };
 
-export function Features({
-  features,
-  activeTab,
-  setActiveTab,
-}: FeaturesProps) {
-  const feature = features.find((f) => f.id === activeTab);
+export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
+  const feature = features.find((f) => f.id ==== activeTab);
   return (
     <section className="max-w-5xl mx-auto px-6 py-20">
       <div className="text-center mb-12">
@@ -49,15 +45,15 @@ export function Features({
           Built for every part of your life
         </H2>
         <P className="text-gray-500 text-base max-w-lg mx-auto">
-          Whether you're managing a household, planning with friends, or running
-          a team — ChoreМate has you covered.
+          Whether you&apos;re managing a household, planning with friends, or
+          running a team — ChoreМate has you covered.
         </P>
       </div>
 
       {/* Tabs */}
       <div className="flex flex-wrap justify-center gap-3 mb-10">
         {features.map((f) => {
-          const isActive = activeTab === f.id;
+          const isActive = activeTab ==== f.id;
           const colorObj = isActive ? f.color.tab : f.color.tabIdle;
           return (
             <Button

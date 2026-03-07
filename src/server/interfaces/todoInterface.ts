@@ -31,19 +31,19 @@ export interface ITodoService extends IService {
     ownerId: string,
     emailAddress: string,
     name: string,
-    choreListId: string
+    choreListId: string,
   ) => Promise<Document | boolean>;
   updateTodoAsync: (
     emailAddress: string,
     name: string,
-    completed: boolean
+    completed: boolean,
   ) => Promise<Document | boolean>;
-  deleteTodoAsync: (id: number) => Promise<boolean>;
+  deleteTodoAsync: (id: string) => Promise<boolean>;
   getByIdTodosAsync: (name: string) => Promise<ITodo | null>;
   getAllTodosAsync: (
     userId: any,
     search: any,
     pageIndex: any,
-    pageSize: any
+    pageSize: any,
   ) => Promise<Array<ITodo> | null>;
 }

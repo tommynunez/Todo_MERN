@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
+import { H1, P } from '@/client/shared';
 import { usePreventBackButton } from '@hooks/usePreventBackButton';
 import { Form } from './login-form';
-import { H1, P } from '@/client/shared';
 
 export function Login() {
   usePreventBackButton();
@@ -24,7 +24,7 @@ export function Login() {
               Forgot password?
             </Link>
             <P className="text-gray-600 dark:text-vscode-text-secondary text-sm">
-              Don't have an account?
+              Don&apos;t have an account?
               {' '}
               <Link
                 to="/signup"

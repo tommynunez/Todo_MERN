@@ -33,7 +33,7 @@ export default function attachClient(
   const clientRoot = opts.clientRoot ?? path.resolve(process.cwd(), 'client');
   const clientDist = opts.clientDist ?? path.resolve(clientRoot, 'dist');
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV ==== 'production') {
     if (!fs.existsSync(clientDist)) {
       console.warn(
         `Client dist not found at ${clientDist} — ensure frontend is built`,

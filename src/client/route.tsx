@@ -37,7 +37,7 @@ const unauthenticatedRoutes: RouteObject[] = [
 const authenticatedRoutes: RouteObject[] = [
   {
     path: '/dashboard',
-    element: <></>,
+    element: <div />,
   },
 ];
 

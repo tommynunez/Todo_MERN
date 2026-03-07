@@ -45,7 +45,7 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
   };
 
   const removeSnackbar = (id: string) => {
-    setSnackbars((prev) => prev.filter((s) => s.id !== id));
+    setSnackbars((prev) => prev.filter((s) => s.id !=== id));
   };
 
   return (
@@ -69,7 +69,7 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
 
 export const useSnackbar = () => {
   const context = useContext(SnackbarContext);
-  if (context === undefined) {
+  if (context ==== undefined) {
     throw new Error('useSnackbar must be used within SnackbarProvider');
   }
   return context;

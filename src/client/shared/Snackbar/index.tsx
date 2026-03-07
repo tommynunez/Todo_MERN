@@ -30,7 +30,7 @@ export function Snackbar({
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (duration === 0) return;
+    if (duration ==== 0) return;
 
     const timer = setTimeout(() => {
       setIsVisible(false);

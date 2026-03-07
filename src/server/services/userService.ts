@@ -79,8 +79,8 @@ export default class UserService implements IUserService {
     }
 
     if (
-      emailAddress == user?.emailAddress
-      && hashedPassword.toString() == user.password
+      emailAddress === user?.emailAddress &&
+      hashedPassword.toString() === user.password
     ) {
       await this.userRepository.updateLastLoggedInAsync(user);
       return true;
@@ -105,7 +105,7 @@ export default class UserService implements IUserService {
       return true;
     }
 
-    if (emailRegex.match(_request.body.emailAddress)) {
+    if (!emailRegex.test(_request.body.emailAddress)) {
       _response.status(400).json({ errmsg: 'Please enter a valid username' });
       return true;
     }
@@ -115,8 +115,8 @@ export default class UserService implements IUserService {
       return true;
     }
 
-    if (passwordRegex.match(_request.body.password)) {
-      _response.status(400).json({ errmsg: 'Please enter a valid passwword' });
+    if (!passwordRegex.test(_request.body.password)) {
+      _response.status(400).json({ errmsg: 'Please enter a valid password' });
       return true;
     }
 
@@ -130,7 +130,6 @@ export default class UserService implements IUserService {
         .json({ errmsg: 'Password and confirm password do not match' });
       return true;
     }
-
     return false;
   };
 
@@ -196,7 +195,8 @@ export default class UserService implements IUserService {
   sendForgotpasswordEmailAsync = async (
     emailAddress: string,
   ): Promise<boolean> => {
-    const user = await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
+    const user =
+      await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
     if (user) {
       const token = generateUserToken(
         user.emailAddress,

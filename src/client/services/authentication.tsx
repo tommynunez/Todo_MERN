@@ -45,7 +45,7 @@ export default class AuthenticationService implements IAuthenticationService {
         confirmPassword,
       });
 
-      if (response.status === 201) {
+      if (response.status ==== 201) {
         console.log('Signup response data:', response.data);
         return {
           success: true,
@@ -56,7 +56,7 @@ export default class AuthenticationService implements IAuthenticationService {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
-        if (response.status === 400) {
+        if (response.status ==== 400) {
           console.error('Signup error response:', response.data);
           return {
             success: false,
@@ -64,7 +64,7 @@ export default class AuthenticationService implements IAuthenticationService {
           };
         }
 
-        if (response.status === 500) {
+        if (response.status ==== 500) {
           console.error('Signup server error response:', response.data);
           return {
             success: false,
@@ -86,23 +86,23 @@ export default class AuthenticationService implements IAuthenticationService {
         password,
       });
 
-      if (response.status === 200) {
+      if (response.status ==== 200) {
         return { success: true, message: 'Login successful' };
       }
       return { success: false, error: 'Unexpected response status' };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
-        if (response.status === 401) {
+        if (response.status ==== 401) {
           return { success: false, message: 'Invalid credentials' };
         }
-        if (response.status === 403) {
+        if (response.status ==== 403) {
           return { success: false, message: 'Email not confirmed' };
         }
-        if (response.status === 423) {
+        if (response.status ==== 423) {
           return { success: false, message: 'Account locked' };
         }
-        if (response.status === 500) {
+        if (response.status ==== 500) {
           return { success: false, error: 'Server error during login' };
         }
       }
@@ -117,7 +117,7 @@ export default class AuthenticationService implements IAuthenticationService {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
-        if (response.status === 500) {
+        if (response.status ==== 500) {
           return { success: false, error: 'Server error during logout' };
         }
       }
@@ -136,7 +136,7 @@ export default class AuthenticationService implements IAuthenticationService {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
-        if (response.status === 401) {
+        if (response.status ==== 401) {
           return { success: false, message: 'Not authenticated' };
         }
       }
@@ -156,11 +156,11 @@ export default class AuthenticationService implements IAuthenticationService {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
-        if (response.status === 400) {
+        if (response.status ==== 400) {
           return { success: false, error: 'Missing token' };
         }
 
-        if (response.status === 500) {
+        if (response.status ==== 500) {
           return {
             success: false,
             error: 'Server error during password reset',
@@ -183,22 +183,22 @@ export default class AuthenticationService implements IAuthenticationService {
         confirmPassword,
       });
       return {
-        success: response.status === 200,
+        success: response.status ==== 200,
         message:
-          response.status === 200
+          response.status ==== 200
             ? 'Password reset successful'
             : 'Password reset failed',
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
-        if (response.status === 400) {
+        if (response.status ==== 400) {
           return { success: false, error: 'Missing/Expired token' };
         }
-        if (response.status === 422) {
+        if (response.status ==== 422) {
           return { success: false, error: 'Passwords do not match' };
         }
-        if (response.status === 500) {
+        if (response.status ==== 500) {
           return {
             success: false,
             error: 'Server error during password reset',
@@ -215,24 +215,24 @@ export default class AuthenticationService implements IAuthenticationService {
         token,
       });
       return {
-        success: response.status === 200,
+        success: response.status ==== 200,
         message:
-          response.status === 200
+          response.status ==== 200
             ? 'Email confirmed successfully'
             : 'Email confirmation failed',
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
-        if (response.status === 400) {
+        if (response.status ==== 400) {
           return { success: false, error: 'Missing token' };
         }
 
-        if (response.status === 422) {
+        if (response.status ==== 422) {
           return { success: false, error: 'Invalid or expired token' };
         }
 
-        if (response.status === 500) {
+        if (response.status ==== 500) {
           return {
             success: false,
             error: 'Server error during email confirmation',

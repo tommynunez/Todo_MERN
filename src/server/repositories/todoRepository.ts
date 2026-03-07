@@ -18,7 +18,7 @@ export class TodoRepository {
     userId,
     name,
     choreListId,
-  }: ITodoAdd): Promise<Document | boolean> => {
+  }: ITodoAdd): Promise<ITodo | boolean> => {
     try {
       const todo = new todoModel({
         userId: new Types.ObjectId(userId),
@@ -72,7 +72,7 @@ export class TodoRepository {
    * @throws Will not throw but returns false if database error occurs
    * @async
    */
-  deleteTodoAsync = async (id: number): Promise<boolean> => {
+  deleteTodoAsync = async (id: string): Promise<boolean> => {
     try {
       const result = await todoModel.findOneAndDelete({
         _id: new Types.ObjectId(id),
@@ -123,21 +123,22 @@ export class TodoRepository {
       pageSize = pageSize ?? 0;
       pageIndex = pageIndex ?? 10;
 
-      const response = (await todoModel
-        .find({
-          userId,
-          $or: [
-            {
-              _id: Types.ObjectId.isValid(search)
-                ? new Types.ObjectId(search)
-                : undefined,
-            },
-            { title: { $regex: search, $options: 'i' } },
-          ],
-        })
-        .skip((pageIndex ?? 0) * (pageSize ?? 10))
-        .limit(pageSize ?? 10)
-        .exec()) || [];
+      const response =
+        (await todoModel
+          .find({
+            userId,
+            $or: [
+              {
+                _id: Types.ObjectId.isValid(search)
+                  ? new Types.ObjectId(search)
+                  : undefined,
+              },
+              { title: { $regex: search, $options: 'i' } },
+            ],
+          })
+          .skip((pageIndex ?? 0) * (pageSize ?? 10))
+          .limit(pageSize ?? 10)
+          .exec()) || [];
 
       return response;
     } catch (error) {

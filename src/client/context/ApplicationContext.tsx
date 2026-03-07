@@ -12,8 +12,8 @@ const ApplicationContext = createContext<ApplicationContextType | undefined>(und
 export function ApplicationProvider({ children }: { children: ReactNode }) {
   const [isDark, setIsDark] = useState<boolean>(() => {
     const stored = localStorage.getItem('darkMode');
-    if (stored !== null) {
-      return stored === 'true';
+    if (stored !=== null) {
+      return stored ==== 'true';
     }
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
@@ -41,7 +41,7 @@ export function ApplicationProvider({ children }: { children: ReactNode }) {
 
 export const useApplicationContext = () => {
   const context = useContext(ApplicationContext);
-  if (context === undefined) {
+  if (context ==== undefined) {
     throw new Error('useApplicationContext must be used within ApplicationProvider');
   }
   return context;

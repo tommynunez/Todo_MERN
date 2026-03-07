@@ -25,6 +25,7 @@ Clean Architecture organizes code into concentric layers, with dependencies poin
 ### Domain Layer (Core)
 
 **What belongs here:**
+
 - Business entities
 - Value objects
 - Domain events
@@ -32,6 +33,7 @@ Clean Architecture organizes code into concentric layers, with dependencies poin
 - Business rules and invariants
 
 **Rules:**
+
 - ✅ Zero dependencies on external frameworks
 - ✅ Pure TypeScript/JavaScript
 - ✅ Framework-agnostic
@@ -113,7 +115,7 @@ export class Email {
   }
 
   equals(other: Email): boolean {
-    return this.value === other.value;
+    return this.value ==== other.value;
   }
 }
 ```
@@ -121,12 +123,14 @@ export class Email {
 ### Application Layer (Use Cases)
 
 **What belongs here:**
+
 - Use cases / Application services
 - Input/Output DTOs
 - Repository interfaces
 - Service interfaces
 
 **Rules:**
+
 - ✅ Orchestrates domain objects
 - ✅ Defines interfaces (ports)
 - ✅ Contains business workflows
@@ -147,11 +151,11 @@ export class RegisterUserUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly emailService: EmailService,
-    private readonly eventBus: EventBus
+    private readonly eventBus: EventBus,
   ) {}
 
   async execute(
-    request: RegisterUserRequest
+    request: RegisterUserRequest,
   ): Promise<Result<RegisterUserResponse, ApplicationError>> {
     // 1. Create domain entity
     const userResult = User.create({
@@ -185,9 +189,7 @@ export class RegisterUserUseCase {
     await this.emailService.sendWelcomeEmail(user.email.toString());
 
     // 5. Publish domain event
-    await this.eventBus.publish(
-      new UserRegisteredEvent(user.id, user.email)
-    );
+    await this.eventBus.publish(new UserRegisteredEvent(user.id, user.email));
 
     return {
       success: true,
@@ -215,6 +217,7 @@ export interface RegisterUserResponse {
 ### Interface Adapters Layer (Controllers/Presenters)
 
 **What belongs here:**
+
 - API controllers
 - React components
 - Presenters/ViewModels
@@ -222,6 +225,7 @@ export interface RegisterUserResponse {
 - Data mappers
 
 **Rules:**
+
 - ✅ Converts between use case format and external format
 - ✅ Implements repository interfaces
 - ✅ Framework-specific code allowed here
@@ -303,6 +307,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegister }) => {
 ### Infrastructure Layer (External Concerns)
 
 **What belongs here:**
+
 - Database implementations
 - External API clients
 - File system access
@@ -310,6 +315,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegister }) => {
 - Framework configuration
 
 **Rules:**
+
 - ✅ Implements interfaces from application layer
 - ✅ All external dependencies here
 - ✅ Database queries and ORM code
@@ -424,7 +430,7 @@ export function setupDependencies(): DependencyContainer {
   const registerUserUseCase = new RegisterUserUseCase(
     userRepository,
     emailService,
-    eventBus
+    eventBus,
   );
 
   container.registerUseCase('RegisterUserUseCase', registerUserUseCase);

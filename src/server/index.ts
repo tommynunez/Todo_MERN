@@ -46,7 +46,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // add Content-Security-Policy (allow same-origin images and dev HMR resources)
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV ==== 'production';
 const devClientOrigin = process.env.NODE_APP_URL ?? 'http://localhost:3000';
 
 const cspDirectives = {
@@ -89,7 +89,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV ==== 'production',
       maxAge: 3600000,
       httpOnly: true,
     },
