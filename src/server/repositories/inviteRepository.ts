@@ -1,9 +1,9 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 import {
   IInvite,
   IInviteDelete,
-} from "../interfaces/inviteInterface";
-import { inviteModel } from "../models/invitesModel";
+} from '../interfaces/inviteInterface';
+import { inviteModel } from '../models/invitesModel';
 
 export class InviteRepository {
   constructor() {}
@@ -27,10 +27,10 @@ export class InviteRepository {
         inviteDelete.id,
         {
           status: inviteDelete.status,
-        }
+        },
       );
       if (!existingInvite) {
-        throw new Error("Invite not found");
+        throw new Error('Invite not found');
       }
       return true;
     } catch (error) {
@@ -41,7 +41,7 @@ export class InviteRepository {
 
   getInvitebyEmailAsync = async (
     email: string,
-    isLean: Boolean = false,
+    isLean: boolean = false,
   ): Promise<IInvite | null> => {
     try {
       const invite = inviteModel.findOne({ email });
@@ -58,10 +58,10 @@ export class InviteRepository {
 
   getInvitebyIdAsync = async (
     id: Types.ObjectId,
-    isLean: Boolean = false,
+    isLean: boolean = false,
   ): Promise<IInvite | null> => {
     try {
-      let invite = inviteModel.findOne({ _id: id });
+      const invite = inviteModel.findOne({ _id: id });
       if (!invite) {
         return null;
       }
@@ -78,10 +78,10 @@ export class InviteRepository {
 
   getInvitebyTokenAsync = async (
     token: string,
-    isLean: Boolean = false,
+    isLean: boolean = false,
   ): Promise<IInvite | null> => {
     try {
-      const invite = inviteModel.findById({ token: token });
+      const invite = inviteModel.findById({ token });
 
       if (invite && isLean) {
         invite.lean();

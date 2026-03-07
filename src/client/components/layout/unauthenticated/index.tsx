@@ -1,7 +1,7 @@
-import { Outlet } from "react-router-dom";
-import { AppBar, Footer } from "@/client/shared";
+import { Outlet } from 'react-router-dom';
+import { AppBar, Footer } from '@/client/shared';
 
-export const UnauthenticatedLayout = () => {
+export function UnauthenticatedLayout() {
   return (
     <div className="min-h-screen flex dark:bg-vscode-bg flex-col">
       <AppBar />
@@ -13,4 +13,4 @@ export const UnauthenticatedLayout = () => {
       <Footer />
     </div>
   );
-};
+}

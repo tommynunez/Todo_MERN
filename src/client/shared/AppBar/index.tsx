@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Bars3Icon, MoonIcon, SunIcon } from "@heroicons/react/24/outline";
-import { useApplicationContext } from "@/client/context/ApplicationContext";
+import { useState } from 'react';
+import { Bars3Icon, MoonIcon, SunIcon } from '@heroicons/react/24/outline';
+import { useApplicationContext } from '@/client/context/ApplicationContext';
 
-export const AppBar = () => {
+export function AppBar() {
   const [open, setOpen] = useState(false);
   const { isDark, toggleDarkMode } = useApplicationContext();
 
@@ -51,4 +51,4 @@ export const AppBar = () => {
       )}
     </header>
   );
-};
+}

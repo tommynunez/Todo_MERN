@@ -1,11 +1,11 @@
-import { P } from "@/client/shared";
+import { P } from '@/client/shared';
 
 type CtaFooterProps = {
   handleGetStarted: () => void;
   icon?: React.ReactNode;
 };
 
-export const CtaFooter = ({ handleGetStarted, icon }: CtaFooterProps) => {
+export function CtaFooter({ handleGetStarted, icon }: CtaFooterProps) {
   return (
     <section className="bg-gradient-to-r from-violet-600 to-blue-500 text-white px-6 py-16">
       <div className="max-w-2xl mx-auto text-center">
@@ -20,9 +20,11 @@ export const CtaFooter = ({ handleGetStarted, icon }: CtaFooterProps) => {
           onClick={handleGetStarted}
           className="inline-flex items-center gap-2 bg-white text-violet-600 font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition"
         >
-          Get Started Free {icon}
+          Get Started Free
+          {' '}
+          {icon}
         </button>
       </div>
     </section>
   );
-};
+}

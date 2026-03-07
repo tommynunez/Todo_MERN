@@ -13,7 +13,7 @@ export const usePreventBackButton = () => {
     }); */
 
   window.history.pushState(null, document.title, window.location.href);
-  window.addEventListener("popstate", function (event) {
+  window.addEventListener('popstate', (event) => {
     window.history.pushState(null, document.title, window.location.href);
   });
 };

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 export interface IAuthenticationResponse {
   success: boolean;
@@ -24,50 +24,51 @@ export interface IAuthenticationService {
   confirmEmail(token: string): Promise<IAuthenticationResponse>;
 }
 
-const baseURL = import.meta.env.VITE_API_URL || "";
+const baseURL = import.meta.env.VITE_API_URL || '';
 const axiosInstance = axios.create({
   baseURL: `${baseURL}/api/auth`,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 export default class AuthenticationService implements IAuthenticationService {
   constructor() {}
+
   async signup(
     email: string,
     password: string,
     confirmPassword: string,
   ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post("/signup", {
+      const response = await axiosInstance.post('/signup', {
         email,
         password,
         confirmPassword,
       });
 
       if (response.status === 201) {
-        console.log("Signup response data:", response.data);
+        console.log('Signup response data:', response.data);
         return {
           success: true,
-          message: "Signup successful",
+          message: 'Signup successful',
         };
       }
-      return { success: false, error: "Unexpected response status" };
+      return { success: false, error: 'Unexpected response status' };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
         if (response.status === 400) {
-          console.error("Signup error response:", response.data);
+          console.error('Signup error response:', response.data);
           return {
             success: false,
-            error: response.data.message || "Signup failed",
+            error: response.data.message || 'Signup failed',
           };
         }
 
         if (response.status === 500) {
-          console.error("Signup server error response:", response.data);
+          console.error('Signup server error response:', response.data);
           return {
             success: false,
-            error: response.data.errmsg || "Server error during signup",
+            error: response.data.errmsg || 'Server error during signup',
           };
         }
       }
@@ -80,29 +81,29 @@ export default class AuthenticationService implements IAuthenticationService {
     password: string,
   ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post("/login", {
+      const response = await axiosInstance.post('/login', {
         email,
         password,
       });
 
       if (response.status === 200) {
-        return { success: true, message: "Login successful" };
+        return { success: true, message: 'Login successful' };
       }
-      return { success: false, error: "Unexpected response status" };
+      return { success: false, error: 'Unexpected response status' };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
         if (response.status === 401) {
-          return { success: false, message: "Invalid credentials" };
+          return { success: false, message: 'Invalid credentials' };
         }
         if (response.status === 403) {
-          return { success: false, message: "Email not confirmed" };
+          return { success: false, message: 'Email not confirmed' };
         }
         if (response.status === 423) {
-          return { success: false, message: "Account locked" };
+          return { success: false, message: 'Account locked' };
         }
         if (response.status === 500) {
-          return { success: false, error: "Server error during login" };
+          return { success: false, error: 'Server error during login' };
         }
       }
       return { success: false, error: `Login failed: ${error}` };
@@ -111,13 +112,13 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async logout(): Promise<IAuthenticationResponse> {
     try {
-      await axiosInstance.post("/logout");
-      return { success: true, message: "Logout successful" };
+      await axiosInstance.post('/logout');
+      return { success: true, message: 'Logout successful' };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
         if (response.status === 500) {
-          return { success: false, error: "Server error during logout" };
+          return { success: false, error: 'Server error during logout' };
         }
       }
       return { success: false, error: `Logout failed: ${error}` };
@@ -126,17 +127,17 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async checkAuth(): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.get("/checkauth");
-      console.log("Check auth response:", response);
+      const response = await axiosInstance.get('/checkauth');
+      console.log('Check auth response:', response);
       return {
         success: true,
-        message: "Authenticated",
+        message: 'Authenticated',
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
         if (response.status === 401) {
-          return { success: false, message: "Not authenticated" };
+          return { success: false, message: 'Not authenticated' };
         }
       }
       return { success: false, error: `Auth check failed: ${error}` };
@@ -145,24 +146,24 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async forgotPassword(email: string): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post("/forgotpassword", {
+      const response = await axiosInstance.post('/forgotpassword', {
         email,
       });
       return {
         success: true,
-        message: "Password reset email sent",
+        message: 'Password reset email sent',
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
         if (response.status === 400) {
-          return { success: false, error: "Missing token" };
+          return { success: false, error: 'Missing token' };
         }
 
         if (response.status === 500) {
           return {
             success: false,
-            error: "Server error during password reset",
+            error: 'Server error during password reset',
           };
         }
       }
@@ -176,7 +177,7 @@ export default class AuthenticationService implements IAuthenticationService {
     confirmPassword: string,
   ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.put("/forgotpassword", {
+      const response = await axiosInstance.put('/forgotpassword', {
         token,
         newPassword,
         confirmPassword,
@@ -185,22 +186,22 @@ export default class AuthenticationService implements IAuthenticationService {
         success: response.status === 200,
         message:
           response.status === 200
-            ? "Password reset successful"
-            : "Password reset failed",
+            ? 'Password reset successful'
+            : 'Password reset failed',
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
         if (response.status === 400) {
-          return { success: false, error: "Missing/Expired token" };
+          return { success: false, error: 'Missing/Expired token' };
         }
         if (response.status === 422) {
-          return { success: false, error: "Passwords do not match" };
+          return { success: false, error: 'Passwords do not match' };
         }
         if (response.status === 500) {
           return {
             success: false,
-            error: "Server error during password reset",
+            error: 'Server error during password reset',
           };
         }
       }
@@ -210,31 +211,31 @@ export default class AuthenticationService implements IAuthenticationService {
 
   async confirmEmail(token: string): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post("/confirm-email", {
+      const response = await axiosInstance.post('/confirm-email', {
         token,
       });
       return {
         success: response.status === 200,
         message:
           response.status === 200
-            ? "Email confirmed successfully"
-            : "Email confirmation failed",
+            ? 'Email confirmed successfully'
+            : 'Email confirmation failed',
       };
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { response } = error;
         if (response.status === 400) {
-          return { success: false, error: "Missing token" };
+          return { success: false, error: 'Missing token' };
         }
 
         if (response.status === 422) {
-          return { success: false, error: "Invalid or expired token" };
+          return { success: false, error: 'Invalid or expired token' };
         }
 
         if (response.status === 500) {
           return {
             success: false,
-            error: "Server error during email confirmation",
+            error: 'Server error during email confirmation',
           };
         }
       }

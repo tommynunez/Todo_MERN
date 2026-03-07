@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export const useInputField = () => {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
   const [isError, setIsError] = useState(false);
-  const STORAGE_REMEMBER_ME = "rememberMe";
+  const STORAGE_REMEMBER_ME = 'rememberMe';
 
   const handleInputOnBlur = (
     event: any,
@@ -20,7 +20,7 @@ export const useInputField = () => {
         );
       }
 
-      //if we have a value and error flag is on turn if off
+      // if we have a value and error flag is on turn if off
       if (isError) {
         setIsError(false);
       }

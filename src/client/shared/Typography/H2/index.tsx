@@ -3,7 +3,7 @@ interface H2Props {
   className?: string;
 }
 
-export const H2 = ({ children, className = "" }: H2Props) => {
+export function H2({ children, className = '' }: H2Props) {
   return (
     <h2
       className={`text-3xl font-bold text-gray-900 dark:text-vscode-text ${className}`}
@@ -11,4 +11,4 @@ export const H2 = ({ children, className = "" }: H2Props) => {
       {children}
     </h2>
   );
-};
+}

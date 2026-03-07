@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface SnackbarProps {
   message: string;
-  variant?: "success" | "error" | "warning" | "info";
+  variant?: 'success' | 'error' | 'warning' | 'info';
   duration?: number;
   position?:
-    | "top-left"
-    | "top-center"
-    | "top-right"
-    | "bottom-left"
-    | "bottom-center"
-    | "bottom-right";
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right';
   onClose?: () => void;
   action?: {
     label: string;
@@ -19,14 +19,14 @@ interface SnackbarProps {
   };
 }
 
-export const Snackbar = ({
+export function Snackbar({
   message,
-  variant = "info",
+  variant = 'info',
   duration = 5000,
-  position = "bottom-center",
+  position = 'bottom-center',
   onClose,
   action,
-}: SnackbarProps) => {
+}: SnackbarProps) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -43,19 +43,19 @@ export const Snackbar = ({
   if (!isVisible) return null;
 
   const variantClasses = {
-    success: "bg-green-500 dark:bg-green-600",
-    error: "bg-red-500 dark:bg-red-600",
-    warning: "bg-yellow-500 dark:bg-yellow-600",
-    info: "bg-vscode-blue dark:bg-vscode-blue",
+    success: 'bg-green-500 dark:bg-green-600',
+    error: 'bg-red-500 dark:bg-red-600',
+    warning: 'bg-yellow-500 dark:bg-yellow-600',
+    info: 'bg-vscode-blue dark:bg-vscode-blue',
   };
 
   const positionClasses = {
-    "top-left": "top-4 left-4",
-    "top-center": "top-4 left-1/2 -translate-x-1/2",
-    "top-right": "top-4 right-4",
-    "bottom-left": "bottom-4 left-4",
-    "bottom-center": "bottom-4 left-1/2 -translate-x-1/2",
-    "bottom-right": "bottom-4 right-4",
+    'top-left': 'top-4 left-4',
+    'top-center': 'top-4 left-1/2 -translate-x-1/2',
+    'top-right': 'top-4 right-4',
+    'bottom-left': 'bottom-4 left-4',
+    'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2',
+    'bottom-right': 'bottom-4 right-4',
   };
 
   const handleClose = () => {
@@ -91,4 +91,4 @@ export const Snackbar = ({
       </div>
     </div>
   );
-};
+}

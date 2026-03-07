@@ -1,5 +1,5 @@
-import { ForgotPassword } from "@components/authentication/forgot-password";
+import { ForgotPassword } from '@components/authentication/forgot-password';
 
-export const ForgotPasswordPage = () => {
+export function ForgotPasswordPage() {
   return <ForgotPassword />;
-};
+}

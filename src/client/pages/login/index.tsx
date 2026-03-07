@@ -1,5 +1,5 @@
-import { Login } from "@components/authentication/login";
+import { Login } from '@components/authentication/login';
 
-export const LoginPage = () => {
+export function LoginPage() {
   return <Login />;
-};
+}

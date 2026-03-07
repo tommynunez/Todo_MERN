@@ -1,6 +1,8 @@
-import { Button, H2, H3, P } from "@/client/shared";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import { ComponentType } from "react";
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { ComponentType } from 'react';
+import {
+  Button, H2, H3, P,
+} from '@/client/shared';
 
 export type Highlight = {
   icon: ComponentType<{ className?: string }>;
@@ -34,11 +36,11 @@ type FeaturesProps = {
   setActiveTab: (id: string) => void;
 };
 
-export const Features = ({
+export function Features({
   features,
   activeTab,
   setActiveTab,
-}: FeaturesProps) => {
+}: FeaturesProps) {
   const feature = features.find((f) => f.id === activeTab);
   return (
     <section className="max-w-5xl mx-auto px-6 py-20">
@@ -111,7 +113,9 @@ export const Features = ({
                   color: feature.color.accent,
                 }}
               >
-                Learn more <ArrowRightIcon className="w-4 h-4" />
+                Learn more
+                {' '}
+                <ArrowRightIcon className="w-4 h-4" />
               </Button>
             </div>
 
@@ -138,4 +142,4 @@ export const Features = ({
       )}
     </section>
   );
-};
+}

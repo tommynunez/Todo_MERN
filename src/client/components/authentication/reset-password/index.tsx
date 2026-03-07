@@ -1,3 +1,3 @@
-export const ResetPassword = () => {
+export function ResetPassword() {
   return <div>Reset Password Component</div>;
-};
+}

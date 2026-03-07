@@ -1,6 +1,6 @@
-import { model, Schema } from "mongoose";
-import { IUserAccount } from "../interfaces/userInterface";
-import { TokenStatuses } from "../constants/TokenStatuses";
+import { model, Schema } from 'mongoose';
+import { IUserAccount } from '../interfaces/userInterface';
+import { TokenStatuses } from '../constants/TokenStatuses';
 
 const userSchema = new Schema<IUserAccount>(
   {
@@ -21,7 +21,7 @@ const userSchema = new Schema<IUserAccount>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export const userModel = model<IUserAccount>("UserAccount", userSchema);
+export const userModel = model<IUserAccount>('UserAccount', userSchema);

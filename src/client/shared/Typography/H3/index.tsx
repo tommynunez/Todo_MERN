@@ -4,7 +4,7 @@ interface H3Props {
   style?: React.CSSProperties;
 }
 
-export const H3 = ({ children, className = "", style }: H3Props) => {
+export function H3({ children, className = '', style }: H3Props) {
   return (
     <h3
       className={`text-2xl font-bold text-gray-900 dark:text-vscode-text ${className}`}
@@ -13,4 +13,4 @@ export const H3 = ({ children, className = "", style }: H3Props) => {
       {children}
     </h3>
   );
-};
+}

@@ -1,10 +1,12 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-import { Snackbar } from "../shared";
+import {
+  createContext, useContext, useState, ReactNode,
+} from 'react';
+import { Snackbar } from '../shared';
 
 interface SnackbarMessage {
   id: string;
   message: string;
-  variant: "success" | "error" | "warning" | "info";
+  variant: 'success' | 'error' | 'warning' | 'info';
   duration?: number;
   action?: {
     label: string;
@@ -15,7 +17,7 @@ interface SnackbarMessage {
 interface SnackbarContextType {
   showSnackbar: (
     message: string,
-    options?: Partial<Omit<SnackbarMessage, "id" | "message">>,
+    options?: Partial<Omit<SnackbarMessage, 'id' | 'message'>>,
   ) => void;
 }
 
@@ -23,18 +25,18 @@ const SnackbarContext = createContext<SnackbarContextType | undefined>(
   undefined,
 );
 
-export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
+export function SnackbarProvider({ children }: { children: ReactNode }) {
   const [snackbars, setSnackbars] = useState<SnackbarMessage[]>([]);
 
   const showSnackbar = (
     message: string,
-    options?: Partial<Omit<SnackbarMessage, "id" | "message">>,
+    options?: Partial<Omit<SnackbarMessage, 'id' | 'message'>>,
   ) => {
     const id = Math.random().toString(36).substr(2, 9);
     const newSnackbar: SnackbarMessage = {
       id,
       message,
-      variant: options?.variant || "info",
+      variant: options?.variant || 'info',
       duration: options?.duration ?? 5000,
       action: options?.action,
     };
@@ -63,12 +65,12 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
       </div>
     </SnackbarContext.Provider>
   );
-};
+}
 
 export const useSnackbar = () => {
   const context = useContext(SnackbarContext);
   if (context === undefined) {
-    throw new Error("useSnackbar must be used within SnackbarProvider");
+    throw new Error('useSnackbar must be used within SnackbarProvider');
   }
   return context;
 };

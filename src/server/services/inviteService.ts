@@ -1,4 +1,5 @@
-import { InviteRepository } from "../repositories/inviteRepository";
+import { Types } from 'mongoose';
+import { InviteRepository } from '../repositories/inviteRepository';
 import {
   IInviteService,
   IInvite,
@@ -7,16 +8,15 @@ import {
   IInviteUpdate,
   InvitePayload,
   IInviteResponse,
-} from "../interfaces/inviteInterface";
-import UserService from "./userService";
-import { TokenStatuses } from "../constants/TokenStatuses";
-import { InviteTypes } from "../constants/InviteType";
-import { Types } from "mongoose";
-import ChoreListService from "./choreListService";
-import { IChoreListUpdate } from "../interfaces/choreListInterfaces";
-import { Role } from "../constants/Roles";
-import { sendEmail } from "../infrastructure/email/maileroo.wraper";
-import { generateInviteToken, verifyToken } from "../utils/token";
+} from '../interfaces/inviteInterface';
+import UserService from './userService';
+import { TokenStatuses } from '../constants/TokenStatuses';
+import { InviteTypes } from '../constants/InviteType';
+import ChoreListService from './choreListService';
+import { IChoreListUpdate } from '../interfaces/choreListInterfaces';
+import { Role } from '../constants/Roles';
+import { sendEmail } from '../infrastructure/email/maileroo.wraper';
+import { generateInviteToken, verifyToken } from '../utils/token';
 
 export class InviteService implements IInviteService {
   constructor(
@@ -25,7 +25,7 @@ export class InviteService implements IInviteService {
     private inviteRepository: InviteRepository,
   ) {}
 
-  //#region Public Methods
+  // #region Public Methods
   /**
    * Create an invite and send email
    * @param invite
@@ -34,8 +34,7 @@ export class InviteService implements IInviteService {
   createInviteAsync = async (invite: IInviteAdd): Promise<boolean> => {
     // Logic to send an invite to the provided email
     try {
-      const hasInvitepending =
-        await this.inviteRepository.getInvitebyEmailAsync(invite.email);
+      const hasInvitepending = await this.inviteRepository.getInvitebyEmailAsync(invite.email);
       if (hasInvitepending) {
         return false;
       }
@@ -46,13 +45,13 @@ export class InviteService implements IInviteService {
         email: invite.email,
         listId: invite.listId,
         role: invite.role,
-        token: token,
+        token,
         type: invite.type,
         status: invite.status,
       } as IInvite);
       return true;
     } catch (error) {
-      console.error("Something went wrong will sending an invite");
+      console.error('Something went wrong will sending an invite');
       return false;
     }
   };
@@ -64,8 +63,7 @@ export class InviteService implements IInviteService {
    */
   getInvitebyIdAsync = async (
     id: Types.ObjectId,
-  ): Promise<IInviteResponse | null> =>
-    await this.inviteRepository.getInvitebyIdAsync(id);
+  ): Promise<IInviteResponse | null> => await this.inviteRepository.getInvitebyIdAsync(id);
 
   /**
    *  Inactivate an invite
@@ -74,8 +72,7 @@ export class InviteService implements IInviteService {
    */
   inactivateInviteAsync = async (
     inviteDelete: IInviteDelete,
-  ): Promise<boolean> =>
-    await this.inviteRepository.inactivateInviteAsync(inviteDelete);
+  ): Promise<boolean> => await this.inviteRepository.inactivateInviteAsync(inviteDelete);
 
   /**
    * Verify invite token and update chore list sharing
@@ -89,7 +86,7 @@ export class InviteService implements IInviteService {
       invite.token,
     );
     if (!existingInvite) {
-      throw new Error("Invite not found");
+      throw new Error('Invite not found');
     }
 
     const decodedToken = await verifyToken(
@@ -110,7 +107,7 @@ export class InviteService implements IInviteService {
       return false;
     }
 
-    console.log("Invite token was successful");
+    console.log('Invite token was successful');
     // Update the invite details
     existingInvite.status = TokenStatuses.Accepted;
 
@@ -129,9 +126,9 @@ export class InviteService implements IInviteService {
     await existingInvite.save();
     return true;
   };
-  //#endregion
+  // #endregion
 
-  //#region Private Methods
+  // #region Private Methods
   /**
    * Add invited user to chore list
    * @param email
@@ -147,7 +144,7 @@ export class InviteService implements IInviteService {
     const user = await this.userService.getUserbyEmailAddressAsync(email);
 
     return await this.choreListService.updateChorelistAsync(listId, {
-      shareWith: [{ userId: user?.id, role: role }],
+      shareWith: [{ userId: user?.id, role }],
     } as IChoreListUpdate);
   };
 
@@ -155,10 +152,10 @@ export class InviteService implements IInviteService {
     const userDoc = await this.userService.getUserbyEmailAddressAsync(
       invite.email,
     );
-    let token = "";
+    let token = '';
     invite.status = TokenStatuses.Pending;
 
-    //user exists, lets send the email for the chore list invite
+    // user exists, lets send the email for the chore list invite
     if (userDoc) {
       console.log(
         `Generate token for ${invite.email} and list ${invite.listId} with role ${invite.role}`,
@@ -171,21 +168,21 @@ export class InviteService implements IInviteService {
       );
 
       invite.type = InviteTypes.ChoreList;
-      //send email to user with invite link
-      await sendEmail("INVITE_EMAIL", userDoc.emailAddress, {
+      // send email to user with invite link
+      await sendEmail('INVITE_EMAIL', userDoc.emailAddress, {
         inviterName: invite.inviterName,
         recipientName: invite.email,
-        inviteLink: "https://yourapp.com?token=" + token,
+        inviteLink: `https://yourapp.com?token=${token}`,
       });
     } else {
-      //user will need to signup first
+      // user will need to signup first
       invite.type = InviteTypes.Registration;
 
-      //send email to have the user signup
-      await sendEmail("INVITE_REGISTRATION_EMAIL", invite.email, {
+      // send email to have the user signup
+      await sendEmail('INVITE_REGISTRATION_EMAIL', invite.email, {
         inviterName: invite.inviterName,
         recipientName: invite.email,
-        registrationLink: "https://yourapp.com?token=" + token,
+        registrationLink: `https://yourapp.com?token=${token}`,
       });
     }
 
@@ -201,7 +198,7 @@ export class InviteService implements IInviteService {
   private resendInviteonExpiretokensAsync = async (
     decodedToken: InvitePayload,
     existingInvite: IInvite,
-  ): Promise<Boolean> => {
+  ): Promise<boolean> => {
     if (decodedToken.status == TokenStatuses.Expired) {
       existingInvite.status = TokenStatuses.Expired;
       existingInvite.isNew = false;
@@ -218,16 +215,16 @@ export class InviteService implements IInviteService {
         email: existingInvite.email,
         listId: existingInvite.listId,
         role: existingInvite.role,
-        token: token,
+        token,
         type: existingInvite.type,
         status: TokenStatuses.Pending,
       } as IInvite);
 
-      //send new token
-      await sendEmail("INVITE_EMAIL", existingInvite.email, {
+      // send new token
+      await sendEmail('INVITE_EMAIL', existingInvite.email, {
         inviterName: existingInvite.inviterName,
         recipientName: existingInvite.email,
-        inviteLink: "https://yourapp.com?token=" + token,
+        inviteLink: `https://yourapp.com?token=${token}`,
       });
       return true;
     }
@@ -243,9 +240,9 @@ export class InviteService implements IInviteService {
   private revokedTokenAsync = async (
     decodedToken: InvitePayload,
     existingInvite: IInvite,
-  ): Promise<Boolean> => {
+  ): Promise<boolean> => {
     if (decodedToken.status === TokenStatuses.Revoked) {
-      console.log("Invalid token payload");
+      console.log('Invalid token payload');
       existingInvite.status = TokenStatuses.Revoked;
       existingInvite.isNew = false;
       await existingInvite.save();
@@ -253,5 +250,5 @@ export class InviteService implements IInviteService {
     }
     return true;
   };
-  //#endregion
+  // #endregion
 }

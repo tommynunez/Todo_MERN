@@ -1,19 +1,19 @@
-import jwt from "jsonwebtoken";
-import { Types } from "mongoose";
-import { Role } from "../constants/Roles";
-import { InvitePayload } from "../interfaces/inviteInterface";
-import { TokenStatuses } from "../constants/TokenStatuses";
-import { InviteType } from "../constants/InviteType";
+import jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
+import { Role } from '../constants/Roles';
+import { InvitePayload } from '../interfaces/inviteInterface';
+import { TokenStatuses } from '../constants/TokenStatuses';
+import { InviteType } from '../constants/InviteType';
 
 export const generateInviteToken = (
   listId: Types.ObjectId,
   email: string,
   role: Role,
   type: InviteType,
-  jwtSecret?: string
+  jwtSecret?: string,
 ): string => {
   if (!jwtSecret) {
-    throw new Error("JWT secret is not defined");
+    throw new Error('JWT secret is not defined');
   }
 
   return jwt.sign(
@@ -24,16 +24,16 @@ export const generateInviteToken = (
       type,
     },
     jwtSecret,
-    { expiresIn: "48h" }
+    { expiresIn: '48h' },
   );
 };
 
 export const generateUserToken = (
   email: string,
-  jwtSecret?: string
+  jwtSecret?: string,
 ): string => {
   if (!jwtSecret) {
-    throw new Error("JWT secret is not defined");
+    throw new Error('JWT secret is not defined');
   }
 
   return jwt.sign(
@@ -41,16 +41,16 @@ export const generateUserToken = (
       email,
     },
     jwtSecret,
-    { expiresIn: "48h" }
+    { expiresIn: '48h' },
   );
 };
 
 export const verifyToken = (
   token: string,
-  jwtSecret: string
+  jwtSecret: string,
 ): InvitePayload => {
   if (!jwtSecret) {
-    throw new Error("JWT secret is not defined");
+    throw new Error('JWT secret is not defined');
   }
 
   try {
@@ -58,11 +58,10 @@ export const verifyToken = (
     return decoded as InvitePayload;
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      console.log("The invite token has expired");
+      console.log('The invite token has expired');
       return { status: TokenStatuses.Expired } as InvitePayload;
-    } else {
-      console.log("An error occurred while verifying the invite token:", error);
-      return { status: TokenStatuses.Revoked } as InvitePayload;
     }
+    console.log('An error occurred while verifying the invite token:', error);
+    return { status: TokenStatuses.Revoked } as InvitePayload;
   }
 };

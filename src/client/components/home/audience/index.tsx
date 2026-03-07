@@ -1,6 +1,6 @@
-import { H3, P } from "@/client/shared";
+import { ComponentType } from 'react';
+import { H3, P } from '@/client/shared';
 
-import { ComponentType } from "react";
 export type HomeAudience = {
   icon: ComponentType<{ className?: string }>;
   iconSize: string;
@@ -9,7 +9,7 @@ export type HomeAudience = {
   color: { text: string; bg: string };
 };
 
-export const Audience = ({ audiences }: { audiences: HomeAudience[] }) => {
+export function Audience({ audiences }: { audiences: HomeAudience[] }) {
   return (
     <section className="bg-white border-t border-gray-100 px-6 py-16">
       <div className="max-w-4xl mx-auto">
@@ -37,4 +37,4 @@ export const Audience = ({ audiences }: { audiences: HomeAudience[] }) => {
       </div>
     </section>
   );
-};
+}

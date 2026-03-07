@@ -1,5 +1,5 @@
-import { IAddAuditLog } from "../interfaces/auditLogInterface";
-import { auditLogModel } from "../models/auditloggModel";
+import { IAddAuditLog } from '../interfaces/auditLogInterface';
+import { auditLogModel } from '../models/auditloggModel';
 
 export class AuditLogRepository {
   constructor() {}

@@ -1,33 +1,33 @@
-import { RouteObject, useRoutes } from "react-router-dom";
-import { HomePage } from "./pages/home";
-import { UnauthenticatedLayout } from "@components/layout/unauthenticated";
-import { LoginPage } from "@pages/login";
-import { ForgotPasswordPage } from "@pages/forgot-password";
-import { ResetPasswordPage } from "@pages/reset-password";
-import { EmailConfirmationPage } from "@pages/email-confirmation";
+import { RouteObject, useRoutes } from 'react-router-dom';
+import { UnauthenticatedLayout } from '@components/layout/unauthenticated';
+import { LoginPage } from '@pages/login';
+import { ForgotPasswordPage } from '@pages/forgot-password';
+import { ResetPasswordPage } from '@pages/reset-password';
+import { EmailConfirmationPage } from '@pages/email-confirmation';
+import { HomePage } from './pages/home';
 
 const unauthenticatedRoutes: RouteObject[] = [
   {
-    path: "/",
+    path: '/',
     element: <HomePage />,
   },
   {
     element: <UnauthenticatedLayout />,
     children: [
       {
-        path: "/login",
+        path: '/login',
         element: <LoginPage />,
       },
       {
-        path: "/forgot-password",
+        path: '/forgot-password',
         element: <ForgotPasswordPage />,
       },
       {
-        path: "/reset-password",
+        path: '/reset-password',
         element: <ResetPasswordPage />,
       },
       {
-        path: "/confirm-email",
+        path: '/confirm-email',
         element: <EmailConfirmationPage />,
       },
     ],
@@ -36,15 +36,11 @@ const unauthenticatedRoutes: RouteObject[] = [
 
 const authenticatedRoutes: RouteObject[] = [
   {
-    path: "/dashboard",
+    path: '/dashboard',
     element: <></>,
   },
 ];
 
-export const UnauthenticatedRoutes = () => {
-  return useRoutes(unauthenticatedRoutes);
-};
+export const UnauthenticatedRoutes = () => useRoutes(unauthenticatedRoutes);
 
-export const AuthenticatedRoutes = () => {
-  return useRoutes(authenticatedRoutes);
-};
+export const AuthenticatedRoutes = () => useRoutes(authenticatedRoutes);

@@ -3,12 +3,13 @@ import {
   IChoreListAdd,
   IChoreListService,
   IChoreListUpdate,
-} from "../interfaces/choreListInterfaces";
-import { ChoreRepository } from "../repositories/choreListRepository";
+} from '../interfaces/choreListInterfaces';
+import { ChoreRepository } from '../repositories/choreListRepository';
 
 export default class ChoreListService implements IChoreListService {
   constructor(private choreRepository: ChoreRepository) {}
-  //#region Public Methods
+
+  // #region Public Methods
   /**
    * Create a new chore list document
    * @param choreList
@@ -16,9 +17,7 @@ export default class ChoreListService implements IChoreListService {
    */
   insertChorelistAsync = async (
     choreList: IChoreListAdd,
-  ): Promise<Document | boolean> => {
-    return await this.choreRepository.insertChorelistAsync(choreList);
-  };
+  ): Promise<Document | boolean> => await this.choreRepository.insertChorelistAsync(choreList);
 
   /**
    * Update a chore list document
@@ -30,18 +29,14 @@ export default class ChoreListService implements IChoreListService {
   updateChorelistAsync = async (
     id: string,
     choreList: IChoreListUpdate,
-  ): Promise<boolean> => {
-    return this.choreRepository.updateChorelistAsync(id, choreList);
-  };
+  ): Promise<boolean> => this.choreRepository.updateChorelistAsync(id, choreList);
 
   /**
    * Delete a chore list document
    * @param id
    * @return boolean
    */
-  deleteChorelistAsync = async (id: string): Promise<boolean> => {
-    return await this.choreRepository.deleteChorelistAsync(id);
-  };
+  deleteChorelistAsync = async (id: string): Promise<boolean> => await this.choreRepository.deleteChorelistAsync(id);
 
   /**
    * Get a chore list document by id
@@ -52,9 +47,7 @@ export default class ChoreListService implements IChoreListService {
   getByIdDocumentsAsync = async (
     id: string,
     owner: string,
-  ): Promise<IChoreList | null> => {
-    return await this.choreRepository.getDocumentbyIdAsync(id, owner);
-  };
+  ): Promise<IChoreList | null> => await this.choreRepository.getDocumentbyIdAsync(id, owner);
 
   /**
    * Get all chore list documents with pagination
@@ -68,13 +61,11 @@ export default class ChoreListService implements IChoreListService {
     search: string,
     pageIndex: any,
     pageSize: any,
-  ): Promise<Array<IChoreList> | null> => {
-    return await this.choreRepository.getDocumentsAsync(
-      ownerId,
-      search,
-      pageIndex,
-      pageSize,
-    );
-  };
-  //#endregion
+  ): Promise<Array<IChoreList> | null> => await this.choreRepository.getDocumentsAsync(
+    ownerId,
+    search,
+    pageIndex,
+    pageSize,
+  );
+  // #endregion
 }

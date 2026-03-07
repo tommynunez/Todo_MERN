@@ -1,5 +1,5 @@
-import { ResetPassword } from "@components/authentication/reset-password";
+import { ResetPassword } from '@components/authentication/reset-password';
 
-export const ResetPasswordPage = () => {
+export function ResetPasswordPage() {
   return <ResetPassword />;
-};
+}

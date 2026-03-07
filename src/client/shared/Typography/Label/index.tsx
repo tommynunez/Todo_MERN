@@ -5,12 +5,12 @@ interface LabelProps {
   required?: boolean;
 }
 
-export const Label = ({
+export function Label({
   children,
   htmlFor,
-  className = "",
+  className = '',
   required = false,
-}: LabelProps) => {
+}: LabelProps) {
   return (
     <label
       htmlFor={htmlFor}
@@ -20,4 +20,4 @@ export const Label = ({
       {required && <span className="text-red-500 ml-1">*</span>}
     </label>
   );
-};
+}

@@ -1,8 +1,8 @@
-import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
-import UserService from "../services/userService";
-import passport, { PassportStatic } from "passport";
-import { Express } from "express";
-import { UserRepository } from "../repositories/userRepository";
+import { IVerifyOptions, Strategy as LocalStrategy } from 'passport-local';
+import passport, { PassportStatic } from 'passport';
+import { Express } from 'express';
+import UserService from '../services/userService';
+import { UserRepository } from '../repositories/userRepository';
 
 export type PassportCallBackFunction = (
   error: any,
@@ -22,10 +22,9 @@ export type ConfigureOptions = {
  * @returns
  */
 export const configurePassport = (configOptions: ConfigureOptions) => {
-  const app = configOptions.app;
+  const { app } = configOptions;
   const passportInstance = configOptions.passportInstance || passport;
-  const userService =
-    configOptions.userModel || new UserService(new UserRepository());
+  const userService = configOptions.userModel || new UserService(new UserRepository());
 
   /**
    * Use the LocalStrategy within Passport.
@@ -46,50 +45,49 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
   passportInstance.use(
     new LocalStrategy(
       {
-        usernameField: "emailAddress",
-        passwordField: "password",
+        usernameField: 'emailAddress',
+        passwordField: 'password',
         session: true,
       },
-      async function verify(
+      (async (
         usernameField: string,
         passwordField: string,
-        cb: PassportCallBackFunction
-      ) {
+        cb: PassportCallBackFunction,
+      ) => {
         try {
           const user = await userService.getUserbyEmailAddressAsync(
-            usernameField
+            usernameField,
           );
 
           if (!user) {
             return cb(null, false, {
-              message: "Email address or password is incorrect!",
+              message: 'Email address or password is incorrect!',
             });
           }
 
           if (user.isLockedOut) {
             return cb(null, false, {
-              message: "Account is locked out. Please reset your password.",
+              message: 'Account is locked out. Please reset your password.',
             });
           }
 
           const isUserauthenticated = await userService.signin(
             usernameField,
             passwordField,
-            user
+            user,
           );
 
           if (isUserauthenticated) {
             return cb(null, user);
-          } else {
-            return cb(null, false, {
-              message: "Email address or password is incorrect!",
-            });
           }
+          return cb(null, false, {
+            message: 'Email address or password is incorrect!',
+          });
         } catch (error) {
           return cb(error);
         }
-      }
-    )
+      }),
+    ),
   );
 
   /**
@@ -104,10 +102,8 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
    * User ID is serialized to the session, and the ID is then used to find
    * the User object during deserialization.
    */
-  passportInstance.serializeUser(function (user: any, done) {
-    process.nextTick(function () {
-      return done(null, { emailAddress: user.emailAddress });
-    });
+  passportInstance.serializeUser((user: any, done) => {
+    process.nextTick(() => done(null, { emailAddress: user.emailAddress }));
   });
 
   /**
@@ -115,12 +111,12 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
    * @param user
    * @param done
    */
-  passportInstance.deserializeUser(async function (user: any, done) {
+  passportInstance.deserializeUser(async (user: any, done) => {
     const userFound = await userService.getUserbyEmailAddressAsync(
-      user.emailAddress
+      user.emailAddress,
     );
     if (!userFound) {
-      return done("User not found", userFound);
+      return done('User not found', userFound);
     }
     return done(null, userFound);
   });
@@ -128,6 +124,6 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
   app.use(passportInstance.initialize());
   app.use(passportInstance.session());
 
-  console.log("Passport has been configured");
+  console.log('Passport has been configured');
   return passportInstance;
 };

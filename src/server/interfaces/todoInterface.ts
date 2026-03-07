@@ -1,5 +1,5 @@
-import mongoose, { Types } from "mongoose";
-import { IService } from "./service";
+import mongoose, { Types } from 'mongoose';
+import { IService } from './service';
 
 export interface IComplete extends mongoose.Document {
   by: string;

@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import { Form } from "./login-form";
-import { usePreventBackButton } from "@hooks/usePreventBackButton";
-import { H1, P } from "@/client/shared";
+import { Link } from 'react-router-dom';
+import { usePreventBackButton } from '@hooks/usePreventBackButton';
+import { Form } from './login-form';
+import { H1, P } from '@/client/shared';
 
-export const Login = () => {
+export function Login() {
   usePreventBackButton();
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
@@ -24,7 +24,8 @@ export const Login = () => {
               Forgot password?
             </Link>
             <P className="text-gray-600 dark:text-vscode-text-secondary text-sm">
-              Don't have an account?{" "}
+              Don't have an account?
+              {' '}
               <Link
                 to="/signup"
                 className="text-ms-blue-500 hover:text-ms-blue-600 dark:hover:text-vscode-blue dark:text-vscode-blue font-medium transition-colors"
@@ -37,4 +38,4 @@ export const Login = () => {
       </div>
     </div>
   );
-};
+}

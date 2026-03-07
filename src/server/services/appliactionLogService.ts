@@ -2,8 +2,8 @@ import {
   IAddAuditLog,
   IAuditLogMessage,
   IAuditLogService,
-} from "../interfaces/auditLogInterface";
-import { AuditLogRepository } from "../repositories/auditLogRepository";
+} from '../interfaces/auditLogInterface';
+import { AuditLogRepository } from '../repositories/auditLogRepository';
 
 export class AuditlogService implements IAuditLogService {
   constructor(private auditLogRepository: AuditLogRepository) {}
@@ -11,7 +11,7 @@ export class AuditlogService implements IAuditLogService {
   /**
    * Insert audit logs
    */
-  insertAuditlog = async (addAuditlog: IAddAuditLog, saveToDb: Boolean) => {
+  insertAuditlog = async (addAuditlog: IAddAuditLog, saveToDb: boolean) => {
     if (!saveToDb) {
       return false;
     }
@@ -31,10 +31,10 @@ export class AuditlogService implements IAuditLogService {
         severity: logMessage.severity,
         message: logMessage.message,
       } as IAddAuditLog,
-      logMessage.saveToDb
+      logMessage.saveToDb,
     );
 
-    console.debug("Application Debug Log: ", logMessage);
+    console.debug('Application Debug Log: ', logMessage);
   };
 
   error = (logMessage: IAuditLogMessage) => {
@@ -43,9 +43,9 @@ export class AuditlogService implements IAuditLogService {
         severity: logMessage.severity,
         message: logMessage.message,
       } as IAddAuditLog,
-      logMessage.saveToDb
+      logMessage.saveToDb,
     );
-    console.error("Application Error Log: ", logMessage);
+    console.error('Application Error Log: ', logMessage);
   };
 
   info = (logMessage: IAuditLogMessage) => {
@@ -54,9 +54,9 @@ export class AuditlogService implements IAuditLogService {
         severity: logMessage.severity,
         message: logMessage.message,
       } as IAddAuditLog,
-      logMessage.saveToDb
+      logMessage.saveToDb,
     );
-    console.info("Application Information Log: ", logMessage);
+    console.info('Application Information Log: ', logMessage);
   };
 
   log = (logMessage: IAuditLogMessage) => {
@@ -65,10 +65,10 @@ export class AuditlogService implements IAuditLogService {
         severity: logMessage.severity,
         message: logMessage.message,
       } as IAddAuditLog,
-      logMessage.saveToDb
+      logMessage.saveToDb,
     );
 
-    console.log("Application Log: ", logMessage);
+    console.log('Application Log: ', logMessage);
   };
 
   warn = (logMessage: IAuditLogMessage) => {
@@ -77,8 +77,8 @@ export class AuditlogService implements IAuditLogService {
         severity: logMessage.severity,
         message: logMessage.message,
       } as IAddAuditLog,
-      logMessage.saveToDb
+      logMessage.saveToDb,
     );
-    console.warn("Application Warm Log: ", logMessage);
+    console.warn('Application Warm Log: ', logMessage);
   };
 }

@@ -1,18 +1,18 @@
 interface SpanProps {
   children: React.ReactNode;
   className?: string;
-  variant?: "default" | "primary" | "secondary";
+  variant?: 'default' | 'primary' | 'secondary';
 }
 
-export const Span = ({
+export function Span({
   children,
-  className = "",
-  variant = "default",
-}: SpanProps) => {
+  className = '',
+  variant = 'default',
+}: SpanProps) {
   const variantClasses = {
-    default: "text-gray-900 dark:text-vscode-text",
-    primary: "text-vscode-blue dark:text-vscode-blue",
-    secondary: "text-gray-600 dark:text-vscode-text-secondary",
+    default: 'text-gray-900 dark:text-vscode-text',
+    primary: 'text-vscode-blue dark:text-vscode-blue',
+    secondary: 'text-gray-600 dark:text-vscode-text-secondary',
   };
 
   return (
@@ -20,4 +20,4 @@ export const Span = ({
       {children}
     </span>
   );
-};
+}

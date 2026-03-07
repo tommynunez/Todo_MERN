@@ -1,12 +1,12 @@
-import mongoose, { Schema, model } from "mongoose";
-import { IChoreList, IShareWith } from "../interfaces/choreListInterfaces";
-import { Roles } from "../constants/Roles";
+import mongoose, { Schema, model } from 'mongoose';
+import { IChoreList, IShareWith } from '../interfaces/choreListInterfaces';
+import { Roles } from '../constants/Roles';
 
 const SharedWithSchema = new Schema<IShareWith>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "UserAccounts",
+      ref: 'UserAccounts',
       required: true,
     },
     role: {
@@ -15,7 +15,7 @@ const SharedWithSchema = new Schema<IShareWith>(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const choreListSchema = new Schema<IChoreList>(
@@ -23,12 +23,12 @@ const choreListSchema = new Schema<IChoreList>(
     title: { type: String, required: true, unique: false },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "UserAccounts",
+      ref: 'UserAccounts',
       required: true,
     },
     shareWith: { type: [SharedWithSchema], required: false },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export const choreListModel = model<IChoreList>("ChoreList", choreListSchema);
+export const choreListModel = model<IChoreList>('ChoreList', choreListSchema);

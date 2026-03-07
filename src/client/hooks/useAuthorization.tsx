@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import AuthenticationService from "@services/authentication";
+import { useEffect, useState } from 'react';
+import AuthenticationService from '@services/authentication';
 
 export const useAuthorization = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -28,14 +28,14 @@ export const useAuthorization = () => {
         confirmPassword,
       );
       if (response.success) {
-        //todo: maybe set a token or something
-        console.log("Signup successful", response);
+        // todo: maybe set a token or something
+        console.log('Signup successful', response);
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error('Error during signup:', error);
       setError(`Signup failed. Please try again. ${error}`);
     } finally {
       setIsLoading(false);
@@ -47,16 +47,15 @@ export const useAuthorization = () => {
       setIsLoading(true);
       const response = await authService.login(email, password);
       if (response.success) {
-        //todo: maybe set a token or something
-        console.log("Login successful", response);
+        // todo: maybe set a token or something
+        console.log('Login successful', response);
         setIsAuthenticated(true);
-        return { success: true, message: "Login successful" };
-      } else {
-        setIsAuthenticated(false);
-        return { success: false, message: "Invalid email or password" };
+        return { success: true, message: 'Login successful' };
       }
+      setIsAuthenticated(false);
+      return { success: false, message: 'Invalid email or password' };
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error('Error during login:', error);
       setError(`Login failed. Please try again. ${error}`);
       return { success: false, message: `Login failed. ${error}` };
     } finally {
@@ -69,14 +68,14 @@ export const useAuthorization = () => {
       setIsLoading(true);
       const response = await authService.logout();
       if (response.success) {
-        //todo: maybe set a token or something
-        console.log("Logout successful", response);
+        // todo: maybe set a token or something
+        console.log('Logout successful', response);
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error('Error during logout:', error);
       setError(`Logout failed. Please try again. ${error}`);
     } finally {
       setIsLoading(false);
@@ -93,7 +92,7 @@ export const useAuthorization = () => {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.error("Error checking authorization:", error);
+      console.error('Error checking authorization:', error);
       setIsAuthenticated(false);
       setError(`Authorization check failed. Please try again. ${error}`);
     } finally {
@@ -106,12 +105,12 @@ export const useAuthorization = () => {
       setIsLoading(true);
       const response = await authService.forgotPassword(email);
       if (response.success) {
-        console.log("Password reset email sent", response);
+        console.log('Password reset email sent', response);
         return true;
       }
       return false;
     } catch (error) {
-      console.error("Error during password reset:", error);
+      console.error('Error during password reset:', error);
       setError(`Password reset failed. Please try again. ${error}`);
       return false;
     } finally {
@@ -132,12 +131,12 @@ export const useAuthorization = () => {
         confirmPassword,
       );
       if (response.success) {
-        console.log("Password reset successful", response);
+        console.log('Password reset successful', response);
         return true;
       }
       return false;
     } catch (error) {
-      console.error("Error during password reset:", error);
+      console.error('Error during password reset:', error);
       setError(`Password reset failed. Please try again. ${error}`);
       return false;
     } finally {
@@ -150,12 +149,12 @@ export const useAuthorization = () => {
       setIsLoading(true);
       const response = await authService.confirmEmail(token);
       if (response.success) {
-        console.log("Email confirmation successful", response);
+        console.log('Email confirmation successful', response);
         return true;
       }
       return false;
     } catch (error) {
-      console.error("Error during email confirmation:", error);
+      console.error('Error during email confirmation:', error);
       setError(`Email confirmation failed. Please try again. ${error}`);
       return false;
     } finally {

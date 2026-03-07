@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
-import { ITodo, ITodoAdd, ITodoUpdate } from "../interfaces/todoInterface";
-import { todoModel } from "../models/todoModel";
+import { Types } from 'mongoose';
+import { ITodo, ITodoAdd, ITodoUpdate } from '../interfaces/todoInterface';
+import { todoModel } from '../models/todoModel';
 
 export class TodoRepository {
   constructor() {}
@@ -23,7 +23,7 @@ export class TodoRepository {
       const todo = new todoModel({
         userId: new Types.ObjectId(userId),
         choreListId: new Types.ObjectId(choreListId),
-        name: name,
+        name,
       });
 
       return await todo.save();
@@ -123,22 +123,21 @@ export class TodoRepository {
       pageSize = pageSize ?? 0;
       pageIndex = pageIndex ?? 10;
 
-      const response =
-        (await todoModel
-          .find({
-            userId: userId,
-            $or: [
-              {
-                _id: Types.ObjectId.isValid(search)
-                  ? new Types.ObjectId(search)
-                  : undefined,
-              },
-              { title: { $regex: search, $options: "i" } },
-            ],
-          })
-          .skip((pageIndex ?? 0) * (pageSize ?? 10))
-          .limit(pageSize ?? 10)
-          .exec()) || [];
+      const response = (await todoModel
+        .find({
+          userId,
+          $or: [
+            {
+              _id: Types.ObjectId.isValid(search)
+                ? new Types.ObjectId(search)
+                : undefined,
+            },
+            { title: { $regex: search, $options: 'i' } },
+          ],
+        })
+        .skip((pageIndex ?? 0) * (pageSize ?? 10))
+        .limit(pageSize ?? 10)
+        .exec()) || [];
 
       return response;
     } catch (error) {

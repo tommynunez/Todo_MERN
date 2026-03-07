@@ -1,17 +1,17 @@
-import * as crypto from "crypto";
-import { Request, Response } from "express";
-import { IUserAccount, IUserService } from "../interfaces/userInterface";
-import { UserRepository } from "../repositories/userRepository";
-import { emailRegex, passwordRegex } from "../utils/regex";
-import mongoose from "mongoose";
-import { generateUserToken, verifyToken } from "../utils/token";
-import { sendEmail } from "../infrastructure/email/maileroo.wraper";
-import { TokenStatuses } from "../constants/TokenStatuses";
+import * as crypto from 'crypto';
+import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { IUserAccount, IUserService } from '../interfaces/userInterface';
+import { UserRepository } from '../repositories/userRepository';
+import { emailRegex, passwordRegex } from '../utils/regex';
+import { generateUserToken, verifyToken } from '../utils/token';
+import { sendEmail } from '../infrastructure/email/maileroo.wraper';
+import { TokenStatuses } from '../constants/TokenStatuses';
 
 export default class UserService implements IUserService {
   constructor(private userRepository: UserRepository) {}
 
-  //#region Public Methods
+  // #region Public Methods
   /**
    * Registers a new user account with email and password
    * @param emailAddress - The email address for the new user account
@@ -21,10 +21,10 @@ export default class UserService implements IUserService {
    * @async
    */
   signup = async (emailAddress: string, password: string): Promise<boolean> => {
-    const salt = crypto.randomBytes(64).toString("hex");
+    const salt = crypto.randomBytes(64).toString('hex');
     const hashedPassword = await crypto
-      .pbkdf2Sync(password, salt, 100000, 64, "sha512")
-      .toString("hex");
+      .pbkdf2Sync(password, salt, 100000, 64, 'sha512')
+      .toString('hex');
 
     const token = await generateUserToken(
       emailAddress,
@@ -42,7 +42,7 @@ export default class UserService implements IUserService {
       return false;
     }
 
-    await sendEmail("CONFIRM_EMAIL", emailAddress, {
+    await sendEmail('CONFIRM_EMAIL', emailAddress, {
       userName: emailAddress,
       confirmationLink: `https://yourapp.com/confirm/email?token=${token}`,
     });
@@ -69,27 +69,26 @@ export default class UserService implements IUserService {
           }>)
       | null,
   ): Promise<boolean> => {
-    //const salt = crypto.randomBytes(64);
+    // const salt = crypto.randomBytes(64);
     const hashedPassword = await crypto
-      .pbkdf2Sync(password, user?.salt || "", 100000, 64, "sha512")
-      .toString("hex");
+      .pbkdf2Sync(password, user?.salt || '', 100000, 64, 'sha512')
+      .toString('hex');
 
     if (!user) {
       return false;
     }
 
     if (
-      emailAddress == user?.emailAddress &&
-      hashedPassword.toString() == user.password
+      emailAddress == user?.emailAddress
+      && hashedPassword.toString() == user.password
     ) {
       await this.userRepository.updateLastLoggedInAsync(user);
       return true;
-    } else {
-      await this.userRepository.updateLoginCountAsync(user);
-      //check if user is locked out
-      await this.sendAccountLockedoutEmailAsync(user);
-      return false;
     }
+    await this.userRepository.updateLoginCountAsync(user);
+    // check if user is locked out
+    await this.sendAccountLockedoutEmailAsync(user);
+    return false;
   };
 
   /**
@@ -102,33 +101,33 @@ export default class UserService implements IUserService {
    */
   validateSignupFields = (_request: Request, _response: Response): boolean => {
     if (!_request.body.emailAddress && _request.body.emailAddress.match()) {
-      _response.status(400).json({ errmsg: "Please enter a username" });
+      _response.status(400).json({ errmsg: 'Please enter a username' });
       return true;
     }
 
     if (emailRegex.match(_request.body.emailAddress)) {
-      _response.status(400).json({ errmsg: "Please enter a valid username" });
+      _response.status(400).json({ errmsg: 'Please enter a valid username' });
       return true;
     }
 
     if (!_request.body.password) {
-      _response.status(400).json({ errmsg: "Please enter a password" });
+      _response.status(400).json({ errmsg: 'Please enter a password' });
       return true;
     }
 
     if (passwordRegex.match(_request.body.password)) {
-      _response.status(400).json({ errmsg: "Please enter a valid passwword" });
+      _response.status(400).json({ errmsg: 'Please enter a valid passwword' });
       return true;
     }
 
     if (!_request.body.confirmPassword) {
-      _response.status(400).json({ errmsg: "Please enter a confirm password" });
+      _response.status(400).json({ errmsg: 'Please enter a confirm password' });
       return true;
     }
     if (_request.body.password !== _request.body.confirmPassword) {
       _response
         .status(400)
-        .json({ errmsg: "Password and confirm password do not match" });
+        .json({ errmsg: 'Password and confirm password do not match' });
       return true;
     }
 
@@ -162,7 +161,7 @@ export default class UserService implements IUserService {
    */
   confirmEmailAsync = async (token: string): Promise<boolean> => {
     if (!token) {
-      throw new Error("Token is required.");
+      throw new Error('Token is required.');
     }
     const user = await this.userRepository.getUserbyTokenAsync(token);
     if (user) {
@@ -171,18 +170,17 @@ export default class UserService implements IUserService {
         user,
       );
       if (isTokenInValid) {
-        console.log("Email confirmation token was successful");
+        console.log('Email confirmation token was successful');
         await this.userRepository.enableEmailconfirmationAsync(user);
 
-        await sendEmail("WELCOME_EMAIL", user.emailAddress, {
+        await sendEmail('WELCOME_EMAIL', user.emailAddress, {
           userName: user.emailAddress,
-          dashboardLink: `https://yourapp.com/dashboard`,
+          dashboardLink: 'https://yourapp.com/dashboard',
         });
         return true;
-      } else {
-        console.error("Email confirmation token was not successful");
-        return false;
       }
+      console.error('Email confirmation token was not successful');
+      return false;
     }
 
     return false;
@@ -198,14 +196,13 @@ export default class UserService implements IUserService {
   sendForgotpasswordEmailAsync = async (
     emailAddress: string,
   ): Promise<boolean> => {
-    const user =
-      await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
+    const user = await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
     if (user) {
       const token = generateUserToken(
         user.emailAddress,
         process.env.NODE_USER_JWT_SECRET,
       );
-      await sendEmail("FORGOT_PASSWORD_EMAIL", user.emailAddress, {
+      await sendEmail('FORGOT_PASSWORD_EMAIL', user.emailAddress, {
         userName: user.emailAddress,
         resetLink: `https://yourapp.com/reset/password?token=${token}`,
       });
@@ -231,23 +228,23 @@ export default class UserService implements IUserService {
     const user = await this.userRepository.getUserbyTokenAsync(token);
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     const isTokenValid = await this.handleForgotPasswordTokenAsync(token, user);
     if (isTokenValid) {
-      const salt = crypto.randomBytes(64).toString("hex");
+      const salt = crypto.randomBytes(64).toString('hex');
       const hashedPassword = await crypto
-        .pbkdf2Sync(password, salt, 100000, 64, "sha512")
-        .toString("hex");
+        .pbkdf2Sync(password, salt, 100000, 64, 'sha512')
+        .toString('hex');
       await this.userRepository.resetPasswordAsync(user, hashedPassword, salt);
       return [true, user];
     }
     return [false, user];
   };
-  //#endregion
+  // #endregion
 
-  //#region Private Methods
+  // #region Private Methods
   /**
    * Handle forgot password token method
    * @param token
@@ -257,7 +254,7 @@ export default class UserService implements IUserService {
   private handleForgotPasswordTokenAsync = async (
     token: string,
     user: IUserAccount,
-  ): Promise<Boolean> => {
+  ): Promise<boolean> => {
     const decodedToken = await verifyToken(
       token,
       process.env.NODE_USER_JWT_SECRET,
@@ -278,7 +275,7 @@ export default class UserService implements IUserService {
         user.emailAddress,
         process.env.NODE_USER_JWT_SECRET,
       );
-      await sendEmail("FORGOT_PASSWORD_EMAIL", user.emailAddress, {
+      await sendEmail('FORGOT_PASSWORD_EMAIL', user.emailAddress, {
         userName: user.emailAddress,
         resetLink: `https://yourapp.com/reset/password?token=${newToken}`,
       });
@@ -298,7 +295,7 @@ export default class UserService implements IUserService {
   private handleConfirmationtokenAsync = async (
     token: string,
     user: IUserAccount,
-  ): Promise<Boolean> => {
+  ): Promise<boolean> => {
     const decodedToken = await verifyToken(
       token,
       process.env.NODE_USER_JWT_SECRET,
@@ -324,7 +321,7 @@ export default class UserService implements IUserService {
         user.emailAddress,
         process.env.NODE_USER_JWT_SECRET,
       );
-      await sendEmail("CONFIRM_EMAIL", user.emailAddress, {
+      await sendEmail('CONFIRM_EMAIL', user.emailAddress, {
         userName: user.emailAddress,
         confirmationLink: `https://yourapp.com/confirm/email?token=${newToken}`,
       });
@@ -343,7 +340,7 @@ export default class UserService implements IUserService {
   private handleExpiredTokenAsync = async (
     decodedToken: any,
     user: IUserAccount,
-  ): Promise<Boolean> => {
+  ): Promise<boolean> => {
     if (decodedToken.status === TokenStatuses.Expired) {
       await this.userRepository.revokeTokenAsync(user);
       return false;
@@ -360,9 +357,9 @@ export default class UserService implements IUserService {
   private handleRevokedTokenAsync = async (
     decodedToken: any,
     user: IUserAccount,
-  ): Promise<Boolean> => {
+  ): Promise<boolean> => {
     if (decodedToken.status === TokenStatuses.Revoked) {
-      console.error("Email confirmation token has been revoked");
+      console.error('Email confirmation token has been revoked');
       await this.userRepository.revokeTokenAsync(user);
       return false;
     }
@@ -388,18 +385,18 @@ export default class UserService implements IUserService {
     }
 
     if (await this.userRepository.isAccountLockedOutAsync(user)) {
-      console.error("User is locked out due to multiple failed login attempts");
+      console.error('User is locked out due to multiple failed login attempts');
 
       const token = generateUserToken(
         user.emailAddress,
         process.env.NODE_USER_JWT_SECRET,
       );
 
-      await sendEmail("ACCOUNT_LOCKED_EMAIL", user.emailAddress, {
+      await sendEmail('ACCOUNT_LOCKED_EMAIL', user.emailAddress, {
         userName: user.emailAddress,
         resetLink: `https://yourapp.com/confirm/email?token=${token}`,
       });
     }
   };
-  //#endregion
+  // #endregion
 }

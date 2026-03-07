@@ -1,11 +1,11 @@
-import { TodoRepository } from "../repositories/todoRepository";
-import { ITodo, ITodoService, ITodoUpdate } from "../interfaces/todoInterface";
-import ChoreListService from "./choreListService";
-import { AuditlogService } from "./appliactionLogService";
-import UserService from "./userService";
-import { IAuditLogMessage } from "../interfaces/auditLogInterface";
-import { SeverityLevel } from "mongodb";
-import { Types } from "mongoose";
+import { SeverityLevel } from 'mongodb';
+import { Types } from 'mongoose';
+import { TodoRepository } from '../repositories/todoRepository';
+import { ITodo, ITodoService, ITodoUpdate } from '../interfaces/todoInterface';
+import ChoreListService from './choreListService';
+import { AuditlogService } from './appliactionLogService';
+import UserService from './userService';
+import { IAuditLogMessage } from '../interfaces/auditLogInterface';
 
 export default class TodoService implements ITodoService {
   constructor(
@@ -15,7 +15,7 @@ export default class TodoService implements ITodoService {
     private auditLogService: AuditlogService,
   ) {}
 
-  //#region Public Methods
+  // #region Public Methods
   /**
    * Creates a new todo item for a specified chorelist
    * @param ownerId - The unique identifier of the todo owner/user
@@ -38,16 +38,15 @@ export default class TodoService implements ITodoService {
       );
 
       if (!choreList) {
-        /*this.auditLogService.warn({
+        /* this.auditLogService.warn({
           severity: SeverityLevel.WARNING,
           message:
             "The chore list doesn't exist, request could not be completed.",
-        });*/
+        }); */
         return false;
       }
 
-      const user =
-        await this.useraccountService.getUserbyEmailAddressAsync(emailAddress);
+      const user = await this.useraccountService.getUserbyEmailAddressAsync(emailAddress);
 
       if (user) {
         const userId = user.id;
@@ -81,12 +80,11 @@ export default class TodoService implements ITodoService {
     name: string,
     emailAddress: string,
     completed: boolean,
-  ): Promise<Document | boolean> =>
-    await this.todoRepository.updateTodoAsync({
-      name,
-      emailAddress,
-      completed,
-    } as ITodoUpdate);
+  ): Promise<Document | boolean> => await this.todoRepository.updateTodoAsync({
+    name,
+    emailAddress,
+    completed,
+  } as ITodoUpdate);
 
   /**
    * Deletes a todo item by its unique identifier
@@ -94,8 +92,7 @@ export default class TodoService implements ITodoService {
    * @returns Promise resolving to true if deletion was successful, false otherwise
    * @throws Will not throw but returns false if todo is not found
    */
-  deleteTodoAsync = async (id: number): Promise<boolean> =>
-    await this.todoRepository.deleteTodoAsync(id);
+  deleteTodoAsync = async (id: number): Promise<boolean> => await this.todoRepository.deleteTodoAsync(id);
 
   /**
    * Retrieves a specific todo item by its unique identifier
@@ -103,8 +100,7 @@ export default class TodoService implements ITodoService {
    * @returns Promise resolving to the ITodo object if found, null otherwise
    * @throws Will not throw but returns null if todo is not found
    */
-  getByIdTodosAsync = async (id?: string): Promise<ITodo | null> =>
-    await this.todoRepository.getTodobyIdAsync(id);
+  getByIdTodosAsync = async (id?: string): Promise<ITodo | null> => await this.todoRepository.getTodobyIdAsync(id);
 
   /**
    * Retrieves all todo items with pagination and optional search filtering
@@ -120,12 +116,11 @@ export default class TodoService implements ITodoService {
     search: any,
     pageIndex: any,
     pageSize: any,
-  ): Promise<Array<ITodo> | null> =>
-    await this.todoRepository.getTodosAsync(
-      userId,
-      search,
-      pageIndex,
-      pageSize,
-    );
-  //#endregion
+  ): Promise<Array<ITodo> | null> => await this.todoRepository.getTodosAsync(
+    userId,
+    search,
+    pageIndex,
+    pageSize,
+  );
+  // #endregion
 }

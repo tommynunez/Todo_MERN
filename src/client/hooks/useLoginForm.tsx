@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useAuthorization } from "./useAuthorization";
+import { useState } from 'react';
+import { useAuthorization } from './useAuthorization';
 
 export const useLoginForm = () => {
-  const [emailAddress, setEmailAddress] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailAddress, setEmailAddress] = useState('');
+  const [password, setPassword] = useState('');
   const [emailAddressError, setEmailAddressError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [hasErrors, setHasErrors] = useState(false);
@@ -14,19 +14,19 @@ export const useLoginForm = () => {
     setHasErrors(false);
     let isError = false;
 
-    //if email address value is empty set error flag
+    // if email address value is empty set error flag
     if (!emailAddress) {
       setEmailAddressError(true);
       isError = true;
     }
 
-    //if password value is empty set error flag
+    // if password value is empty set error flag
     if (!password) {
       setPasswordError(true);
       isError = true;
     }
 
-    //send request if we have no errors
+    // send request if we have no errors
     if (!isError) {
       const response = await login(emailAddress, password);
       if (!response.success) {

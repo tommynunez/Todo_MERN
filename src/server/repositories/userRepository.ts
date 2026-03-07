@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
-import { userModel } from "../models/userModel";
-import { IUserAccount } from "../interfaces/userInterface";
-import { TokenStatuses } from "../constants/TokenStatuses";
+import mongoose from 'mongoose';
+import { userModel } from '../models/userModel';
+import { IUserAccount } from '../interfaces/userInterface';
+import { TokenStatuses } from '../constants/TokenStatuses';
 
 export class UserRepository {
   constructor() {}
+
   /**
    * Inserts a new user account document into the database
    * @param emailAddress - The user's email address (unique)
@@ -27,12 +28,12 @@ export class UserRepository {
   ): Promise<Document | undefined> => {
     try {
       const user = new userModel({
-        emailAddress: emailAddress,
-        password: password,
-        salt: salt,
-        tokenStatus: tokenStatus,
-        isEmailConfirmed: isEmailConfirmed,
-        token: token || "",
+        emailAddress,
+        password,
+        salt,
+        tokenStatus,
+        isEmailConfirmed,
+        token: token || '',
         createdDate: Date.now(),
         updatedDate: Date.now(),
       });
@@ -40,9 +41,9 @@ export class UserRepository {
       return user;
     } catch (error: any) {
       if (error.errorResponse.code === 11000) {
-        throw new Error("Please try a different emailAddress");
+        throw new Error('Please try a different emailAddress');
       } else {
-        throw new Error("We could not create account. Please try again.");
+        throw new Error('We could not create account. Please try again.');
       }
     }
   };
@@ -65,7 +66,7 @@ export class UserRepository {
     | null
   > => {
     try {
-      const document = await userModel.findOne({ emailAddress: emailAddress });
+      const document = await userModel.findOne({ emailAddress });
       return document;
     } catch (error: any) {
       console.error(error);
@@ -91,7 +92,7 @@ export class UserRepository {
     | null
   > => {
     try {
-      const document = await userModel.findOne({ token: token });
+      const document = await userModel.findOne({ token });
       return document;
     } catch (error: any) {
       console.error(error);
@@ -117,7 +118,7 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
       await userModel.findByIdAndUpdate(
         document._id,
@@ -153,7 +154,7 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
 
       const loginAttempts = document.loginAttempts + 1;
@@ -161,7 +162,7 @@ export class UserRepository {
       await userModel.findByIdAndUpdate(
         document._id,
         {
-          loginAttempts: loginAttempts,
+          loginAttempts,
           isLockedOut: loginAttempts >= 3,
           updatedDate: new Date(),
         },
@@ -196,13 +197,13 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
       await userModel.findByIdAndUpdate(
         document._id,
         {
           password: hashedPassword,
-          salt: salt,
+          salt,
           loginAttempts: 0,
           isLockedOut: false,
           updatedDate: new Date(),
@@ -236,7 +237,7 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
       await userModel.findByIdAndUpdate(
         document._id,
@@ -271,7 +272,7 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
       await userModel.findByIdAndUpdate(
         document._id,
@@ -307,7 +308,7 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
       await userModel.findByIdAndUpdate(
         document._id,
@@ -342,7 +343,7 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
       const user = await userModel.findById(document._id);
       return user?.isLockedOut || false;
@@ -372,12 +373,12 @@ export class UserRepository {
   ): Promise<boolean> => {
     try {
       if (!document) {
-        throw "document is undefined";
+        throw 'document is undefined';
       }
       await userModel.findByIdAndUpdate(
         document._id,
         {
-          token: token,
+          token,
           updatedDate: new Date(),
         },
         { new: false },

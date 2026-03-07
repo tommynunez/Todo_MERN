@@ -1,4 +1,4 @@
-import { SeverityLevel } from "mongodb";
+import { SeverityLevel } from 'mongodb';
 
 export interface IAuditLog {
   severity: string;
@@ -8,7 +8,7 @@ export interface IAuditLog {
 export interface IAuditLogMessage {
   severity: SeverityLevel;
   message: string;
-  saveToDb: Boolean;
+  saveToDb: boolean;
 }
 
 export interface IAddAuditLog extends IAuditLogMessage {}
@@ -16,7 +16,7 @@ export interface IAddAuditLog extends IAuditLogMessage {}
 export interface IAuditLogService {
   insertAuditlog: (
     addAuditlog: IAddAuditLog,
-    saveToDb: Boolean
+    saveToDb: boolean
   ) => Promise<boolean>;
   debug: (logMessage: IAuditLogMessage) => void;
   error: (logMessage: IAuditLogMessage) => void;

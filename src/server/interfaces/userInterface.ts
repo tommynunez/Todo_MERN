@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { IService } from "./service";
+import mongoose from 'mongoose';
+import { IService } from './service';
 
 export interface IUserAccount extends mongoose.Document {
   emailAddress: string;

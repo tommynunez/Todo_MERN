@@ -1,10 +1,10 @@
-import { clearErrorIfHasValue } from "@/client/helpers/validator";
-import { useLoginForm } from "@hooks/useLoginForm";
-import { Input, Button } from "@/client/shared";
-import { useSnackbar } from "@/client/context/SnackbarContext";
-import { useEffect } from "react";
+import { useLoginForm } from '@hooks/useLoginForm';
+import { useEffect } from 'react';
+import { clearErrorIfHasValue } from '@/client/helpers/validator';
+import { Input, Button } from '@/client/shared';
+import { useSnackbar } from '@/client/context/SnackbarContext';
 
-export const Form = () => {
+export function Form() {
   const {
     emailAddress,
     setEmailAddress,
@@ -21,7 +21,7 @@ export const Form = () => {
 
   useEffect(() => {
     if (hasErrors) {
-      showSnackbar("Please fix the errors in the form", { variant: "error" });
+      showSnackbar('Please fix the errors in the form', { variant: 'error' });
     }
   }, [hasErrors, showSnackbar]);
 
@@ -41,7 +41,7 @@ export const Form = () => {
           );
         }}
         autoComplete="off"
-        error={emailAddressError ? "Please enter a valid email address" : ""}
+        error={emailAddressError ? 'Please enter a valid email address' : ''}
         required
       />
 
@@ -55,7 +55,7 @@ export const Form = () => {
           clearErrorIfHasValue(e.target.value, passwordError, setPasswordError);
         }}
         autoComplete="off"
-        error={passwordError ? "Please enter your password" : ""}
+        error={passwordError ? 'Please enter your password' : ''}
         required
       />
 
@@ -64,4 +64,4 @@ export const Form = () => {
       </Button>
     </form>
   );
-};
+}

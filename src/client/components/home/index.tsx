@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import rawData from "./data.json";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   SparklesIcon,
   BellIcon,
@@ -21,12 +20,13 @@ import {
   AcademicCapIcon,
   RocketLaunchIcon,
   BuildingOffice2Icon,
-} from "@heroicons/react/24/outline";
-import { Features } from "./features";
-import { CtaFooter } from "./ctafooter";
-import { Audience } from "./audience";
-import { Stats } from "./stats";
-import { Hero } from "./hero";
+} from '@heroicons/react/24/outline';
+import rawData from './data.json';
+import { Features } from './features';
+import { CtaFooter } from './ctafooter';
+import { Audience } from './audience';
+import { Stats } from './stats';
+import { Hero } from './hero';
 
 // ── Icon Mapping ─────────────────────────────────────────────────────────────
 
@@ -80,12 +80,12 @@ const audiences = rawData.audiences.map((a) => ({
   icon: getIcon(a.icon as keyof typeof IconMap),
 }));
 
-export const Home = () => {
+export function Home() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("tasks");
+  const [activeTab, setActiveTab] = useState('tasks');
 
   const handleGetStarted = () => {
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
@@ -107,4 +107,4 @@ export const Home = () => {
       />
     </div>
   );
-};
+}

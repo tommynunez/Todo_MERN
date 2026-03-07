@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
-import { Role } from "../constants/Roles";
-import { IService } from "./service";
+import mongoose, { Schema } from 'mongoose';
+import { Role } from '../constants/Roles';
+import { IService } from './service';
 
 export interface IChoreList extends mongoose.Document {
   title: string;
@@ -14,12 +14,12 @@ export interface IShareWith {
 }
 
 export interface IChoreListAdd {
-  title: String;
+  title: string;
   owner: Schema.Types.ObjectId;
 }
 
 export interface IChoreListUpdate {
-  title: String;
+  title: string;
   shareWith: Array<IShareWith>;
   updatedDate: Date;
 }

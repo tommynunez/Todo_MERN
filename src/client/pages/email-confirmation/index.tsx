@@ -1,5 +1,5 @@
-import { EmailConfirmation } from "@components/authentication/email-confirmation";
+import { EmailConfirmation } from '@components/authentication/email-confirmation';
 
-export const EmailConfirmationPage = () => {
+export function EmailConfirmationPage() {
   return <EmailConfirmation />;
-};
+}

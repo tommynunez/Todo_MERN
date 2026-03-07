@@ -1,33 +1,33 @@
-import express, { Express, Request, Response } from "express";
-import { Server } from "http";
-import { createAuthenticationroutes } from "./routes/authenticationRoute";
-import { createTodoroutes } from "./routes/todoRoute";
-import { createChorelistRoutes } from "./routes/chorelistRoute";
-import { queryParser } from "express-query-parser";
-import path from "path";
-import helmet from "helmet";
-import session from "express-session";
-import MongoStore from "connect-mongo";
-import mongoose from "mongoose";
-import passport from "passport";
-import cookieParser from "cookie-parser";
-import { configurePassport } from "./config/passport";
-import { loadEnv } from "./config/environment";
-import attachClient from "./config/attachClient";
-import { authenticatedMiddleware } from "./middleware/authenticatedMiddleware";
-import { closeConnection, openConnection } from "./config/databaseClient";
-import ChoreListService from "./services/choreListService";
-import { ChoreRepository } from "./repositories/choreListRepository";
-import TodoService from "./services/todoService";
-import { TodoRepository } from "./repositories/todoRepository";
-import UserService from "./services/userService";
-import { UserRepository } from "./repositories/userRepository";
-import { InviteService } from "./services/inviteService";
-import { InviteRepository } from "./repositories/inviteRepository";
-import { createInviteRoutes } from "./routes/inviteRoute";
-import { AuditlogService } from "./services/appliactionLogService";
-import { AuditLogRepository } from "./repositories/auditLogRepository";
-import { emailConfirmationMiddleware } from "./middleware/emailConfirmedMiddleware";
+import express, { Express, Request, Response } from 'express';
+import { Server } from 'http';
+import { queryParser } from 'express-query-parser';
+import path from 'path';
+import helmet from 'helmet';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import mongoose from 'mongoose';
+import passport from 'passport';
+import cookieParser from 'cookie-parser';
+import { createChorelistRoutes } from './routes/chorelistRoute';
+import { createTodoroutes } from './routes/todoRoute';
+import { createAuthenticationroutes } from './routes/authenticationRoute';
+import { configurePassport } from './config/passport';
+import { loadEnv } from './config/environment';
+import attachClient from './config/attachClient';
+import { authenticatedMiddleware } from './middleware/authenticatedMiddleware';
+import { closeConnection, openConnection } from './config/databaseClient';
+import ChoreListService from './services/choreListService';
+import { ChoreRepository } from './repositories/choreListRepository';
+import TodoService from './services/todoService';
+import { TodoRepository } from './repositories/todoRepository';
+import UserService from './services/userService';
+import { UserRepository } from './repositories/userRepository';
+import { InviteService } from './services/inviteService';
+import { InviteRepository } from './repositories/inviteRepository';
+import { createInviteRoutes } from './routes/inviteRoute';
+import { AuditlogService } from './services/appliactionLogService';
+import { AuditLogRepository } from './repositories/auditLogRepository';
+import { emailConfirmationMiddleware } from './middleware/emailConfirmedMiddleware';
 
 const app: Express = express();
 const port: number = 3000;
@@ -46,25 +46,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // add Content-Security-Policy (allow same-origin images and dev HMR resources)
-const isProd = process.env.NODE_ENV === "production";
-const devClientOrigin = process.env.NODE_APP_URL ?? "http://localhost:3000";
+const isProd = process.env.NODE_ENV === 'production';
+const devClientOrigin = process.env.NODE_APP_URL ?? 'http://localhost:3000';
 
 const cspDirectives = {
   defaultSrc: ["'self'"],
   scriptSrc: isProd
     ? ["'self'"]
     : [
-        "'self'",
-        "'unsafe-eval'",
-        "'unsafe-inline'",
-        "'https://fonts.googleapis.com'",
-      ],
-  connectSrc: isProd ? ["'self'"] : ["'self'", "ws:", "wss:"],
+      "'self'",
+      "'unsafe-eval'",
+      "'unsafe-inline'",
+      "'https://fonts.googleapis.com'",
+    ],
+  connectSrc: isProd ? ["'self'"] : ["'self'", 'ws:', 'wss:'],
   styleSrc: ["'self'", "'unsafe-inline'"],
   imgSrc: isProd
-    ? ["'self'", "data:", "blob:"]
-    : ["'self'", "data:", "blob:", devClientOrigin],
-  fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
+    ? ["'self'", 'data:', 'blob:']
+    : ["'self'", 'data:', 'blob:', devClientOrigin],
+  fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
   objectSrc: ["'none'"],
   baseUri: ["'self'"],
   frameAncestors: ["'none'"],
@@ -89,7 +89,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 3600000,
       httpOnly: true,
     },
@@ -106,7 +106,7 @@ await openConnection();
 /**
  * Health check api
  */
-app.get("/api/health", (_request: Request, _response: Response) => {
+app.get('/api/health', (_request: Request, _response: Response) => {
   _response.sendStatus(200);
 });
 
@@ -114,18 +114,18 @@ app.get("/api/health", (_request: Request, _response: Response) => {
  * Authentication controller entry using express router
  */
 app.use(
-  "/api/authentication",
+  '/api/authentication',
   createAuthenticationroutes(
     new UserService(new UserRepository()),
     new ChoreListService(new ChoreRepository()),
   ),
 );
 
-/**k
+/** k
  * Todo controller entrypoint using express router
  */
 app.use(
-  "/api/todos",
+  '/api/todos',
   authenticatedMiddleware,
   createTodoroutes(
     new TodoService(
@@ -141,7 +141,7 @@ app.use(
  * Chorelist controller entrypoint using express router
  */
 app.use(
-  "/api/chorelists",
+  '/api/chorelists',
   authenticatedMiddleware,
   emailConfirmationMiddleware,
   createChorelistRoutes(new ChoreListService(new ChoreRepository())),
@@ -151,7 +151,7 @@ app.use(
  * Invite controller entrypoint using express router
  */
 app.use(
-  "/api/invite",
+  '/api/invite',
   authenticatedMiddleware,
   emailConfirmationMiddleware,
   createInviteRoutes(
@@ -195,7 +195,7 @@ const server: Server = app.listen(port, () => {
  */
 attachClient(app, server, {
   clientRoot: path.resolve(process.cwd()),
-  clientDist: path.resolve(process.cwd(), "client", "dist"),
+  clientDist: path.resolve(process.cwd(), 'client', 'dist'),
 });
 
 await closeConnection(server);

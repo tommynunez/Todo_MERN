@@ -3,7 +3,7 @@ interface H4Props {
   className?: string;
 }
 
-export const H4 = ({ children, className = "" }: H4Props) => {
+export function H4({ children, className = '' }: H4Props) {
   return (
     <h4
       className={`text-xl font-bold text-gray-900 dark:text-vscode-text ${className}`}
@@ -11,4 +11,4 @@ export const H4 = ({ children, className = "" }: H4Props) => {
       {children}
     </h4>
   );
-};
+}

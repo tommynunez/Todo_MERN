@@ -1,3 +1,3 @@
-export const EmailConfirmation = () => {
+export function EmailConfirmation() {
   return <div>Email Confirmation Component</div>;
-};
+}

@@ -1,6 +1,6 @@
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from 'react';
 
-//component found on: https://www.youtube.com/watch?v=rK0Lz8x7npA&t=893s&ab_channel=DailyWebCoding
+// component found on: https://www.youtube.com/watch?v=rK0Lz8x7npA&t=893s&ab_channel=DailyWebCoding
 export default function useWindowPosition(id) {
   const [animation, setAnimation] = useState(false);
 
@@ -13,10 +13,10 @@ export default function useWindowPosition(id) {
       }
     }
 
-    window.addEventListener("scroll", updatePosition);
+    window.addEventListener('scroll', updatePosition);
     updatePosition();
 
-    return () => window.removeEventListener("scroll", updatePosition);
+    return () => window.removeEventListener('scroll', updatePosition);
   }, [id]);
   return animation;
 }

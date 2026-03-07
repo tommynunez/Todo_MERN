@@ -1,7 +1,7 @@
-import { Request, Response, Router } from "express";
-import TodoService from "../services/todoService";
-import mongoose from "mongoose";
-import { IUserAccount } from "../interfaces/userInterface";
+import { Request, Response, Router } from 'express';
+import mongoose from 'mongoose';
+import TodoService from '../services/todoService';
+import { IUserAccount } from '../interfaces/userInterface';
 
 export const createTodoroutes = (_todoService: TodoService): Router => {
   const router: Router = Router();
@@ -22,7 +22,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Example: GET /api/todos/123
    * Response: { response: ITodo, status: 200 }
    */
-  router.get("/", async (_request: Request, _response: Response) => {
+  router.get('/', async (_request: Request, _response: Response) => {
     const { search, pageIndex, pageSize } = _request.query;
     try {
       const response = await _todoService.getAllTodosAsync(
@@ -33,20 +33,21 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
       );
 
       if (response) {
-        return _response.status(200).location(`/todo/`).json({
+        return _response.status(200).location('/todo/').json({
           count: response.length,
           data: response,
           pageIndex,
           pageSize,
         });
-      } else {
-        return _response
-          .status(404)
-          .json({ count: 0, data: response, pageIndex, pageSize });
       }
+      return _response
+        .status(404)
+        .json({
+          count: 0, data: response, pageIndex, pageSize,
+        });
     } catch (error) {
-      console.error("Error fetching todo items:", error);
-      return _response.status(500).json({ errmsg: "Internal server error" });
+      console.error('Error fetching todo items:', error);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     }
   });
 
@@ -64,19 +65,18 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Example: GET /api/todos/123
    * Response: { response: ITodo, status: 200 }
    */
-  router.get("/:id", async (_request: Request, _response: Response) => {
+  router.get('/:id', async (_request: Request, _response: Response) => {
     try {
       const response = await _todoService.getByIdTodosAsync(
         _request.params.id?.toString(),
       );
       if (response) {
         return _response.status(200).json({ data: response });
-      } else {
-        _response.status(404);
       }
+      _response.status(404);
     } catch (error) {
-      console.error("Error fetching todo item by ID:", error);
-      return _response.status(500).json({ errmsg: "Internal server error" });
+      console.error('Error fetching todo item by ID:', error);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     }
   });
 
@@ -89,17 +89,17 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Body: { name: "New Task" }
    * Response: { response: true, status: 201 }
    */
-  router.post("/", async (_request: Request, _response: Response) => {
+  router.post('/', async (_request: Request, _response: Response) => {
     if (!_request.body.choreListId) {
       _response
         .status(400)
-        .json({ response: "A todo needs to be assigned to a chore list" });
+        .json({ response: 'A todo needs to be assigned to a chore list' });
     }
 
     if (mongoose.isValidObjectId(_request.body.choreListId) == false) {
       return _response
         .status(400)
-        .json({ response: "choreListId is not valid" })
+        .json({ response: 'choreListId is not valid' })
         .send();
     }
 
@@ -116,15 +116,14 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
         return (
           _response
             .status(201)
-            //.location(`/todo/${chore._id}`)
+            // .location(`/todo/${chore._id}`)
             .json({ status: response })
         );
-      } else {
-        return _response.status(500).json({ status: response });
       }
+      return _response.status(500).json({ status: response });
     } catch (error) {
-      console.error("Error creating todo item:", error);
-      return _response.status(500).json({ errmsg: "Internal server error" });
+      console.error('Error creating todo item:', error);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     }
   });
 
@@ -140,22 +139,21 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Body: { name: "Updated Task", completed: true }
    * Response: { response: true, status: 200 }
    */
-  router.put("/:id", async (_request: Request, _response: Response) => {
+  router.put('/:id', async (_request: Request, _response: Response) => {
     try {
       const response = await _todoService.updateTodoAsync(
-        "",
+        '',
         _request.body.name,
         _request.body,
       );
 
       if (response) {
         return _response.status(200).json({ data: response });
-      } else {
-        return _response.status(500);
       }
+      return _response.status(500);
     } catch (error) {
-      console.error("Error updating todo item:", error);
-      return _response.status(500).json({ errmsg: "Internal server error" });
+      console.error('Error updating todo item:', error);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     }
   });
 
@@ -167,7 +165,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Example: DELETE /api/todos/123
    * Response: { response: true, status: 200 }
    */
-  router.delete("/:id", async (_request: Request, _response: Response) => {
+  router.delete('/:id', async (_request: Request, _response: Response) => {
     try {
       const response = await _todoService.deleteTodoAsync(
         parseInt(_request.params.id),
@@ -179,8 +177,8 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
         _response.status(500);
       }
     } catch (error) {
-      console.error("Error deleting todo item:", error);
-      _response.status(500).json({ errmsg: "Internal server error" });
+      console.error('Error deleting todo item:', error);
+      _response.status(500).json({ errmsg: 'Internal server error' });
     }
   });
 
