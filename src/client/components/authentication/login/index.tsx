@@ -19,16 +19,15 @@ export function Login() {
           <div className="text-center space-y-2">
             <Link
               to="/forgot-password"
-              className="text-ms-blue-500 hover:text-ms-blue-600 dark:hover:text-vscode-blue dark:text-vscode-blue text-sm transition-colors"
+              className="text-sm text-vscode-blue transition-colors hover:text-blue-600 dark:text-vscode-blue dark:hover:text-blue-400"
             >
               Forgot password?
             </Link>
             <P className="text-gray-600 dark:text-vscode-text-secondary text-sm">
-              Don&apos;t have an account?
-              {' '}
+              Don&apos;t have an account?{' '}
               <Link
                 to="/signup"
-                className="text-ms-blue-500 hover:text-ms-blue-600 dark:hover:text-vscode-blue dark:text-vscode-blue font-medium transition-colors"
+                className="font-medium text-vscode-blue transition-colors hover:text-blue-600 dark:text-vscode-blue dark:hover:text-blue-400"
               >
                 Sign up
               </Link>

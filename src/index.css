@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .input-label {
+    @apply mb-2 block text-sm font-medium text-gray-900 dark:text-vscode-text;
+  }
+
+  .input-field {
+    @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors placeholder-gray-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-vscode-blue disabled:cursor-not-allowed disabled:opacity-50 dark:border-vscode-border dark:bg-vscode-input-bg dark:text-vscode-text dark:placeholder-vscode-text-secondary;
+  }
+
+  .input-field-error {
+    @apply border-red-500 focus:ring-red-500;
+  }
+}

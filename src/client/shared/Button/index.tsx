@@ -8,6 +8,7 @@ interface ButtonProps {
   className?: string;
   fullWidth?: boolean;
   style?: React.CSSProperties;
+  unstyled?: boolean;
 }
 
 export function Button({
@@ -20,6 +21,7 @@ export function Button({
   className = '',
   fullWidth = false,
   style,
+  unstyled = false,
 }: ButtonProps) {
   const variantClasses = {
     primary:
@@ -37,12 +39,12 @@ export function Button({
   };
 
   const widthClass = fullWidth ? 'w-full' : '';
-
-  const hasCustomClass = className && className.trim().length > 0;
-  const baseClass = 'font-medium rounded-md transition-opacity duration-200 disabled:cursor-not-allowed';
-  const computedClass = hasCustomClass
-    ? `${baseClass} ${className}`
-    : `${baseClass} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass}`;
+  const baseClass =
+    'font-medium rounded-md transition-opacity duration-200 disabled:cursor-not-allowed';
+  const variantClass = unstyled ? '' : variantClasses[variant];
+  const sizeClass = unstyled ? '' : sizeClasses[size];
+  const computedClass =
+    `${baseClass} ${widthClass} ${variantClass} ${sizeClass} ${className}`.trim();
 
   return (
     <button

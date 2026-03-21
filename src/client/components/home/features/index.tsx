@@ -8,15 +8,6 @@ export type Highlight = {
   text: string;
 };
 
-type Color = {
-  tab: { bg: string; text: string; border: string };
-  tabIdle: { text: string; border: string; hoverBg: string };
-  card: { border: string };
-  iconBg: string;
-  accent: string;
-  badge: { bg: string; text: string };
-};
-
 type FeaturesProps = {
   features: {
     id: string;
@@ -28,14 +19,53 @@ type FeaturesProps = {
     headline: string;
     description: string;
     highlights: Highlight[];
-    color: Color;
   }[];
   activeTab: string;
   setActiveTab: (id: string) => void;
 };
 
+const featureStyles = {
+  tasks: {
+    tabActive: 'border-violet-600 bg-violet-600 text-white shadow-sm',
+    tabIdle: 'border-violet-200 text-violet-700 hover:bg-violet-50',
+    card: 'border-violet-200',
+    icon: 'bg-violet-600',
+    accent: 'text-violet-700',
+    badge: 'bg-violet-100 text-violet-700',
+  },
+  family: {
+    tabActive: 'border-orange-500 bg-orange-500 text-white shadow-sm',
+    tabIdle: 'border-orange-200 text-orange-600 hover:bg-orange-50',
+    card: 'border-orange-200',
+    icon: 'bg-orange-500',
+    accent: 'text-orange-600',
+    badge: 'bg-orange-100 text-orange-700',
+  },
+  friends: {
+    tabActive: 'border-emerald-500 bg-emerald-500 text-white shadow-sm',
+    tabIdle: 'border-emerald-200 text-emerald-600 hover:bg-emerald-50',
+    card: 'border-emerald-200',
+    icon: 'bg-emerald-500',
+    accent: 'text-emerald-700',
+    badge: 'bg-emerald-100 text-emerald-700',
+  },
+  work: {
+    tabActive: 'border-blue-600 bg-blue-600 text-white shadow-sm',
+    tabIdle: 'border-blue-200 text-blue-600 hover:bg-blue-50',
+    card: 'border-blue-200',
+    icon: 'bg-blue-600',
+    accent: 'text-blue-700',
+    badge: 'bg-blue-100 text-blue-700',
+  },
+} as const;
+
+type FeatureStyleKey = keyof typeof featureStyles;
+
 export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
   const feature = features.find((f) => f.id === activeTab);
+  const activeStyle =
+    featureStyles[(feature?.id as FeatureStyleKey) || 'tasks'];
+
   return (
     <section className="max-w-5xl mx-auto px-6 py-20">
       <div className="text-center mb-12">
@@ -52,17 +82,13 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
       <div className="flex flex-wrap justify-center gap-3 mb-10">
         {features.map((f) => {
           const isActive = activeTab === f.id;
-          const colorObj = isActive ? f.color.tab : f.color.tabIdle;
+          const style = featureStyles[(f.id as FeatureStyleKey) || 'tasks'];
           return (
             <Button
               key={f.id}
               onClick={() => setActiveTab(f.id)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold border transition-all"
-              style={{
-                backgroundColor: colorObj.bg,
-                color: colorObj.text,
-                borderColor: colorObj.border,
-              }}
+              unstyled
+              className={`flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition-all ${isActive ? style.tabActive : style.tabIdle}`}
             >
               <f.tabIcon className="w-4 h-4" />
               {f.label}
@@ -74,38 +100,25 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
       {/* Active Feature Card */}
       {feature && (
         <div
-          className="bg-white rounded-2xl border-2 shadow-sm p-8 md:p-10 transition-all"
-          style={{
-            borderColor: feature.color.card.border,
-          }}
+          className={`rounded-2xl border-2 bg-white p-8 shadow-sm transition-all md:p-10 ${activeStyle.card}`}
         >
           <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Left — description */}
             <div className="flex-1">
               <div
-                className="inline-flex items-center justify-center w-12 h-12 rounded-xl text-white mb-4"
-                style={{
-                  backgroundColor: feature.color.iconBg,
-                }}
+                className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl text-white ${activeStyle.icon}`}
               >
                 <feature.cardIcon className="w-6 h-6" />
               </div>
-              <H3
-                className="text-2xl font-bold mb-3"
-                style={{
-                  color: feature.color.accent,
-                }}
-              >
+              <H3 className={`mb-3 text-2xl font-bold ${activeStyle.accent}`}>
                 {feature.headline}
               </H3>
               <P className="text-gray-600 leading-relaxed mb-6 text-base">
                 {feature.description}
               </P>
               <Button
-                className="flex items-center gap-1 font-semibold text-sm hover:underline"
-                style={{
-                  color: feature.color.accent,
-                }}
+                unstyled
+                className={`flex items-center gap-1 text-sm font-semibold hover:underline ${activeStyle.accent}`}
               >
                 Learn more
                 <ArrowRightIcon className="w-4 h-4" />
@@ -117,11 +130,7 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
               {feature.highlights.map((h) => (
                 <div
                   key={h.text}
-                  className="flex items-center gap-3 rounded-xl px-4 py-3"
-                  style={{
-                    backgroundColor: feature.color.badge.bg,
-                    color: feature.color.badge.text,
-                  }}
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 ${activeStyle.badge}`}
                 >
                   <span className="shrink-0 w-4 h-4">
                     <h.icon className="w-4 h-4" />

@@ -16,7 +16,7 @@ export function AppBar() {
           <nav className="hidden gap-6 text-sm font-medium text-gray-600 dark:text-vscode-text md:flex">
             <a
               href="#"
-              className="hover:text-ms-blue-500 dark:hover:text-vscode-blue transition-colors"
+              className="transition-colors hover:text-vscode-blue dark:hover:text-vscode-blue"
             >
               Login
             </a>
@@ -28,7 +28,7 @@ export function AppBar() {
             {isDark ? (
               <SunIcon className="h-5 w-5 text-vscode-text" />
             ) : (
-              <MoonIcon className="h-5 w-5 text-gray-800" />
+              <MoonIcon className="h-5 w-5 text-gray-900" />
             )}
           </button>
           <button

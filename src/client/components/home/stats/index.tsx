@@ -12,7 +12,6 @@ type Stats = {
 };
 
 export function Stats({ stats }: Stats) {
-  console.log('Stats component received stats:', stats);
   return (
     <section className="bg-white border-b border-gray-100">
       <div className="max-w-3xl mx-auto flex flex-wrap divide-x divide-gray-100">

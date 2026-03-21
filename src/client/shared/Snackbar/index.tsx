@@ -28,13 +28,23 @@ export function Snackbar({
   action,
 }: SnackbarProps) {
   const [isVisible, setIsVisible] = useState(true);
+  const [isEntered, setIsEntered] = useState(false);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setIsEntered(true));
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     if (duration === 0) return;
 
     const timer = setTimeout(() => {
-      setIsVisible(false);
-      onClose?.();
+      setIsEntered(false);
+      window.setTimeout(() => {
+        setIsVisible(false);
+        onClose?.();
+      }, 200);
     }, duration);
 
     return () => clearTimeout(timer);
@@ -59,16 +69,19 @@ export function Snackbar({
   };
 
   const handleClose = () => {
-    setIsVisible(false);
-    onClose?.();
+    setIsEntered(false);
+    window.setTimeout(() => {
+      setIsVisible(false);
+      onClose?.();
+    }, 200);
   };
 
   return (
     <div
-      className={`fixed ${positionClasses[position]} z-50 animate-in fade-in slide-in-from-bottom-2 duration-300`}
+      className={`fixed ${positionClasses[position]} z-50 transform transition-all duration-200 ${isEntered ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
     >
       <div
-        className={`${variantClasses[variant]} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-4 min-w-sm max-w-md`}
+        className={`${variantClasses[variant]} flex min-w-[20rem] max-w-md items-center gap-4 rounded-lg px-6 py-3 text-white shadow-lg`}
       >
         <span className="flex-1">{message}</span>
 

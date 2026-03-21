@@ -6,8 +6,16 @@ export type HomeAudience = {
   iconSize: string;
   label: string;
   desc: string;
-  color: { text: string; bg: string };
 };
+
+const audienceStyles = {
+  Households: 'bg-violet-50 text-violet-600',
+  Students: 'bg-orange-50 text-orange-500',
+  Startups: 'bg-emerald-50 text-emerald-600',
+  Companies: 'bg-blue-50 text-blue-600',
+} as const;
+
+type AudienceStyleKey = keyof typeof audienceStyles;
 
 export function Audience({ audiences }: { audiences: HomeAudience[] }) {
   return (
@@ -20,17 +28,17 @@ export function Audience({ audiences }: { audiences: HomeAudience[] }) {
           {audiences.map((audience) => (
             <div
               key={audience.label}
-              className="flex flex-col items-center text-center p-6 rounded-2xl"
-              style={{
-                color: audience.color.text,
-                backgroundColor: audience.color.bg,
-              }}
+              className={`flex flex-col items-center rounded-2xl p-6 text-center ${audienceStyles[(audience.label as AudienceStyleKey) || 'Households']}`}
             >
               <div className="mb-3 w-7 h-7">
                 <audience.icon className="w-7 h-7" />
               </div>
-              <H3 className="font-bold text-lg mb-1">{audience.label}</H3>
-              <P className="text-sm opacity-75">{audience.desc}</P>
+              <H3 className="mb-1 text-lg font-bold text-inherit dark:text-inherit">
+                {audience.label}
+              </H3>
+              <P className="text-sm text-inherit opacity-75 dark:text-inherit">
+                {audience.desc}
+              </P>
             </div>
           ))}
         </div>
