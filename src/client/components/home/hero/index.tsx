@@ -17,12 +17,10 @@ export function Hero({ handleGetStarted, iconMapping }: HeroProps) {
         Chore
         <span className="text-yellow-300">Mate</span>
       </h1>
-      <P className="text-lg md:text-xl text-white/90 max-w-xl mx-auto mb-8 leading-relaxed">
-        Organize tasks, collaborate with
-        {' '}
+      <P className="text-lg md:text-xl text-yellow-300 max-w-xl mx-auto mb-8 leading-relaxed">
+        Organize tasks, collaborate with{' '}
         <strong>family, friends & coworkers</strong>
-        {' '}
-        — all in one place.
+        all in one place.
       </P>
 
       <div className="flex flex-wrap justify-center gap-3 mb-10">
@@ -31,7 +29,8 @@ export function Hero({ handleGetStarted, iconMapping }: HeroProps) {
           { iconKey: 'Users', text: 'Real-Time Collaboration' },
           { iconKey: 'ShieldCheck', text: 'Works Everywhere' },
         ].map((badge) => {
-          const IconComponent = iconMapping[badge.iconKey as keyof typeof iconMapping];
+          const IconComponent =
+            iconMapping[badge.iconKey as keyof typeof iconMapping];
           return (
             <span
               key={badge.text}

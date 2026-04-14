@@ -30,7 +30,12 @@ module.exports = {
       },
     },
   },
-  extends: ['airbnb', 'airbnb/hooks', 'plugin:@typescript-eslint/recommended'],
+  extends: [
+    'airbnb',
+    'airbnb/hooks',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
   plugins: ['@typescript-eslint'],
   ignorePatterns: ['dist/', 'node_modules/'],
   rules: {

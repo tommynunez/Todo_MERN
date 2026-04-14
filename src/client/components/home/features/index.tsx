@@ -1,4 +1,3 @@
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { ComponentType } from 'react';
 import { Button, H2, H3, P } from '@/client/shared';
 
@@ -116,13 +115,6 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
               <P className="text-gray-600 leading-relaxed mb-6 text-base">
                 {feature.description}
               </P>
-              <Button
-                unstyled
-                className={`flex items-center gap-1 text-sm font-semibold hover:underline ${activeStyle.accent}`}
-              >
-                Learn more
-                <ArrowRightIcon className="w-4 h-4" />
-              </Button>
             </div>
 
             {/* Right — highlights */}
