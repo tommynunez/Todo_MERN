@@ -5,6 +5,8 @@ export const auditLogSchema = new Schema<IAuditLog>(
   {
     severity: { type: String, required: true },
     message: { type: String, required: true },
+    eventId: { type: Number, required: true },
+    category: { type: String, required: true },
   },
   { timestamps: true },
 );

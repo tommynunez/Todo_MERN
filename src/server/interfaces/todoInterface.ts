@@ -1,7 +1,7 @@
 import mongoose, { Types } from 'mongoose';
 import { IService } from './service';
 
-export interface IComplete extends mongoose.Document {
+export interface IComplete {
   by: string;
   isCompleted: boolean;
   completedDate: Date;
@@ -39,11 +39,11 @@ export interface ITodoService extends IService {
     completed: boolean,
   ) => Promise<Document | boolean>;
   deleteTodoAsync: (id: string) => Promise<boolean>;
-  getByIdTodosAsync: (name: string) => Promise<ITodo | null>;
+  getByIdTodosAsync: (id: string) => Promise<ITodo | null>;
   getAllTodosAsync: (
-    userId: any,
-    search: any,
-    pageIndex: any,
-    pageSize: any,
+    userId: string,
+    search: string,
+    pageIndex: number,
+    pageSize: number,
   ) => Promise<Array<ITodo> | null>;
 }

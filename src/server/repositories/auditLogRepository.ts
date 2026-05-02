@@ -9,6 +9,11 @@ export class AuditLogRepository {
    * @param addAuditlog
    */
   addAuditlog = async (addAuditlog: IAddAuditLog) => {
-    await auditLogModel.insertOne(addAuditlog);
+    await auditLogModel.create({
+      severity: addAuditlog.severity,
+      message: addAuditlog.message,
+      eventId: addAuditlog.event.eventId,
+      category: addAuditlog.event.category,
+    });
   };
 }

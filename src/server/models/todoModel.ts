@@ -15,7 +15,7 @@ const todoSchema = new Schema<ITodo>(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'UserAccount',
-      reqiured: true,
+      required: true,
     },
     choreListId: {
       type: mongoose.Schema.Types.ObjectId,

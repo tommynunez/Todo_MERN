@@ -43,8 +43,8 @@ export interface IChoreListService extends IService {
   ) => Promise<IChoreList | null>;
   getAllDocumentsAsync: (
     ownerId: string,
-    search: any,
-    pageIndex: any,
-    pageSize: any,
+    search: string,
+    pageIndex: number,
+    pageSize: number,
   ) => Promise<Array<IChoreList> | null>;
 }

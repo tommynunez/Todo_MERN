@@ -6,7 +6,7 @@ const SharedWithSchema = new Schema<IShareWith>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'UserAccounts',
+      ref: 'UserAccount',
       required: true,
     },
     role: {
@@ -23,7 +23,7 @@ const choreListSchema = new Schema<IChoreList>(
     title: { type: String, required: true, unique: false },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'UserAccounts',
+      ref: 'UserAccount',
       required: true,
     },
     shareWith: { type: [SharedWithSchema], required: false },

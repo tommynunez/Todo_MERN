@@ -6,6 +6,7 @@ import { InviteTypes } from '../constants/InviteType';
 
 const inviteSchema = new Schema<IInvite>(
   {
+    inviterName: { type: String, required: false },
     email: { type: String, required: true },
     listId: {
       type: Schema.Types.ObjectId,

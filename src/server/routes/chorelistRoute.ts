@@ -20,7 +20,7 @@ export const createChorelistRoutes = (
     const user = _request.user as IUserAccount;
     try {
       const response = await _chorelistService.getAllDocumentsAsync(
-        user.id,
+        user._id,
         search?.toString() || '',
         pageIndex || 0,
         pageSize || 10,
@@ -34,11 +34,12 @@ export const createChorelistRoutes = (
           pageSize,
         });
       }
-      return _response
-        .status(404)
-        .json({
-          count: 0, data: response, pageIndex, pageSize,
-        });
+      return _response.status(404).json({
+        count: 0,
+        data: response,
+        pageIndex,
+        pageSize,
+      });
     } catch (error) {
       console.error('Error fetching chorelist items:', error);
       return _response.status(500).json({ errmsg: 'Internal server error' });
@@ -56,7 +57,7 @@ export const createChorelistRoutes = (
     try {
       const response = await _chorelistService.getByIdDocumentsAsync(
         _request.params.id,
-        user.id,
+        user._id,
       );
 
       if (response) {
@@ -91,13 +92,13 @@ export const createChorelistRoutes = (
     try {
       const response = await _chorelistService.insertChorelistAsync({
         title: _request.body.title,
-        owner: user.id,
+        owner: user._id,
       });
 
       if (response) {
         return _response.status(201).json({ data: response });
       }
-      return _response.status(500);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     } catch (error) {
       console.error('Error creating chorelist:', error);
       return _response.status(500).json({ errmsg: 'Internal server error' });
@@ -125,7 +126,7 @@ export const createChorelistRoutes = (
       if (response) {
         return _response.status(200).json({ data: response });
       }
-      return _response.status(500);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     } catch (error) {
       console.error('Error updating chorelist:', error);
       return _response.status(500).json({ errmsg: 'Internal server error' });

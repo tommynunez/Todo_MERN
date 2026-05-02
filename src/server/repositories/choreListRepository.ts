@@ -22,7 +22,8 @@ export class ChoreRepository {
         title: choreList.title,
         owner: choreList.owner,
       });
-      return await newChoreList.save();
+      await newChoreList.save();
+      return true;
     } catch (error) {
       console.error(error);
       return false;
@@ -41,7 +42,7 @@ export class ChoreRepository {
   ): Promise<boolean> => {
     try {
       await choreListModel.findByIdAndUpdate(
-        { id },
+        { _id: new Types.ObjectId(id) },
         {
           title: choreList.title,
           shareWith: choreList.shareWith,
@@ -113,21 +114,22 @@ export class ChoreRepository {
     pageSize: number,
   ): Promise<Array<IChoreList> | null> => {
     try {
-      const response = (await choreListModel
-        .find({
-          owner: ownerId,
-          $or: [
-            {
-              _id: Types.ObjectId.isValid(search)
-                ? new Types.ObjectId(search)
-                : undefined,
-            },
-            { title: { $regex: search, $options: 'i' } },
-          ],
-        })
-        .skip((pageIndex ?? 0) * (pageSize ?? 10))
-        .limit(pageSize ?? 10)
-        .exec()) || [];
+      const response =
+        (await choreListModel
+          .find({
+            owner: ownerId,
+            $or: [
+              {
+                _id: Types.ObjectId.isValid(search)
+                  ? new Types.ObjectId(search)
+                  : undefined,
+              },
+              { title: { $regex: search, $options: 'i' } },
+            ],
+          })
+          .skip((pageIndex ?? 0) * (pageSize ?? 10))
+          .limit(pageSize ?? 10)
+          .exec()) || [];
       return response;
     } catch (error) {
       console.log(error);

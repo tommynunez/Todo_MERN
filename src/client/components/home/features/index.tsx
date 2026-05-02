@@ -118,7 +118,7 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
             </div>
 
             {/* Right — highlights */}
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 mx-auto">
               {feature.highlights.map((h) => (
                 <div
                   key={h.text}

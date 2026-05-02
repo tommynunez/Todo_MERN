@@ -43,6 +43,7 @@ export class InviteService implements IInviteService {
       const token = await this.sendInviteAsync(invite);
 
       await this.inviteRepository.createInviteAsync({
+        inviterName: invite.inviterName,
         email: invite.email,
         listId: invite.listId,
         role: invite.role,
@@ -147,7 +148,7 @@ export class InviteService implements IInviteService {
     const user = await this.userService.getUserbyEmailAddressAsync(email);
 
     return await this.choreListService.updateChorelistAsync(listId, {
-      shareWith: [{ userId: user?.id, role }],
+      shareWith: [{ userId: user?._id, role }],
     } as IChoreListUpdate);
   };
 

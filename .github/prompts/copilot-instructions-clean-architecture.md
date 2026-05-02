@@ -194,7 +194,7 @@ export class RegisterUserUseCase {
     return {
       success: true,
       data: {
-        userId: user.id.toString(),
+        userId: user._id.toString(),
         email: user.email.toString(),
       },
     };
@@ -351,7 +351,7 @@ export class PrismaUserRepository implements UserRepository {
 
   async save(user: User): Promise<void> {
     await this.prisma.user.upsert({
-      where: { id: user.id.toString() },
+      where: { id: user._id.toString() },
       update: this.toPersistence(user),
       create: this.toPersistence(user),
     });
