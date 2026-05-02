@@ -15,7 +15,7 @@ type AuthorizationContextType = {
     email: string,
     password: string,
     confirmPassword: string,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   forgotPassword: (email: string) => Promise<boolean>;
   resetPassword: (
     token: string,
@@ -102,7 +102,7 @@ export function AuthorizationProvider({
     email: string,
     password: string,
     confirmPassword: string,
-  ) => {
+  ): Promise<boolean> => {
     try {
       setIsLoading(true);
       const response = await authService.signup(
@@ -111,15 +111,13 @@ export function AuthorizationProvider({
         confirmPassword,
       );
       if (response.success) {
-        // todo: maybe set a token or something
-        console.log('Signup successful', response);
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
+        return true;
       }
+      return false;
     } catch (error) {
       console.error('Error during signup:', error);
       setError(`Signup failed. Please try again. ${error}`);
+      return false;
     } finally {
       setIsLoading(false);
     }
