@@ -21,12 +21,12 @@ import {
   RocketLaunchIcon,
   BuildingOffice2Icon,
 } from '@heroicons/react/24/outline';
-import rawData from './data.json';
-import { Features } from './features';
-import { CtaFooter } from './ctafooter';
-import { Audience } from './audience';
-import { Stats } from './stats';
-import { Hero } from './hero';
+import rawData from '@components/home/data.json';
+import { Features } from '@components/home/features';
+import { CtaFooter } from '@/client/components/home/cta-footer';
+import { Audience } from '@components/home/audience';
+import { Stats } from '@components/home/stats';
+import { Hero } from '@components/home/hero';
 
 // ── Icon Mapping ─────────────────────────────────────────────────────────────
 

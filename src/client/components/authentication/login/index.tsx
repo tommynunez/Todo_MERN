@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { H1, P } from '@/client/shared';
 import { usePreventBackButton } from '@hooks/usePreventBackButton';
-import { Form } from './login-form';
+import { Form } from '@components/authentication/login/login-form';
 
 export function Login() {
   usePreventBackButton();

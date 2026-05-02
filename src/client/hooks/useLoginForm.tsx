@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuthorization } from './useAuthorization';
+import { validateEmail } from '../helpers/validator';
 
 export const useLoginForm = () => {
   const [emailAddress, setEmailAddress] = useState('');
@@ -9,13 +10,13 @@ export const useLoginForm = () => {
   const [hasErrors, setHasErrors] = useState(false);
   const { login, isLoading } = useAuthorization();
 
-  const handleSubmit = async (event: any) => {
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setHasErrors(false);
     let isError = false;
 
-    // if email address value is empty set error flag
-    if (!emailAddress) {
+    // if email address value is empty or invalid set error flag
+    if (!emailAddress || !validateEmail(emailAddress)) {
       setEmailAddressError(true);
       isError = true;
     }
