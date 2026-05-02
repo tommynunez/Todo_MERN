@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     "skipLibCheck": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": true,
     "declaration": true,
+    "types": ["node"],
 
     /* Bundler mode */
     "module": "ES2022",
@@ -23,12 +25,26 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
     //"esModuleInterop": true,
+
+    //path mapping for absolute imports
+    "paths": {
+      "@/*": ["src/*"],
+      "@assets/*": ["src/assets/*"],
+      "@hooks/*": ["src/client/hooks/*"],
+      "@components/*": ["src/client/components/*"],
+      "@services/*": ["src/client/services/*"],
+      "@pages/*": ["src/client/pages/*"]
+    }
   },
-  "include": ["src/**/*.ts", "environment.d.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "environment.d.ts",
+    "src/client/hooks/usePreventBackButton.js"
+  ],
   "exclude": ["node_modules"],
-  "types": ["node"],
   "ts-node": {
     "files": true
   },

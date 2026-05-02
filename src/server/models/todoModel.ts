@@ -1,5 +1,5 @@
-import mongoose, { Schema, model } from "mongoose";
-import { IComplete, ITodo } from "../interfaces/todoInterface";
+import mongoose, { Schema, model } from 'mongoose';
+import { IComplete, ITodo } from '../interfaces/todoInterface';
 
 const completeSchema = new Schema<IComplete>(
   {
@@ -7,25 +7,25 @@ const completeSchema = new Schema<IComplete>(
     isCompleted: { type: Boolean },
     completedDate: { type: Date },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const todoSchema = new Schema<ITodo>(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "UserAccount",
-      reqiured: true,
+      ref: 'UserAccount',
+      required: true,
     },
     choreListId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ChoreList",
+      ref: 'ChoreList',
       required: true,
     },
     name: { type: String, required: true, unique: false },
     complete: [completeSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export const todoModel = model<ITodo>("Todo", todoSchema);
+export const todoModel = model<ITodo>('Todo', todoSchema);

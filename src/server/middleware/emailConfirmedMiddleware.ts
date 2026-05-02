@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { IUserAccount } from "../interfaces/userInterface";
+import { NextFunction, Request, Response } from 'express';
+import { IUserAccount } from '../interfaces/userInterface';
 
 /**
  * Middleware to check if user's email is confirmed
@@ -11,12 +11,12 @@ import { IUserAccount } from "../interfaces/userInterface";
 export function emailConfirmationMiddleware(
   _request: Request,
   _response: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) {
   const user = _request?.user as IUserAccount;
   if (user && !user.isEmailConfirmed) {
     return _response.status(403).json({
-      errmsg: "Email address has not been confirmed.",
+      errmsg: 'Email address has not been confirmed.',
     });
   }
   return _next();

@@ -1,27 +1,29 @@
-import { Types } from "mongoose";
+import { Types } from 'mongoose';
 import {
   IChoreList,
   IChoreListAdd,
   IChoreListUpdate,
-} from "../interfaces/choreListInterfaces";
-import { choreListModel } from "../models/choreListModel";
+} from '../interfaces/choreListInterfaces';
+import { choreListModel } from '../models/choreListModel';
 
 export class ChoreRepository {
   constructor() {}
+
   /**
    * Create a new chore list document
    * @param choreList
    * @returns
    */
   insertChorelistAsync = async (
-    choreList: IChoreListAdd
+    choreList: IChoreListAdd,
   ): Promise<Document | boolean> => {
     try {
       const newChoreList = new choreListModel({
         title: choreList.title,
         owner: choreList.owner,
       });
-      return await newChoreList.save();
+      await newChoreList.save();
+      return true;
     } catch (error) {
       console.error(error);
       return false;
@@ -36,16 +38,16 @@ export class ChoreRepository {
    */
   updateChorelistAsync = async (
     id: string,
-    choreList: IChoreListUpdate
+    choreList: IChoreListUpdate,
   ): Promise<boolean> => {
     try {
       await choreListModel.findByIdAndUpdate(
-        { id },
+        { _id: new Types.ObjectId(id) },
         {
           title: choreList.title,
           shareWith: choreList.shareWith,
           updatedDate: choreList.updatedDate,
-        }
+        },
       );
       return true;
     } catch (error) {
@@ -83,7 +85,7 @@ export class ChoreRepository {
    */
   getDocumentbyIdAsync = async (
     id: string,
-    owner: string
+    owner: string,
   ): Promise<IChoreList | null> => {
     try {
       const response = await choreListModel.findOne({
@@ -109,7 +111,7 @@ export class ChoreRepository {
     ownerId: string,
     search: string,
     pageIndex: number,
-    pageSize: number
+    pageSize: number,
   ): Promise<Array<IChoreList> | null> => {
     try {
       const response =
@@ -122,7 +124,7 @@ export class ChoreRepository {
                   ? new Types.ObjectId(search)
                   : undefined,
               },
-              { title: { $regex: search, $options: "i" } },
+              { title: { $regex: search, $options: 'i' } },
             ],
           })
           .skip((pageIndex ?? 0) * (pageSize ?? 10))

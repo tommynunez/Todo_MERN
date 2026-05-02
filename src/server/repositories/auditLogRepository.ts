@@ -1,5 +1,5 @@
-import { IAddAuditLog } from "../interfaces/auditLogInterface";
-import { auditLogModel } from "../models/auditloggModel";
+import { IAddAuditLog } from '../interfaces/auditLogInterface';
+import { auditLogModel } from '../models/auditloggModel';
 
 export class AuditLogRepository {
   constructor() {}
@@ -9,6 +9,11 @@ export class AuditLogRepository {
    * @param addAuditlog
    */
   addAuditlog = async (addAuditlog: IAddAuditLog) => {
-    await auditLogModel.insertOne(addAuditlog);
+    await auditLogModel.create({
+      severity: addAuditlog.severity,
+      message: addAuditlog.message,
+      eventId: addAuditlog.event.eventId,
+      category: addAuditlog.event.category,
+    });
   };
 }

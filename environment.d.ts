@@ -2,7 +2,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       NODE_MONGO_DB_URL: string;
-      NODE_ENV: "development" | "production" | "local";
+      NODE_ENV: 'development' | 'production' | 'local';
       NODE_SESSION_SECRET: string;
       NODE_INVITE_JWT_SECRET: string;
       NODE_USER_JWT_SECRET: string;
@@ -14,7 +14,7 @@ declare global {
       NODE_MAILEROO_ACCOUNT_LOCKED_EMAIL_TEMPLATE_ID: string;
       NODE_MAILEROO_WELCOME_EMAIL_TEMPLATE_ID: string;
       NODE_MAILEROO_API_KEY: string;
-      NODE_MAILEROO_API_URL: strin;
+      NODE_MAILEROO_API_URL: string;
       NODE_USE_CSP?: true | false;
     }
   }

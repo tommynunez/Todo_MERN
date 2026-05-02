@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { IService } from "./service";
+import mongoose from 'mongoose';
+import { IService } from './service';
 
 export interface IUserAccount extends mongoose.Document {
   emailAddress: string;
@@ -22,7 +22,7 @@ export interface IUserService extends IService {
   signin: (
     emailAddress: string,
     password: string,
-    user: any
+    user: any,
   ) => Promise<boolean>;
   getUserbyEmailAddressAsync: (emailAddress: string) => Promise<
     | (mongoose.Document<unknown, IUserAccount> &
@@ -38,6 +38,6 @@ export interface IUserService extends IService {
     emailAddress: string,
     token: string,
     password: string,
-    confirmPassword: string
+    confirmPassword: string,
   ) => Promise<[success: boolean, user: IUserAccount]>;
 }

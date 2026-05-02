@@ -1,0 +1,81 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  # github.repository resolves to <owner>/<repo> and is lowercased by metadata-action
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      # Only needed when actually pushing (branch pushes, not PRs)
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        # Pinned to a specific commit SHA to prevent supply-chain attacks
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+
+      # Only authenticate on pushes — PRs from forks cannot access secrets
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata (tags and labels)
+        id: meta
+        uses: docker/metadata-action@902fa8ec7d6ecbea8a87d1c4b8af44fc2c9e1e86 # v5.7.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # Tag with the short git SHA on every build
+            type=sha,prefix=sha-
+            # Tag with the branch name
+            type=ref,event=branch
+            # Tag as 'latest' only on pushes to main
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1 # v6.16.0
+        with:
+          context: .
+          # Only push on branch pushes, not on pull_request events
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Read from cache on all runs; only write cache on branch pushes to
+          # prevent a fork PR from poisoning the cache used by trusted runs.
+          cache-from: type=gha
+          cache-to: ${{ github.event_name != 'pull_request' && 'type=gha,mode=max' || '' }}
+
+  # -----------------------------------------------------------------------
+  # Required secrets / environment variables
+  # -----------------------------------------------------------------------
+  # The following must be set on the container at runtime (NOT in the image).
+  # Configure them in your deployment platform or as GHA environment secrets:
+  #
+  #   NODE_MONGO_DB_URL   — MongoDB connection string
+  #   NODE_SESSION_SECRET — Long random string for session signing
+  #   NODE_APP_URL        — Public URL of the deployed app (optional)
+  #
+  # Example docker run:
+  #   docker run -p 3000:3000 \
+  #     -e NODE_MONGO_DB_URL="mongodb+srv://..." \
+  #     -e NODE_SESSION_SECRET="..." \
+  #     ghcr.io/<owner>/<repo>:latest
+  # -----------------------------------------------------------------------

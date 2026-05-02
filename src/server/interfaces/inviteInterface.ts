@@ -1,8 +1,8 @@
-import mongoose, { Types } from "mongoose";
-import { Role } from "../constants/Roles";
-import { TokenStatus } from "../constants/TokenStatuses";
-import { InviteType } from "../constants/InviteType";
-import { IService } from "./service";
+import mongoose, { Types } from 'mongoose';
+import { Role } from '../constants/Roles';
+import { TokenStatus } from '../constants/TokenStatuses';
+import { InviteType } from '../constants/InviteType';
+import { IService } from './service';
 
 export interface IInvite extends mongoose.Document {
   inviterName: string;

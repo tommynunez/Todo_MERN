@@ -1,0 +1,230 @@
+{
+  "stats": [
+    {
+      "icon": "Zap",
+      "iconSize": "w-5 h-5",
+      "value": "3x",
+      "label": "Faster task completion"
+    },
+    {
+      "icon": "ShieldCheck",
+      "iconSize": "w-5 h-5",
+      "value": "$0",
+      "label": "to start"
+    },
+    {
+      "icon": "ShieldCheck",
+      "iconSize": "w-5 h-5",
+      "value": "1 app",
+      "label": "Home, friends & work"
+    }
+  ],
+  "features": [
+    {
+      "id": "tasks",
+      "tabIcon": "ListChecks",
+      "tabIconSize": "w-4 h-4",
+      "cardIcon": "ListChecks",
+      "cardIconSize": "w-6 h-6",
+      "label": "Task Organization",
+      "headline": "Stay on top of everything",
+      "description": "Create, prioritize, and schedule tasks with ease. Set deadlines, add subtasks, and automate recurring chores so nothing slips through the cracks.",
+      "highlights": [
+        {
+          "icon": "Layers",
+          "iconSize": "w-4 h-4",
+          "text": "Drag-and-drop task boards"
+        },
+        {
+          "icon": "CalendarDays",
+          "iconSize": "w-4 h-4",
+          "text": "Priority levels & due dates"
+        },
+        {
+          "icon": "RefreshCcw",
+          "iconSize": "w-4 h-4",
+          "text": "Recurring task automation"
+        },
+        {
+          "icon": "BarChart2",
+          "iconSize": "w-4 h-4",
+          "text": "Progress tracking at a glance"
+        }
+      ],
+      "color": {
+        "tab": { "bg": "#7c3aed", "text": "#ffffff", "border": "#7c3aed" },
+        "tabIdle": {
+          "text": "#7c3aed",
+          "border": "#ede9fe",
+          "hoverBg": "#f5f3ff"
+        },
+        "card": { "border": "#ede9fe" },
+        "iconBg": "#7c3aed",
+        "accent": "#7c3aed",
+        "badge": { "bg": "#ede9fe", "text": "#6d28d9" }
+      }
+    },
+    {
+      "id": "family",
+      "tabIcon": "Home",
+      "tabIconSize": "w-4 h-4",
+      "cardIcon": "Home",
+      "cardIconSize": "w-6 h-6",
+      "label": "Family",
+      "headline": "Bring the whole household together",
+      "description": "Assign chores, share lists, and keep everyone accountable — from kids to parents. Make household harmony the new normal.",
+      "highlights": [
+        {
+          "icon": "ListChecks",
+          "iconSize": "w-4 h-4",
+          "text": "Shared household task lists"
+        },
+        {
+          "icon": "UserCheck",
+          "iconSize": "w-4 h-4",
+          "text": "Assign tasks to family members"
+        },
+        {
+          "icon": "Bell",
+          "iconSize": "w-4 h-4",
+          "text": "Real-time completion alerts"
+        },
+        {
+          "icon": "CalendarDays",
+          "iconSize": "w-4 h-4",
+          "text": "Family activity calendar"
+        }
+      ],
+      "color": {
+        "tab": { "bg": "#f97316", "text": "#ffffff", "border": "#f97316" },
+        "tabIdle": {
+          "text": "#f97316",
+          "border": "#fed7aa",
+          "hoverBg": "#fff7ed"
+        },
+        "card": { "border": "#fed7aa" },
+        "iconBg": "#f97316",
+        "accent": "#f97316",
+        "badge": { "bg": "#fed7aa", "text": "#c2410c" }
+      }
+    },
+    {
+      "id": "friends",
+      "tabIcon": "Users",
+      "tabIconSize": "w-4 h-4",
+      "cardIcon": "Users",
+      "cardIconSize": "w-6 h-6",
+      "label": "Friends",
+      "headline": "Coordinate with your crew",
+      "description": "Planning a trip, event, or shared project with friends? ChoreМate makes group coordination feel effortless and fun.",
+      "highlights": [
+        {
+          "icon": "Layers",
+          "iconSize": "w-4 h-4",
+          "text": "Group workspaces"
+        },
+        {
+          "icon": "GitMerge",
+          "iconSize": "w-4 h-4",
+          "text": "Split responsibilities fairly"
+        },
+        {
+          "icon": "Clock",
+          "iconSize": "w-4 h-4",
+          "text": "Event & deadline countdowns"
+        },
+        {
+          "icon": "MessageSquare",
+          "iconSize": "w-4 h-4",
+          "text": "Comment & react on tasks"
+        }
+      ],
+      "color": {
+        "tab": { "bg": "#10b981", "text": "#ffffff", "border": "#10b981" },
+        "tabIdle": {
+          "text": "#059669",
+          "border": "#d1fae5",
+          "hoverBg": "#f0fdf4"
+        },
+        "card": { "border": "#d1fae5" },
+        "iconBg": "#10b981",
+        "accent": "#059669",
+        "badge": { "bg": "#d1fae5", "text": "#047857" }
+      }
+    },
+    {
+      "id": "work",
+      "tabIcon": "Briefcase",
+      "tabIconSize": "w-4 h-4",
+      "cardIcon": "Briefcase",
+      "cardIconSize": "w-6 h-6",
+      "label": "Coworkers",
+      "headline": "Keep your team aligned",
+      "description": "From small startups to growing teams — streamline workflows, assign responsibilities, and hit every deadline without the chaos.",
+      "highlights": [
+        {
+          "icon": "BarChart2",
+          "iconSize": "w-4 h-4",
+          "text": "Team dashboards & reporting"
+        },
+        {
+          "icon": "UserCheck",
+          "iconSize": "w-4 h-4",
+          "text": "Role-based task assignment"
+        },
+        {
+          "icon": "Bell",
+          "iconSize": "w-4 h-4",
+          "text": "Deadline reminders & alerts"
+        },
+        {
+          "icon": "GitMerge",
+          "iconSize": "w-4 h-4",
+          "text": "Workflow integrations"
+        }
+      ],
+      "color": {
+        "tab": { "bg": "#2563eb", "text": "#ffffff", "border": "#2563eb" },
+        "tabIdle": {
+          "text": "#2563eb",
+          "border": "#dbeafe",
+          "hoverBg": "#f0f9ff"
+        },
+        "card": { "border": "#dbeafe" },
+        "iconBg": "#2563eb",
+        "accent": "#2563eb",
+        "badge": { "bg": "#dbeafe", "text": "#1d4ed8" }
+      }
+    }
+  ],
+  "audiences": [
+    {
+      "icon": "Home",
+      "iconSize": "w-7 h-7",
+      "label": "Households",
+      "desc": "Manage chores & family schedules",
+      "color": { "text": "#8b5cf6", "bg": "#f5f3ff" }
+    },
+    {
+      "icon": "GraduationCap",
+      "iconSize": "w-7 h-7",
+      "label": "Students",
+      "desc": "Coordinate group projects",
+      "color": { "text": "#f97316", "bg": "#fff7ed" }
+    },
+    {
+      "icon": "Rocket",
+      "iconSize": "w-7 h-7",
+      "label": "Startups",
+      "desc": "Keep small teams agile",
+      "color": { "text": "#10b981", "bg": "#f0fdf4" }
+    },
+    {
+      "icon": "Building2",
+      "iconSize": "w-7 h-7",
+      "label": "Companies",
+      "desc": "Organize cross-team workflows",
+      "color": { "text": "#2563eb", "bg": "#f0f9ff" }
+    }
+  ]
+}

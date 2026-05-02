@@ -1,19 +1,76 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
-  ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
-  parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
-  rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
-    "@typescript-eslint/no-explicit-any": "off"
+  env: {
+    browser: true,
+    node: true,
+    es2022: true,
+    jest: true,
   },
-}
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        noWarnOnMultipleProjects: true,
+        project: ['./tsconfig.json', './tsconfig.node.json'],
+      },
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.d.ts'],
+      },
+    },
+  },
+  extends: [
+    'airbnb',
+    'airbnb/hooks',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
+  plugins: ['@typescript-eslint'],
+  ignorePatterns: ['dist/', 'node_modules/'],
+  rules: {
+    '@typescript-eslint/no-empty-object-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+    'linebreak-style': 'off',
+    'class-methods-use-this': 'off',
+    'consistent-return': 'off',
+    'import/extensions': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'import/no-unresolved': 'off',
+    'import/prefer-default-export': 'off',
+    'jsx-a11y/anchor-is-valid': 'off',
+    'max-len': 'off',
+    'new-cap': 'off',
+    'no-console': 'off',
+    'no-empty-function': 'off',
+    'no-return-await': 'off',
+    'no-shadow': 'off',
+    'no-tabs': 'off',
+    'no-throw-literal': 'off',
+    'no-underscore-dangle': 'off',
+    'no-param-reassign': 'off',
+    'no-use-before-define': 'off',
+    'no-useless-constructor': 'off',
+    'object-curly-newline': 'off',
+    'operator-linebreak': 'off',
+    'react/button-has-type': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'react/jsx-filename-extension': 'off',
+    'react/jsx-no-constructed-context-values': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/require-default-props': 'off',
+    'react/react-in-jsx-scope': 'off',
+    'implicit-arrow-linebreak': 'off',
+  },
+};
