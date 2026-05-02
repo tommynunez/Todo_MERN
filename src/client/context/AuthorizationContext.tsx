@@ -18,7 +18,7 @@ type AuthorizationContextType = {
   ) => Promise<void>;
   forgotPassword: (email: string) => Promise<boolean>;
   resetPassword: (
-    tokfunetin: string,
+    token: string,
     newPassword: string,
     confirmPassword: string,
   ) => Promise<boolean>;
