@@ -1,0 +1,28 @@
+node_modules
+
+# Environment files — pass secrets via container env vars, never bake them in
+
+.env
+.env.\*
+!.env.example
+
+# Build outputs — rebuilt inside Docker
+
+dist/
+client/dist/
+
+# Dev tooling
+
+.git
+.github
+.vscode
+
+# Test artefacts
+
+coverage/
+\*.log
+
+# OS
+
+.DS_Store
+Thumbs.db
