@@ -6,10 +6,10 @@ export const useInputField = () => {
   const STORAGE_REMEMBER_ME = 'rememberMe';
 
   const handleInputOnBlur = (
-    event: any,
-    storage: any,
-    isError: any,
-    setIsError: any,
+    event: React.FocusEvent<HTMLInputElement>,
+    storage: Storage,
+    isError: boolean,
+    setIsError: React.Dispatch<React.SetStateAction<boolean>>,
   ) => {
     if (event.target.value) {
       if (storage.exists(STORAGE_REMEMBER_ME)) {

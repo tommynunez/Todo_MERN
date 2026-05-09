@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useAuthorization } from './useAuthorization';
-import { validateEmail } from '../helpers/validator';
+import { validateEmail } from '@/client/helpers/validator';
+import { useAuthorization } from '@/client/hooks/useAuthorization';
 
 export const useLoginForm = () => {
   const [emailAddress, setEmailAddress] = useState('');

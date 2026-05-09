@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM"],
@@ -13,7 +12,6 @@
 
     /* Bundler mode */
     "module": "ES2022",
-    "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
@@ -38,12 +36,7 @@
       "@pages/*": ["src/client/pages/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "environment.d.ts",
-    "src/client/hooks/usePreventBackButton.js"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "environment.d.ts"],
   "exclude": ["node_modules"],
   "ts-node": {
     "files": true
