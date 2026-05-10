@@ -5,14 +5,14 @@
   "type": "module",
   "entry": "./src/server/index.ts",
   "scripts": {
-    "build": "cross-env NODE_ENV=production && vite build",
+    "build": "NODE_ENV=production bun run vite build",
     "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start": "cross-env NODE_ENV=production node ./dist/server/index.js",
-    "start-local": "cross-env NODE_ENV=development tsx ./src/server/index.ts",
-    "database": "npx tsx ./src/server/models/database/index.ts",
+    "start": "NODE_ENV=production bun ./dist/server/index.js",
+    "start-local": "NODE_ENV=development bun ./src/server/index.ts",
+    "database": "bun ./src/server/models/database/index.ts",
     "test": "jest",
-    "pretty": "npx prettier --write \"src/**/*.{ts,js,json}\""
+    "pretty": "bun prettier --write \"src/**/*.{ts,js,json}\""
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
