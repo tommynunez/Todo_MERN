@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react';
-import AuthenticationService from '@/client/features/authentication/services/authentication';
+import AuthenticationService from '@/client/shared/services/authentication';
 
 type AuthorizationContextType = {
   isAuthenticated: boolean;
