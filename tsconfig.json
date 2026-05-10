@@ -27,13 +27,13 @@
     //"esModuleInterop": true,
 
     //path mapping for absolute imports
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@assets/*": ["src/assets/*"],
       "@hooks/*": ["src/client/hooks/*"],
       "@components/*": ["src/client/components/*"],
-      "@services/*": ["src/client/services/*"],
-      "@pages/*": ["src/client/features/authentication/pages/*"]
+      "@services/*": ["src/client/services/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "environment.d.ts"],
