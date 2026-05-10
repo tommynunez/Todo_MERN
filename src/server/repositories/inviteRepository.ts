@@ -1,9 +1,7 @@
 import { Types } from 'mongoose';
-import {
-  IInvite,
-  IInviteDelete,
-} from '../interfaces/inviteInterface';
+import { IInvite, IInviteDelete } from '../interfaces/inviteInterface';
 import { inviteModel } from '../models/invitesModel';
+import { toObjectId } from '../utils/idValidator';
 
 export class InviteRepository {
   constructor() {}
@@ -24,7 +22,7 @@ export class InviteRepository {
   ): Promise<boolean> => {
     try {
       const existingInvite = await inviteModel.findByIdAndUpdate(
-        inviteDelete.id,
+        toObjectId(inviteDelete.id.toString()),
         {
           status: inviteDelete.status,
         },
@@ -81,7 +79,7 @@ export class InviteRepository {
     isLean: boolean = false,
   ): Promise<IInvite | null> => {
     try {
-      const invite = inviteModel.findById({ token });
+      const invite = inviteModel.findOne({ token });
 
       if (invite && isLean) {
         invite.lean();
