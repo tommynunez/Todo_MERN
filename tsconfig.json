@@ -33,7 +33,7 @@
       "@hooks/*": ["src/client/hooks/*"],
       "@components/*": ["src/client/components/*"],
       "@services/*": ["src/client/services/*"],
-      "@pages/*": ["src/client/pages/*"]
+      "@pages/*": ["src/client/features/authentication/pages/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "environment.d.ts"],

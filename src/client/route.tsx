@@ -1,10 +1,10 @@
 import { RouteObject, useRoutes } from 'react-router-dom';
-import { UnauthenticatedLayout } from '@components/layout/unauthenticated';
-import { LoginPage } from '@pages/login';
-import { ForgotPasswordPage } from '@pages/forgot-password';
-import { ResetPasswordPage } from '@pages/reset-password';
-import { EmailConfirmationPage } from '@pages/email-confirmation';
-import { HomePage } from './pages/home';
+import { UnauthenticatedLayout } from '@/client/shared/components/layout/unauthenticated';
+import { LoginPage } from '@/client/features/authentication/pages/login';
+import { ForgotPasswordPage } from '@/client/features/authentication/pages/forgot-password';
+import { ResetPasswordPage } from '@/client/features/authentication/pages/reset-password';
+import { EmailConfirmationPage } from '@/client/features/authentication/pages/email-confirmation';
+import { HomePage } from '@/client/features/home/pages/home';
 
 const unauthenticatedRoutes: RouteObject[] = [
   {

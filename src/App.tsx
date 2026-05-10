@@ -1,4 +1,4 @@
-import { useAuthorization } from './client/hooks/useAuthorization';
+import { useAuthorization } from '@/client/shared/hooks/useAuthorization';
 import { AuthenticatedRoutes, UnauthenticatedRoutes } from './client/route';
 import './index.css';
 

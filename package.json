@@ -47,7 +47,8 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "vite-plugin-env-compatible": "^2.0.1",
-    "vite-plugin-svgr": "^4.5.0"
+    "vite-plugin-svgr": "^4.5.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
