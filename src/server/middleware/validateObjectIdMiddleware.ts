@@ -7,21 +7,24 @@ import { isValidObjectId } from '../utils/idValidator';
  * @param paramNames - Array of param names to validate (e.g., ['id', 'listId'])
  * @returns Express middleware function
  */
-export const validateObjectIdParams = (paramNames: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const invalidParams = paramNames.filter(
-      (param) => req.params[param] && !isValidObjectId(req.params[param]),
-    );
+export const validateObjectIdParams = (paramNames: string[]) => (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const invalidParams = paramNames.filter((param) => {
+    const value = req.params[param];
+    return value && typeof value === 'string' && !isValidObjectId(value);
+  });
 
-    if (invalidParams.length > 0) {
-      return res.status(400).json({
-        error: 'Invalid ID format',
-        invalidParams,
-      });
-    }
+  if (invalidParams.length > 0) {
+    return res.status(400).json({
+      error: 'Invalid ID format',
+      invalidParams,
+    });
+  }
 
-    next();
-  };
+  next();
 };
 
 /**
@@ -29,19 +32,21 @@ export const validateObjectIdParams = (paramNames: string[]) => {
  * @param fieldNames - Array of field names to validate (e.g., ['userId', 'listId'])
  * @returns Express middleware function
  */
-export const validateObjectIdBody = (fieldNames: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const invalidFields = fieldNames.filter(
-      (field) => req.body[field] && !isValidObjectId(req.body[field]),
-    );
+export const validateObjectIdBody = (fieldNames: string[]) => (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const invalidFields = fieldNames.filter(
+    (field) => req.body[field] && !isValidObjectId(req.body[field]),
+  );
 
-    if (invalidFields.length > 0) {
-      return res.status(400).json({
-        error: 'Invalid ID format in request body',
-        invalidFields,
-      });
-    }
+  if (invalidFields.length > 0) {
+    return res.status(400).json({
+      error: 'Invalid ID format in request body',
+      invalidFields,
+    });
+  }
 
-    next();
-  };
+  next();
 };
