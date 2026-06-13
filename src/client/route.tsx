@@ -1,10 +1,11 @@
 import { RouteObject, useRoutes } from 'react-router-dom';
 import { UnauthenticatedLayout } from '@/client/shared/components/layout/unauthenticated';
-import { LoginPage } from '@/client/features/authentication/pages/login';
-import { ForgotPasswordPage } from '@/client/features/authentication/pages/forgot-password';
-import { ResetPasswordPage } from '@/client/features/authentication/pages/reset-password';
-import { EmailConfirmationPage } from '@/client/features/authentication/pages/email-confirmation';
+import { LoginPage } from '@/client/features/authentication/pages/Login';
+import { ForgotPasswordPage } from '@/client/features/authentication/pages/ForgotPassword';
+import { ResetPasswordPage } from '@/client/features/authentication/pages/ResetPassword';
+import { EmailConfirmationPage } from '@/client/features/authentication/pages/EmailConfirmation';
 import { HomePage } from '@/client/features/home/pages/home';
+import { Signup } from '@/client/features/authentication/pages/signup';
 
 const unauthenticatedRoutes: RouteObject[] = [
   {
@@ -30,6 +31,10 @@ const unauthenticatedRoutes: RouteObject[] = [
         path: '/confirm-email',
         element: <EmailConfirmationPage />,
       },
+      {
+        path: '/signup',
+        element: <Signup />
+      }
     ],
   },
 ];
