@@ -9,15 +9,15 @@ type HeroProps = {
 
 export function Hero({ handleGetStarted, iconMapping }: HeroProps) {
   return (
-    <section className="bg-gradient-to-br from-violet-600 via-violet-500 to-blue-500 text-white px-6 py-24 text-center">
-      <span className="inline-block bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full mb-5 tracking-widest uppercase">
+    <section className="bg-gradient-to-br from-slate-800 via-slate-700 to-indigo-900 text-slate-50 px-6 py-24 text-center">
+      <span className="inline-block rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-slate-100 mb-5">
         All-in-one task manager
       </span>
-      <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4">
+      <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-4">
         Chore
-        <span className="text-yellow-300">Mate</span>
+        <span className="text-sky-300">Mate</span>
       </h1>
-      <P className="text-lg md:text-xl text-yellow-300 max-w-xl mx-auto mb-8 leading-relaxed">
+      <P className="text-lg md:text-xl max-w-xl mx-auto mb-8 leading-relaxed text-slate-100/90">
         Organize tasks, collaborate with{' '}
         <strong>family, friends & coworkers</strong>
         all in one place.
@@ -34,7 +34,7 @@ export function Hero({ handleGetStarted, iconMapping }: HeroProps) {
           return (
             <span
               key={badge.text}
-              className="flex items-center gap-2 bg-white/20 text-white text-sm font-medium px-4 py-2 rounded-full"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-medium text-slate-100"
             >
               <IconComponent className="w-4 h-4" />
               {badge.text}

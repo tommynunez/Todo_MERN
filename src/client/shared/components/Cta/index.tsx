@@ -11,13 +11,13 @@ export function Cta({ handleGetStarted, icon }: CtaType) {
       <Button
         onClick={handleGetStarted}
         unstyled
-        className="flex items-center gap-2 bg-white text-violet-600 font-bold px-7 py-3 rounded-full shadow hover:shadow-lg transition"
+        className="flex items-center gap-2 rounded-full bg-white px-7 py-3 font-semibold text-slate-900 shadow-md transition hover:bg-slate-100 hover:shadow-lg"
       >
         Get Started Free {icon}
       </Button>
       <Button
         unstyled
-        className="border border-white/50 text-white font-semibold px-7 py-3 rounded-full hover:bg-white/10 transition"
+        className="rounded-full border border-white/30 px-7 py-3 font-medium text-slate-100 transition hover:bg-white/10"
       >
         See How It Works
       </Button>

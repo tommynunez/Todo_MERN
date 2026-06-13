@@ -3,6 +3,10 @@ import { useResetPasswordForm } from '@/client/features/authentication/hooks/use
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
 import { Input, Button } from '@/client/shared';
 import { useSnackbar } from '@/client/shared/context/SnackbarContext';
+import {
+  authButtonClassName,
+  authInputClassName,
+} from '@/client/features/authentication/components/shared/authStyles';
 
 export function ResetPasswordForm() {
   const {
@@ -41,6 +45,7 @@ export function ResetPasswordForm() {
         type="password"
         label="New Password"
         placeholder="••••••••"
+        className={authInputClassName}
         value={password}
         onChange={(e) => {
           setPassword(e.target.value);
@@ -55,6 +60,7 @@ export function ResetPasswordForm() {
         type="password"
         label="Confirm Password"
         placeholder="••••••••"
+        className={authInputClassName}
         value={confirmPassword}
         onChange={(e) => {
           setConfirmPassword(e.target.value);
@@ -73,7 +79,12 @@ export function ResetPasswordForm() {
         required
       />
 
-      <Button type="submit" fullWidth disabled={isLoading}>
+      <Button
+        type="submit"
+        fullWidth
+        disabled={isLoading}
+        className={authButtonClassName}
+      >
         {isLoading ? 'Resetting...' : 'Reset Password'}
       </Button>
     </form>

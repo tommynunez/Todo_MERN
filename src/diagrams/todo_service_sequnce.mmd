@@ -1,0 +1,132 @@
+---
+references:
+  - "File: /src/client/features/todo/hooks/useTodos.tsx"
+generationTime: 2026-06-13T00:23:30.765Z
+---
+sequenceDiagram
+    actor User
+    participant UI as Todo UI Component
+    participant Hook as useTodos hook
+    participant RQ as React Query
+    participant QC as Query Client
+    participant Service as TodoService
+    participant API as Todo API / Server
+
+    %% Hook initialization and initial query
+    User->>UI: Open todo screen or change filters
+    UI->>Hook: useTodos({choreListId, search, pageIndex, pageSize})
+    activate Hook
+    Hook->>RQ: useQueryClient()
+    activate RQ
+    RQ-->>Hook: queryClient reference
+    activate QC
+    Note over QC: Used by onSuccess handlers to invalidate the current queryKey
+    Hook->>RQ: useQuery({ queryKey, queryFn })
+    Note over Hook,RQ: queryKey = ['todos', params]
+    RQ-)Service: getAll(params)
+    activate Service
+    Service-)API: GET todos with optional filters and pagination
+    activate API
+
+    alt Initial query succeeds
+        API-->>Service: { data: { data, count } }
+        Service-->>RQ: resolved promise
+        RQ-->>Hook: data, isLoading=false, error=null, refetch
+        Hook->>Hook: derive listData and apply defaults
+        Hook->>RQ: useMutation(create), useMutation(update), useMutation(delete)
+        RQ-->>Hook: createTodo, updateTodo, deleteTodo and pending flags
+        Hook-->>UI: todos, count, isLoading, error, refetch, mutation handlers
+    else Initial query fails
+        API-->>Service: network or server error
+        Service-->>RQ: rejected promise
+        RQ-->>Hook: error, isLoading=false, refetch
+        Hook->>Hook: map error?.message and fallback values
+        Hook->>RQ: useMutation(create), useMutation(update), useMutation(delete)
+        RQ-->>Hook: createTodo, updateTodo, deleteTodo and pending flags
+        Hook-->>UI: empty todos, count=0, error, refetch, mutation handlers
+    end
+
+    rect rgba(191, 223, 255, 0.35)
+    %% Create flow
+    User->>UI: Submit new todo
+    UI-)Hook: createTodo({ name, choreListId })
+    Hook-)RQ: mutateAsync(create)
+    RQ-)Service: create(name, choreListId)
+    Note over Service,API: Server calls are inferred from the service abstraction
+    Service-)API: POST /todos
+    alt Create succeeds
+        API-->>Service: created todo
+        Service-->>RQ: resolved promise
+        RQ->>QC: invalidateQueries({ queryKey })
+        QC-->>RQ: current todos query marked stale
+        RQ-)Service: getAll(params)
+        Service-)API: GET todos for refreshed list
+        API-->>Service: refreshed { data, count }
+        Service-->>RQ: resolved promise
+        RQ-->>Hook: cache refreshed, isCreating=false
+        Hook-->>UI: updated todos exposed to component
+    else Create fails
+        API-->>Service: validation or server error
+        Service-->>RQ: rejected promise
+        RQ-->>Hook: mutation error, isCreating=false
+        Hook-->>UI: rejected promise for caller handling
+    end
+    end
+
+    rect rgba(223, 255, 191, 0.35)
+    %% Update flow
+    User->>UI: Edit todo or toggle completion
+    UI-)Hook: updateTodo({ id, payload })
+    Hook-)RQ: mutateAsync(update)
+    RQ-)Service: update(id, { name, emailAddress, completed })
+    Service-)API: PUT/PATCH /todos/{id}
+    alt Update succeeds
+        API-->>Service: updated todo
+        Service-->>RQ: resolved promise
+        RQ->>QC: invalidateQueries({ queryKey })
+        QC-->>RQ: current todos query marked stale
+        RQ-)Service: getAll(params)
+        Service-)API: GET todos for refreshed list
+        API-->>Service: refreshed { data, count }
+        Service-->>RQ: resolved promise
+        RQ-->>Hook: cache refreshed, isUpdating=false
+        Hook-->>UI: updated todos exposed to component
+    else Update fails
+        API-->>Service: validation or server error
+        Service-->>RQ: rejected promise
+        RQ-->>Hook: mutation error, isUpdating=false
+        Hook-->>UI: rejected promise for caller handling
+    end
+    end
+
+    rect rgba(255, 223, 191, 0.35)
+    %% Delete flow
+    User->>UI: Remove todo
+    UI-)Hook: deleteTodo(id)
+    Hook-)RQ: mutateAsync(delete)
+    RQ-)Service: deleteById(id)
+    Service-)API: DELETE /todos/{id}
+    alt Delete succeeds
+        API-->>Service: delete acknowledged
+        Service-->>RQ: resolved promise
+        RQ->>QC: invalidateQueries({ queryKey })
+        QC-->>RQ: current todos query marked stale
+        RQ-)Service: getAll(params)
+        Service-)API: GET todos for refreshed list
+        API-->>Service: refreshed { data, count }
+        Service-->>RQ: resolved promise
+        RQ-->>Hook: cache refreshed, isDeleting=false
+        Hook-->>UI: updated todos exposed to component
+    else Delete fails
+        API-->>Service: server error
+        Service-->>RQ: rejected promise
+        RQ-->>Hook: mutation error, isDeleting=false
+        Hook-->>UI: rejected promise for caller handling
+    end
+    end
+
+    deactivate API
+    deactivate Service
+    deactivate QC
+    deactivate RQ
+    deactivate Hook

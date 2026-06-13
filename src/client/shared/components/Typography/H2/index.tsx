@@ -4,11 +4,5 @@ interface H2Props {
 }
 
 export function H2({ children, className = '' }: H2Props) {
-  return (
-    <h2
-      className={`text-3xl font-bold text-gray-900 dark:text-vscode-text ${className}`}
-    >
-      {children}
-    </h2>
-  );
+  return <h2 className={`text-3xl font-bold ${className}`}>{children}</h2>;
 }

@@ -3,6 +3,10 @@ import { useForgotPasswordForm } from '@/client/features/authentication/hooks/us
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
 import { Input, Button } from '@/client/shared';
 import { useSnackbar } from '@/client/shared/context/SnackbarContext';
+import {
+  authButtonClassName,
+  authInputClassName,
+} from '@/client/features/authentication/components/shared/authStyles';
 
 type ForgotPasswordFormProps = {
   onSuccess: () => void;
@@ -34,6 +38,7 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
         type="email"
         label="Email Address"
         placeholder="your@email.com"
+        className={authInputClassName}
         value={emailAddress}
         onChange={(e) => {
           setEmailAddress(e.target.value);
@@ -48,7 +53,12 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
         required
       />
 
-      <Button type="submit" fullWidth disabled={isLoading}>
+      <Button
+        type="submit"
+        fullWidth
+        disabled={isLoading}
+        className={authButtonClassName}
+      >
         {isLoading ? 'Sending...' : 'Send Reset Link'}
       </Button>
     </form>

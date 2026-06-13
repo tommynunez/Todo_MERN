@@ -3,6 +3,10 @@ import { useSignupForm } from '@/client/features/authentication/hooks/useSignupF
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
 import { Input, Button } from '@/client/shared';
 import { useSnackbar } from '@/client/shared/context/SnackbarContext';
+import {
+  authButtonClassName,
+  authInputClassName,
+} from '@/client/features/authentication/components/shared/authStyles';
 
 type SignupFormProps = {
   onSuccess: () => void;
@@ -47,6 +51,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
         type="email"
         label="Email Address"
         placeholder="your@email.com"
+        className={authInputClassName}
         value={emailAddress}
         onChange={(e) => {
           setEmailAddress(e.target.value);
@@ -65,6 +70,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
         type="password"
         label="Password"
         placeholder="••••••••"
+        className={authInputClassName}
         value={password}
         onChange={(e) => {
           setPassword(e.target.value);
@@ -79,6 +85,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
         type="password"
         label="Confirm Password"
         placeholder="••••••••"
+        className={authInputClassName}
         value={confirmPassword}
         onChange={(e) => {
           setConfirmPassword(e.target.value);
@@ -97,7 +104,12 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
         required
       />
 
-      <Button type="submit" fullWidth disabled={isLoading}>
+      <Button
+        type="submit"
+        fullWidth
+        disabled={isLoading}
+        className={authButtonClassName}
+      >
         {isLoading ? 'Creating account...' : 'Create Account'}
       </Button>
     </form>

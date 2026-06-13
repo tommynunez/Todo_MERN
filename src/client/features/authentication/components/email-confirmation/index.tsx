@@ -2,19 +2,21 @@ import { useEmailConfirmation } from '@/client/features/authentication/hooks/use
 import { EmailConfirmationPending } from '@/client/features/authentication/components/email-confirmation-pending';
 import { EmailConfirmationSuccess } from '@/client/features/authentication/components/email-confirmation-success';
 import { EmailConfirmationError } from '@/client/features/authentication/components/email-confirmation-error';
+import {
+  authCardClassName,
+} from '@/client/features/authentication/components/shared/authStyles';
+import { AuthShell } from '@/client/features/authentication/components/shared/AuthShell';
 
 export function EmailConfirmation() {
   const { status } = useEmailConfirmation();
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-md text-center">
-        <div className="space-y-8">
-          {status === 'pending' && <EmailConfirmationPending />}
-          {status === 'success' && <EmailConfirmationSuccess />}
-          {status === 'error' && <EmailConfirmationError />}
-        </div>
+    <AuthShell>
+      <div className={`${authCardClassName} space-y-6 text-center`}>
+        {status === 'pending' && <EmailConfirmationPending />}
+        {status === 'success' && <EmailConfirmationSuccess />}
+        {status === 'error' && <EmailConfirmationError />}
       </div>
-    </div>
+    </AuthShell>
   );
 }

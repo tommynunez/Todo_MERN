@@ -25,36 +25,36 @@ type FeaturesProps = {
 
 const featureStyles = {
   tasks: {
-    tabActive: 'border-violet-600 bg-violet-600 text-white shadow-sm',
-    tabIdle: 'border-violet-200 text-violet-700 hover:bg-violet-50',
-    card: 'border-violet-200',
-    icon: 'bg-violet-600',
-    accent: 'text-violet-700',
-    badge: 'bg-violet-100 text-violet-700',
+    tabActive: 'border-slate-800 bg-slate-800 text-white shadow-sm',
+    tabIdle: 'border-slate-200 text-slate-700 hover:bg-slate-50',
+    card: 'border-slate-200 bg-slate-50/70',
+    icon: 'bg-slate-800',
+    accent: 'text-slate-900',
+    badge: 'border border-slate-200 bg-white text-slate-700',
   },
   family: {
-    tabActive: 'border-orange-500 bg-orange-500 text-white shadow-sm',
-    tabIdle: 'border-orange-200 text-orange-600 hover:bg-orange-50',
-    card: 'border-orange-200',
-    icon: 'bg-orange-500',
-    accent: 'text-orange-600',
-    badge: 'bg-orange-100 text-orange-700',
+    tabActive: 'border-amber-700 bg-amber-700 text-white shadow-sm',
+    tabIdle: 'border-amber-200 text-amber-800 hover:bg-amber-50',
+    card: 'border-amber-200 bg-amber-50/60',
+    icon: 'bg-amber-700',
+    accent: 'text-slate-900',
+    badge: 'border border-amber-200 bg-white text-slate-700',
   },
   friends: {
-    tabActive: 'border-emerald-500 bg-emerald-500 text-white shadow-sm',
-    tabIdle: 'border-emerald-200 text-emerald-600 hover:bg-emerald-50',
-    card: 'border-emerald-200',
-    icon: 'bg-emerald-500',
-    accent: 'text-emerald-700',
-    badge: 'bg-emerald-100 text-emerald-700',
+    tabActive: 'border-teal-700 bg-teal-700 text-white shadow-sm',
+    tabIdle: 'border-teal-200 text-teal-800 hover:bg-teal-50',
+    card: 'border-teal-200 bg-teal-50/60',
+    icon: 'bg-teal-700',
+    accent: 'text-slate-900',
+    badge: 'border border-teal-200 bg-white text-slate-700',
   },
   work: {
-    tabActive: 'border-blue-600 bg-blue-600 text-white shadow-sm',
-    tabIdle: 'border-blue-200 text-blue-600 hover:bg-blue-50',
-    card: 'border-blue-200',
-    icon: 'bg-blue-600',
-    accent: 'text-blue-700',
-    badge: 'bg-blue-100 text-blue-700',
+    tabActive: 'border-indigo-800 bg-indigo-800 text-white shadow-sm',
+    tabIdle: 'border-indigo-200 text-indigo-800 hover:bg-indigo-50',
+    card: 'border-indigo-200 bg-indigo-50/60',
+    icon: 'bg-indigo-800',
+    accent: 'text-slate-900',
+    badge: 'border border-indigo-200 bg-white text-slate-700',
   },
 } as const;
 
@@ -67,11 +67,11 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
 
   return (
     <section className="max-w-5xl mx-auto px-6 py-20">
-      <div className="text-center mb-12">
-        <H2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+      <div className="mb-12 text-center">
+        <H2 className="mb-3 text-3xl font-semibold text-slate-900 md:text-4xl">
           Built for every part of your life
         </H2>
-        <P className="text-gray-500 text-base max-w-lg mx-auto">
+        <P className="mx-auto max-w-lg text-base text-slate-600">
           Whether you&apos;re managing a household, planning with friends, or
           running a team — ChoreМate has you covered.
         </P>
@@ -87,7 +87,7 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
               key={f.id}
               onClick={() => setActiveTab(f.id)}
               unstyled
-              className={`flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition-all ${isActive ? style.tabActive : style.tabIdle}`}
+              className={`flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all ${isActive ? style.tabActive : style.tabIdle}`}
             >
               <f.tabIcon className="w-4 h-4" />
               {f.label}
@@ -99,9 +99,9 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
       {/* Active Feature Card */}
       {feature && (
         <div
-          className={`rounded-2xl border-2 bg-white p-8 shadow-sm transition-all md:p-10 ${activeStyle.card}`}
+          className={`rounded-2xl border p-8 shadow-sm transition-all md:p-10 ${activeStyle.card}`}
         >
-          <div className="flex flex-col md:flex-row gap-8 items-start">
+          <div className="flex flex-col items-start gap-8 md:flex-row">
             {/* Left — description */}
             <div className="flex-1">
               <div
@@ -109,16 +109,16 @@ export function Features({ features, activeTab, setActiveTab }: FeaturesProps) {
               >
                 <feature.cardIcon className="w-6 h-6" />
               </div>
-              <H3 className={`mb-3 text-2xl font-bold ${activeStyle.accent}`}>
+              <H3 className={`mb-3 text-2xl ${activeStyle.accent}`}>
                 {feature.headline}
               </H3>
-              <P className="text-gray-600 leading-relaxed mb-6 text-base">
+              <P className="mb-6 text-base leading-relaxed text-slate-600">
                 {feature.description}
               </P>
             </div>
 
             {/* Right — highlights */}
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 mx-auto">
+            <div className="mx-auto grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
               {feature.highlights.map((h) => (
                 <div
                   key={h.text}
