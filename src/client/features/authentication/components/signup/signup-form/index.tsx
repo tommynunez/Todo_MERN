@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { useSignupForm } from '@/client/features/authentication/hooks/useSignupForm';
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
-import { Input, Button } from '@/client/shared';
+import { Input, Button, P } from '@/client/shared';
 import { useSnackbar } from '@/client/shared/context/SnackbarContext';
 import {
   authButtonClassName,
   authInputClassName,
+  authMutedTextClassName,
 } from '@/client/features/authentication/components/shared/authStyles';
 
 type SignupFormProps = {
@@ -112,6 +113,11 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
       >
         {isLoading ? 'Creating account...' : 'Create Account'}
       </Button>
+
+      <P className={`${authMutedTextClassName} text-center`}>
+        Use at least 8 characters so your account stays easy to access and hard
+        to compromise.
+      </P>
     </form>
   );
 }

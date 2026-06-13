@@ -5,8 +5,8 @@ export function UnauthenticatedLayout() {
   return (
     <div className="min-h-screen flex dark:bg-vscode-bg flex-col">
       <AppBar />
-      <main className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-md">
+      <main className="flex-1 flex items-center justify-center">
+        <div className="w-full">
           <Outlet />
         </div>
       </main>

@@ -8,7 +8,9 @@ import {
 
 export function SignupSuccess() {
   return (
-    <div className={`${authCardClassName} space-y-4 text-center`}>
+    <div
+      className={`${authCardClassName} space-y-4 border-slate-200/80 text-center shadow-xl shadow-slate-200/60`}
+    >
       <P className={authBodyTextClassName}>
         Account created! Check your email to confirm your address before signing
         in.
