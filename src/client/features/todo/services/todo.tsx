@@ -1,25 +1,5 @@
 import axios from 'axios';
-
-export interface ITodo {
-  _id: string;
-  userId: string;
-  choreListId: string;
-  name: string;
-  complete: { by: string; isCompleted: boolean; completedDate: Date }[];
-}
-
-export interface ITodoListResponse {
-  count: number;
-  data: ITodo[];
-  pageIndex: number;
-  pageSize: number;
-}
-
-export interface ITodoResponse {
-  success: boolean;
-  data?: ITodo | ITodoListResponse;
-  error?: string;
-}
+import { ITodoResponse } from '../types/todoTypes';
 
 const baseURL = import.meta.env.VITE_API_URL || '';
 const axiosInstance = axios.create({

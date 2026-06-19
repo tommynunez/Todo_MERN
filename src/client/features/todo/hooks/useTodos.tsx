@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import TodoService, { ITodo, ITodoListResponse } from '@/client/features/todo/services/todo';
+import TodoService from '@/client/features/todo/services/todo';
+import { ITodo, ITodoListResponse } from '../types/todoTypes';
 
 interface UseTodosParams {
   choreListId?: string;

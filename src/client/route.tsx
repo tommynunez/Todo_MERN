@@ -5,7 +5,7 @@ import { ForgotPasswordPage } from '@/client/features/authentication/pages/Forgo
 import { ResetPasswordPage } from '@/client/features/authentication/pages/ResetPassword';
 import { EmailConfirmationPage } from '@/client/features/authentication/pages/EmailConfirmation';
 import { HomePage } from '@/client/features/home/pages/home';
-import { Signup } from '@/client/features/authentication/pages/signup';
+import { SignUp } from '@/client/features/authentication/pages/Signup';
 
 const unauthenticatedRoutes: RouteObject[] = [
   {
@@ -33,8 +33,8 @@ const unauthenticatedRoutes: RouteObject[] = [
       },
       {
         path: '/signup',
-        element: <Signup />
-      }
+        element: <SignUp />,
+      },
     ],
   },
 ];
