@@ -1,7 +1,11 @@
 import * as crypto from 'crypto';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { IUserAccount, IUserService } from '../interfaces/userInterface';
+import {
+  IAuthenticatedUser,
+  IUserAccount,
+  IUserService,
+} from '../interfaces/userInterface';
 import { UserRepository } from '../repositories/userRepository';
 import { emailRegex, passwordRegex } from '../utils/regex';
 import { generateUserToken, verifyToken } from '../utils/token';
@@ -136,20 +140,38 @@ export default class UserService implements IUserService {
   /**
    * Retrieves a user account by their email address
    * @param emailAddress - The email address to search for
-   * @returns Promise resolving to the IUserAccount document if found, null otherwise
+   * @returns Promise resolving to the IAuthenticatedUser document if found, null otherwise
    * @throws Will not throw but returns null if database error occurs
    * @async
    */
   getUserbyEmailAddressAsync = async (
     emailAddress: string,
-  ): Promise<
-    | (mongoose.Document<unknown, IUserAccount> &
-        IUserAccount &
-        Required<{
-          _id: unknown;
-        }>)
-    | null
-  > => await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
+  ): Promise<IAuthenticatedUser | null> => {
+    const user =
+      await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      _id: user?._id.toString(),
+      emailAddress: user.emailAddress,
+      isEmailConfirmed: user.isEmailConfirmed,
+    };
+  };
+
+  /**
+   * Retrieves a user account by their email address
+   * @param emailAddress - The email address to search for
+   * @returns Promise resolving to the IUserAccount document if found, null otherwise
+   * @throws Will not throw but returns null if database error occurs
+   * @async
+   */
+  getUserAccountByEmailAddressAsync = async (
+    emailAddress: string,
+  ): Promise<IUserAccount | null> =>
+    await this.userRepository.getUserbyEmailAddressAsync(emailAddress);
 
   /**
    * Confirms a user's email address using a verification token
@@ -224,12 +246,18 @@ export default class UserService implements IUserService {
   resetPasswordAsync = async (
     token: string,
     password: string,
-  ): Promise<[success: boolean, user: IUserAccount]> => {
+  ): Promise<[success: boolean, authenticatedUser: IAuthenticatedUser]> => {
     const user = await this.userRepository.getUserbyTokenAsync(token);
 
     if (!user) {
       throw new Error('User not found');
     }
+
+    const userAccount = {
+      _id: user._id.toString(),
+      emailAddress: user.emailAddress,
+      isEmailConfirmed: user.isEmailConfirmed,
+    } as IAuthenticatedUser;
 
     const isTokenValid = await this.handleForgotPasswordTokenAsync(token, user);
     if (isTokenValid) {
@@ -238,9 +266,10 @@ export default class UserService implements IUserService {
         .pbkdf2Sync(password, salt, 100000, 64, 'sha512')
         .toString('hex');
       await this.userRepository.resetPasswordAsync(user, hashedPassword, salt);
-      return [true, user];
+
+      return [true, userAccount];
     }
-    return [false, user];
+    return [false, userAccount];
   };
   // #endregion
 

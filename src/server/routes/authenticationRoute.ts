@@ -3,6 +3,7 @@ import passport from 'passport';
 import UserService from '../services/userService';
 import ChorelistService from '../services/choreListService';
 import { authenticatedMiddleware } from '../middleware/authenticatedMiddleware';
+import { toObjectId } from '../utils/idValidator';
 
 export const createAuthenticationroutes = (
   _userService: UserService,
@@ -41,7 +42,7 @@ export const createAuthenticationroutes = (
         if (user && user._id) {
           await _chorelistService.insertChorelistAsync({
             title: 'My Chore List',
-            owner: user._id,
+            owner: toObjectId(user._id),
           });
 
           // sign in the user and establish a session
@@ -60,8 +61,8 @@ export const createAuthenticationroutes = (
         throw new Error('User was not created');
       }
     } catch (error) {
-      console.log(error);
-      _response.status(500).json({ errmsg: error?.toString() });
+      console.error(error);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     }
   });
 
@@ -222,13 +223,14 @@ export const createAuthenticationroutes = (
             .json({ errmsg: 'Passwords do not match' });
         }
 
-        const [isPasswordReset, user] = await _userService.resetPasswordAsync(
-          query.token?.toString() || '',
-          _request.body.password,
-        );
+        const [isPasswordReset, authenticatedUser] =
+          await _userService.resetPasswordAsync(
+            query.token?.toString() || '',
+            _request.body.password,
+          );
 
         if (isPasswordReset) {
-          _request.logIn(user, (err: any) => {
+          _request.logIn(authenticatedUser, (err: any) => {
             if (err) {
               console.error('Auto-login after password reset failed:', err);
               return _response.status(500).json({ errmsg: 'Login failed' });
@@ -249,7 +251,6 @@ export const createAuthenticationroutes = (
     '/checkauth',
     authenticatedMiddleware,
     async (_request: Request, _response: Response) => {
-      console.log('User is authenticated', _request.user);
       if (_request.user) {
         return _response.status(200).json({ response: true });
       }

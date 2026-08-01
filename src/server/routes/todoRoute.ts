@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import TodoService from '../services/todoService';
-import { IUserAccount } from '../interfaces/userInterface';
+import { IAuthenticatedUser } from '../interfaces/userInterface';
 import {
   validateObjectIdParams,
   validateObjectIdBody,
@@ -29,7 +29,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     const { search, pageIndex, pageSize } = _request.query;
     try {
       const response = await _todoService.getAllTodosAsync(
-        (_request.user as IUserAccount)._id.toString(),
+        (_request.user as IAuthenticatedUser)._id.toString(),
         search ? search.toString() : '',
         pageIndex ? parseInt(pageIndex.toString(), 10) : 0,
         pageSize ? parseInt(pageSize.toString(), 10) : 10,
@@ -111,7 +111,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
       }
 
       try {
-        const user = _request.user as IUserAccount;
+        const user = _request.user as IAuthenticatedUser;
         const response = await _todoService.insertTodoAsync(
           user._id.toString(),
           user.emailAddress,
@@ -151,8 +151,6 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     '/:id',
     validateObjectIdParams(['id']),
     async (_request: Request, _response: Response) => {
-      const { id } = _request.params;
-
       try {
         const response = await _todoService.updateTodoAsync(
           _request.body.name,

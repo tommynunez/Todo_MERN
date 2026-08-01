@@ -1,7 +1,8 @@
 import { Request, Response, Router } from 'express';
 import ChorelistService from '../services/choreListService';
-import { IUserAccount } from '../interfaces/userInterface';
+import { IAuthenticatedUser } from '../interfaces/userInterface';
 import { validateObjectIdParams } from '../middleware/validateObjectIdMiddleware';
+import { toObjectId } from '../utils/idValidator';
 
 export const createChorelistRoutes = (
   _chorelistService: ChorelistService,
@@ -18,7 +19,7 @@ export const createChorelistRoutes = (
    */
   router.get('/', async (_request: Request, _response: Response) => {
     const { search, pageIndex, pageSize } = _request.query;
-    const user = _request.user as IUserAccount;
+    const user = _request.user as IAuthenticatedUser;
     try {
       const response = await _chorelistService.getAllDocumentsAsync(
         user._id,
@@ -57,10 +58,10 @@ export const createChorelistRoutes = (
     '/:id',
     validateObjectIdParams(['id']),
     async (_request: Request, _response: Response) => {
-      const user = _request.user as IUserAccount;
+      const user = _request.user as IAuthenticatedUser;
       try {
         const response = await _chorelistService.getByIdDocumentsAsync(
-          _request.params.id,
+          _request.params.id.toString(),
           user._id,
         );
 
@@ -93,11 +94,11 @@ export const createChorelistRoutes = (
    * Response: { response: true, status: 200 }
    */
   router.post('/', async (_request: Request, _response: Response) => {
-    const user = _request.user as IUserAccount;
+    const user = _request.user as IAuthenticatedUser;
     try {
       const response = await _chorelistService.insertChorelistAsync({
         title: _request.body.title,
-        owner: user._id,
+        owner: toObjectId(user._id),
       });
 
       if (response) {

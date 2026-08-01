@@ -25,7 +25,7 @@ export class UserRepository {
     tokenStatus: string,
     token?: string,
     isEmailConfirmed: boolean = false,
-  ): Promise<Document | undefined> => {
+  ): Promise<IUserAccount | undefined> => {
     try {
       const user = new userModel({
         emailAddress,
