@@ -1,5 +1,9 @@
 import { Types } from 'mongoose';
-import { IInvite, IInviteDelete } from '../interfaces/inviteInterface';
+import {
+  IInvite,
+  IInviteDelete,
+  IInviteResponse,
+} from '../interfaces/inviteInterface';
 import { inviteModel } from '../models/invitesModel';
 import { toObjectId } from '../utils/idValidator';
 
@@ -37,37 +41,41 @@ export class InviteRepository {
     }
   };
 
-  getInvitebyEmailAsync = async (
+  hasInvitebyEmailAsync = async (
     email: string,
     isLean: boolean = false,
-  ): Promise<IInvite | null> => {
+  ): Promise<boolean> => {
     try {
-      const invite = inviteModel.findOne({ email });
-      if (invite && isLean) {
-        invite.lean();
-      }
+      const doesInviteexist = isLean
+        ? await inviteModel.exists({ email }).lean().exec()
+        : await inviteModel.exists({ email }).exec();
 
-      return invite;
+      return !!doesInviteexist;
     } catch (error) {
       console.error(error);
-      return null;
+      return false;
     }
   };
 
   getInvitebyIdAsync = async (
     id: Types.ObjectId,
     isLean: boolean = false,
-  ): Promise<IInvite | null> => {
+  ): Promise<IInviteResponse | null> => {
     try {
-      const invite = inviteModel.findOne({ _id: id });
+      const invite = isLean
+        ? await inviteModel.findOne({ _id: id }).lean().exec()
+        : await inviteModel.findOne({ _id: id }).exec();
+
       if (!invite) {
         return null;
       }
 
-      if (isLean) {
-        invite.lean().exec();
-      }
-      return invite;
+      return {
+        listId: invite.listId,
+        role: invite.role,
+        type: invite.type,
+        status: invite.status,
+      };
     } catch (error) {
       console.error(error);
       return null;
@@ -79,12 +87,15 @@ export class InviteRepository {
     isLean: boolean = false,
   ): Promise<IInvite | null> => {
     try {
-      const invite = inviteModel.findOne({ token });
+      const invite = isLean
+        ? await inviteModel.findOne({ token }).lean().exec()
+        : await inviteModel.findOne({ token }).exec();
 
-      if (invite && isLean) {
-        invite.lean();
+      if (!invite) {
+        return null;
       }
-      return invite.exec();
+
+      return invite;
     } catch (error) {
       console.error(error);
       return null;

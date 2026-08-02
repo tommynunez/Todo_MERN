@@ -19,11 +19,13 @@ import { sendEmail } from '../infrastructure/email/maileroo.wraper';
 import { generateInviteToken, verifyToken } from '../utils/token';
 
 export class InviteService implements IInviteService {
+  // #region Constructor
   constructor(
     private choreListService: ChoreListService,
     private userService: UserService,
     private inviteRepository: InviteRepository,
   ) {}
+  // #endregion
 
   // #region Public Methods
   /**
@@ -35,7 +37,7 @@ export class InviteService implements IInviteService {
     // Logic to send an invite to the provided email
     try {
       const hasInvitepending =
-        await this.inviteRepository.getInvitebyEmailAsync(invite.email);
+        await this.inviteRepository.hasInvitebyEmailAsync(invite.email);
       if (hasInvitepending) {
         return false;
       }
@@ -149,7 +151,7 @@ export class InviteService implements IInviteService {
 
     return await this.choreListService.updateChorelistAsync(listId, {
       shareWith: [{ userId: user?._id, role }],
-    } as IChoreListUpdate);
+    } as unknown as IChoreListUpdate);
   };
 
   private sendInviteAsync = async (invite: IInviteAdd): Promise<string> => {
