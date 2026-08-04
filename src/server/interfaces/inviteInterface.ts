@@ -14,8 +14,18 @@ export interface IInvite extends mongoose.Document {
   token: string;
 }
 
+export interface IInviteRequest {
+  inviterName: string;
+  email: string;
+  listId: string;
+  role: Role;
+  type: InviteType;
+  status: TokenStatus;
+  token: string;
+}
+
 export interface IInviteResponse {
-  listId: Types.ObjectId;
+  listId: string;
   role: Role;
   type: InviteType;
   status: TokenStatus;
@@ -24,7 +34,7 @@ export interface IInviteResponse {
 export interface IInviteAdd {
   inviterName: string;
   email: string;
-  listId: Types.ObjectId;
+  listId: string;
   role: Role;
   type: InviteType;
   status: TokenStatus;
@@ -36,7 +46,7 @@ export interface IInviteUpdate {
 }
 
 export interface IInviteDelete {
-  id: Types.ObjectId;
+  id: string;
   status: TokenStatus;
   updatedAt: Date;
 }
@@ -51,7 +61,7 @@ export interface InvitePayload {
 
 export interface IInviteService extends IService {
   createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;
-  getInvitebyIdAsync: (id: Types.ObjectId) => Promise<IInviteResponse | null>;
+  getInvitebyIdAsync: (id: string) => Promise<IInviteResponse | null>;
   inactivateInviteAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;
   verifyInviteandUpdateAsync: (invite: IInviteUpdate) => Promise<boolean>;
 }

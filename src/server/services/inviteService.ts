@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { InviteRepository } from '../repositories/inviteRepository';
 import {
   IInviteService,
@@ -8,6 +7,7 @@ import {
   IInviteUpdate,
   InvitePayload,
   IInviteResponse,
+  IInviteRequest,
 } from '../interfaces/inviteInterface';
 import UserService from './userService';
 import { TokenStatuses } from '../constants/TokenStatuses';
@@ -52,7 +52,7 @@ export class InviteService implements IInviteService {
         token,
         type: invite.type,
         status: invite.status,
-      } as IInvite);
+      });
       return true;
     } catch (error) {
       console.error('Something went wrong will sending an invite');
@@ -65,9 +65,7 @@ export class InviteService implements IInviteService {
    * @param id
    * @returns IInviteResponse | null
    */
-  getInvitebyIdAsync = async (
-    id: Types.ObjectId,
-  ): Promise<IInviteResponse | null> =>
+  getInvitebyIdAsync = async (id: string): Promise<IInviteResponse | null> =>
     await this.inviteRepository.getInvitebyIdAsync(id);
 
   /**
@@ -211,7 +209,7 @@ export class InviteService implements IInviteService {
       await existingInvite.save();
 
       const token = generateInviteToken(
-        existingInvite.listId,
+        existingInvite.listId.toString(),
         existingInvite.email,
         existingInvite.role,
         InviteTypes.ChoreList,
@@ -219,12 +217,12 @@ export class InviteService implements IInviteService {
 
       await this.inviteRepository.createInviteAsync({
         email: existingInvite.email,
-        listId: existingInvite.listId,
+        listId: existingInvite.listId.toString(),
         role: existingInvite.role,
         token,
         type: existingInvite.type,
         status: TokenStatuses.Pending,
-      } as IInvite);
+      } as IInviteRequest);
 
       // send new token
       await sendEmail('INVITE_EMAIL', existingInvite.email, {

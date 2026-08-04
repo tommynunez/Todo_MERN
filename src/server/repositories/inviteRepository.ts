@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
 import {
   IInvite,
   IInviteDelete,
+  IInviteRequest,
   IInviteResponse,
 } from '../interfaces/inviteInterface';
 import { inviteModel } from '../models/invitesModel';
@@ -10,10 +10,11 @@ import { toObjectId } from '../utils/idValidator';
 export class InviteRepository {
   constructor() {}
 
-  createInviteAsync = async (invite: IInvite) => {
+  createInviteAsync = async (invite: IInviteRequest) => {
     await inviteModel.create({
       email: invite.email,
-      listId: invite.listId,
+      inviterName: invite.inviterName,
+      listId: toObjectId(invite.listId),
       role: invite.role,
       token: invite.token,
       type: invite.type,
@@ -26,7 +27,7 @@ export class InviteRepository {
   ): Promise<boolean> => {
     try {
       const existingInvite = await inviteModel.findByIdAndUpdate(
-        toObjectId(inviteDelete.id.toString()),
+        toObjectId(inviteDelete.id),
         {
           status: inviteDelete.status,
         },
@@ -58,20 +59,23 @@ export class InviteRepository {
   };
 
   getInvitebyIdAsync = async (
-    id: Types.ObjectId,
+    id: string,
     isLean: boolean = false,
   ): Promise<IInviteResponse | null> => {
     try {
       const invite = isLean
-        ? await inviteModel.findOne({ _id: id }).lean().exec()
-        : await inviteModel.findOne({ _id: id }).exec();
+        ? await inviteModel
+            .findOne({ _id: toObjectId(id) })
+            .lean()
+            .exec()
+        : await inviteModel.findOne({ _id: toObjectId(id) }).exec();
 
       if (!invite) {
         return null;
       }
 
       return {
-        listId: invite.listId,
+        listId: invite.listId.toString(),
         role: invite.role,
         type: invite.type,
         status: invite.status,
