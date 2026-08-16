@@ -48,16 +48,18 @@ export interface IInviteUpdate {
 export interface IInviteDelete {
   id: string;
   status: TokenStatus;
-  updatedAt: Date;
 }
 
-export interface InvitePayload {
+export interface IInviteTokenPayload {
   listId: string;
   email: string;
   role: Role;
   type: InviteType;
-  status: TokenStatus;
 }
+
+export type VerifyInviteTokenResult =
+  | { isValid: true; payload: IInviteTokenPayload }
+  | { isValid: false; status: TokenStatus };
 
 export interface IInviteService extends IService {
   createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;

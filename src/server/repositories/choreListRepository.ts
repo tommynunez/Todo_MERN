@@ -1,6 +1,6 @@
 import {
   IChoreList,
-  IChoreListAdd,
+  IChoreListAddRequest,
   IChoreListUpdate,
 } from '../interfaces/choreListInterfaces';
 import { choreListModel } from '../models/choreListModel';
@@ -15,12 +15,12 @@ export class ChoreRepository {
    * @returns
    */
   insertChorelistAsync = async (
-    choreList: IChoreListAdd,
-  ): Promise<Document | boolean> => {
+    choreList: IChoreListAddRequest,
+  ): Promise<boolean> => {
     try {
       const newChoreList = new choreListModel({
         title: choreList.title,
-        owner: choreList.owner,
+        owner: toObjectId(choreList.owner),
       });
       await newChoreList.save();
       return true;

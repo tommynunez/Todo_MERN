@@ -2,7 +2,6 @@ import { Request, Response, Router } from 'express';
 import ChorelistService from '../services/choreListService';
 import { IAuthenticatedUser } from '../interfaces/userInterface';
 import { validateObjectIdParams } from '../middleware/validateObjectIdMiddleware';
-import { toObjectId } from '../utils/idValidator';
 
 export const createChorelistRoutes = (
   _chorelistService: ChorelistService,
@@ -98,7 +97,7 @@ export const createChorelistRoutes = (
     try {
       const response = await _chorelistService.insertChorelistAsync({
         title: _request.body.title,
-        owner: toObjectId(user._id),
+        owner: user._id,
       });
 
       if (response) {

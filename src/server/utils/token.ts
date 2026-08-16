@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { Role } from '../constants/Roles';
-import { InvitePayload } from '../interfaces/inviteInterface';
+import {
+  IInviteTokenPayload,
+  VerifyInviteTokenResult,
+} from '../interfaces/inviteInterface';
 import { TokenStatuses } from '../constants/TokenStatuses';
 import { InviteType } from '../constants/InviteType';
 
@@ -21,7 +24,7 @@ export const generateInviteToken = (
       email,
       role,
       type,
-    },
+    } as IInviteTokenPayload,
     jwtSecret,
     { expiresIn: '48h' },
   );
@@ -44,23 +47,32 @@ export const generateUserToken = (
   );
 };
 
-export const verifyToken = (
+export const verifyInviteToken = (
   token: string,
   jwtSecret: string,
-): InvitePayload => {
+): VerifyInviteTokenResult => {
   if (!jwtSecret) {
     throw new Error('JWT secret is not defined');
   }
 
   try {
-    const decoded = jwt.verify(token, jwtSecret);
-    return decoded as InvitePayload;
+    const decoded = jwt.verify(token, jwtSecret) as IInviteTokenPayload;
+    return {
+      isValid: true,
+      payload: decoded,
+    };
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       console.log('The invite token has expired');
-      return { status: TokenStatuses.Expired } as InvitePayload;
+      return {
+        isValid: false,
+        status: TokenStatuses.Expired,
+      };
     }
     console.log('An error occurred while verifying the invite token:', error);
-    return { status: TokenStatuses.Revoked } as InvitePayload;
+    return {
+      isValid: false,
+      status: TokenStatuses.Revoked,
+    } as VerifyInviteTokenResult;
   }
 };

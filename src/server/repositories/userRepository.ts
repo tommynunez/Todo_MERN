@@ -1,6 +1,8 @@
-import mongoose from 'mongoose';
 import { userModel } from '../models/userModel';
-import { IUserAccount } from '../interfaces/userInterface';
+import {
+  IUserAccount,
+  IUserAccountDocument,
+} from '../interfaces/userInterface';
 import { TokenStatuses } from '../constants/TokenStatuses';
 
 export class UserRepository {
@@ -57,14 +59,7 @@ export class UserRepository {
    */
   getUserbyEmailAddressAsync = async (
     emailAddress: string,
-  ): Promise<
-    | (mongoose.Document<unknown, IUserAccount> &
-        IUserAccount &
-        Required<{
-          _id: unknown;
-        }>)
-    | null
-  > => {
+  ): Promise<IUserAccountDocument | null> => {
     try {
       const document = await userModel.findOne({ emailAddress });
       return document;
@@ -83,14 +78,7 @@ export class UserRepository {
    */
   getUserbyTokenAsync = async (
     token: string,
-  ): Promise<
-    | (mongoose.Document<unknown, IUserAccount> &
-        IUserAccount &
-        Required<{
-          _id: unknown;
-        }>)
-    | null
-  > => {
+  ): Promise<IUserAccountDocument | null> => {
     try {
       const document = await userModel.findOne({ token });
       return document;
@@ -108,13 +96,7 @@ export class UserRepository {
    * @async
    */
   updateLastLoggedInAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -144,13 +126,7 @@ export class UserRepository {
    * @async
    */
   updateLoginCountAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -185,13 +161,7 @@ export class UserRepository {
    * @async
    */
   resetPasswordAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
     hashedPassword: string,
     salt: string,
   ): Promise<boolean> => {
@@ -226,13 +196,7 @@ export class UserRepository {
    * @async
    */
   updateEmailconfirmedCountAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
     count: number,
   ): Promise<boolean> => {
     try {
@@ -262,13 +226,7 @@ export class UserRepository {
    * @async
    */
   enableEmailconfirmationAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -298,13 +256,7 @@ export class UserRepository {
    * @async
    */
   revokeTokenAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -333,13 +285,7 @@ export class UserRepository {
    * @async
    */
   isAccountLockedOutAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
   ): Promise<boolean> => {
     try {
       if (!document) {
@@ -362,13 +308,7 @@ export class UserRepository {
    * @async
    */
   updatetokenAsync = async (
-    document:
-      | (mongoose.Document<unknown, IUserAccount> &
-          IUserAccount &
-          Required<{
-            _id: unknown;
-          }>)
-      | null,
+    document: IUserAccountDocument | null,
     token: string,
   ): Promise<boolean> => {
     try {

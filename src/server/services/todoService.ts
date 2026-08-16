@@ -1,7 +1,10 @@
 import { SeverityLevel } from 'mongodb';
-import { Types } from 'mongoose';
 import { TodoRepository } from '../repositories/todoRepository';
-import { ITodo, ITodoService, ITodoUpdate } from '../interfaces/todoInterface';
+import {
+  ITodo,
+  ITodoService,
+  ITodoUpdateRequest,
+} from '../interfaces/todoInterface';
 import ChoreListService from './choreListService';
 import { AuditlogService } from './appliactionLogService';
 import UserService from './userService';
@@ -30,7 +33,7 @@ export default class TodoService implements ITodoService {
     emailAddress: string,
     name: string,
     choreListId: string,
-  ): Promise<Document | boolean> => {
+  ): Promise<boolean> => {
     try {
       const choreList = await this.choreListService.getByIdDocumentsAsync(
         choreListId,
@@ -54,7 +57,7 @@ export default class TodoService implements ITodoService {
         await this.todoRepository.insertTodoAsync({
           userId,
           name,
-          choreListId: new Types.ObjectId(choreListId),
+          choreListId,
         });
       }
 
@@ -81,12 +84,12 @@ export default class TodoService implements ITodoService {
     name: string,
     emailAddress: string,
     completed: boolean,
-  ): Promise<Document | boolean> =>
+  ): Promise<boolean> =>
     await this.todoRepository.updateTodoAsync({
       name,
       emailAddress,
       completed,
-    } as ITodoUpdate);
+    } as ITodoUpdateRequest);
 
   /**
    * Deletes a todo item by its unique identifier
@@ -103,7 +106,7 @@ export default class TodoService implements ITodoService {
    * @returns Promise resolving to the ITodo object if found, null otherwise
    * @throws Will not throw but returns null if todo is not found
    */
-  getByIdTodosAsync = async (id?: string): Promise<ITodo | null> =>
+  getByIdTodosAsync = async (id: string): Promise<ITodo | null> =>
     await this.todoRepository.getTodobyIdAsync(id);
 
   /**

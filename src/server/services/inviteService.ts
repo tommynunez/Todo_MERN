@@ -5,18 +5,17 @@ import {
   IInviteAdd,
   IInviteDelete,
   IInviteUpdate,
-  InvitePayload,
   IInviteResponse,
   IInviteRequest,
 } from '../interfaces/inviteInterface';
 import UserService from './userService';
-import { TokenStatuses } from '../constants/TokenStatuses';
+import { TokenStatus, TokenStatuses } from '../constants/TokenStatuses';
 import { InviteTypes } from '../constants/InviteType';
 import ChoreListService from './choreListService';
 import { IChoreListUpdate } from '../interfaces/choreListInterfaces';
 import { Role } from '../constants/Roles';
 import { sendEmail } from '../infrastructure/email/maileroo.wraper';
-import { generateInviteToken, verifyToken } from '../utils/token';
+import { generateInviteToken, verifyInviteToken } from '../utils/token';
 
 export class InviteService implements IInviteService {
   // #region Constructor
@@ -93,21 +92,23 @@ export class InviteService implements IInviteService {
       throw new Error('Invite not found');
     }
 
-    const decodedToken = await verifyToken(
+    const verification = verifyInviteToken(
       existingInvite.token,
       process.env.NODE_INVITE_JWT_SECRET,
     );
 
-    const wasTokenResent = await this.resendInviteonExpiretokensAsync(
-      decodedToken,
-      existingInvite,
-    );
-    const wasTokenRevoked = await this.revokedTokenAsync(
-      decodedToken,
-      existingInvite,
-    );
+    if (!verification.isValid) {
+      if (verification.status === TokenStatuses.Expired) {
+        return await this.resendInviteonExpiretokensAsync(existingInvite);
+      }
 
-    if (wasTokenResent || wasTokenRevoked) {
+      if (verification.status === TokenStatuses.Revoked) {
+        return await this.inviteRepository.inactivateInviteAsync({
+          id: existingInvite._id.toString(),
+          status: TokenStatuses.Expired,
+        });
+      }
+
       return false;
     }
 
@@ -115,6 +116,7 @@ export class InviteService implements IInviteService {
     // Update the invite details
     existingInvite.status = TokenStatuses.Accepted;
 
+    const decodedToken = verification.payload;
     const wasListUpdated = await this.addInvitedUserToChoreListAsync(
       decodedToken.email,
       decodedToken.listId,
@@ -200,10 +202,9 @@ export class InviteService implements IInviteService {
    * @returns boolean
    */
   private resendInviteonExpiretokensAsync = async (
-    decodedToken: InvitePayload,
     existingInvite: IInvite,
   ): Promise<boolean> => {
-    if (decodedToken.status === TokenStatuses.Expired) {
+    try {
       existingInvite.status = TokenStatuses.Expired;
       existingInvite.isNew = false;
       await existingInvite.save();
@@ -231,28 +232,9 @@ export class InviteService implements IInviteService {
         inviteLink: `https://yourapp.com?token=${token}`,
       });
       return true;
-    }
-    return false;
-  };
-
-  /**
-   * Handle revoked tokens
-   * @param decodedToken
-   * @param existingInvite
-   * @returns boolean
-   */
-  private revokedTokenAsync = async (
-    decodedToken: InvitePayload,
-    existingInvite: IInvite,
-  ): Promise<boolean> => {
-    if (decodedToken.status === TokenStatuses.Revoked) {
-      console.log('Invalid token payload');
-      existingInvite.status = TokenStatuses.Revoked;
-      existingInvite.isNew = false;
-      await existingInvite.save();
+    } catch (error) {
       return false;
     }
-    return true;
   };
   // #endregion
 }

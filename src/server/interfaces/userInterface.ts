@@ -23,6 +23,12 @@ export interface IAuthenticatedUser {
   isEmailConfirmed: boolean;
 }
 
+export type IUserAccountDocument = mongoose.Document<unknown, IUserAccount> &
+  IUserAccount &
+  Required<{
+    _id: unknown;
+  }>;
+
 export interface IUserService extends IService {
   signup: (emailAddress: string, password: string) => Promise<boolean>;
   signin: (
