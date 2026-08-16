@@ -8,7 +8,7 @@ import {
 } from '../interfaces/userInterface';
 import { UserRepository } from '../repositories/userRepository';
 import { emailRegex, passwordRegex } from '../utils/regex';
-import { generateUserToken, verifyToken } from '../utils/token';
+import { generateUserToken, verifyInviteToken } from '../utils/token';
 import { sendEmail } from '../infrastructure/email/maileroo.wraper';
 import { TokenStatuses } from '../constants/TokenStatuses';
 
@@ -284,7 +284,7 @@ export default class UserService implements IUserService {
     token: string,
     user: IUserAccount,
   ): Promise<boolean> => {
-    const decodedToken = await verifyToken(
+    const decodedToken = await verifyInviteToken(
       token,
       process.env.NODE_USER_JWT_SECRET,
     );
@@ -325,7 +325,7 @@ export default class UserService implements IUserService {
     token: string,
     user: IUserAccount,
   ): Promise<boolean> => {
-    const decodedToken = await verifyToken(
+    const decodedToken = await verifyInviteToken(
       token,
       process.env.NODE_USER_JWT_SECRET,
     );
