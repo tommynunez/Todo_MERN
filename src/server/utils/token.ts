@@ -58,20 +58,18 @@ export const verifyInviteToken = (
   try {
     const decoded = jwt.verify(token, jwtSecret) as IInviteTokenPayload;
     return {
-      isValid: true,
+      status: TokenStatuses.Accepted,
       payload: decoded,
     };
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       console.log('The invite token has expired');
       return {
-        isValid: false,
         status: TokenStatuses.Expired,
       };
     }
     console.log('An error occurred while verifying the invite token:', error);
     return {
-      isValid: false,
       status: TokenStatuses.Revoked,
     } as VerifyInviteTokenResult;
   }

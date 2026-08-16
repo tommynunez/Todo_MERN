@@ -9,7 +9,7 @@ import {
   IInviteRequest,
 } from '../interfaces/inviteInterface';
 import UserService from './userService';
-import { TokenStatus, TokenStatuses } from '../constants/TokenStatuses';
+import { TokenStatuses } from '../constants/TokenStatuses';
 import { InviteTypes } from '../constants/InviteType';
 import ChoreListService from './choreListService';
 import { IChoreListUpdate } from '../interfaces/choreListInterfaces';
@@ -97,39 +97,43 @@ export class InviteService implements IInviteService {
       process.env.NODE_INVITE_JWT_SECRET,
     );
 
-    if (!verification.isValid) {
-      if (verification.status === TokenStatuses.Expired) {
-        return await this.resendInviteonExpiretokensAsync(existingInvite);
-      }
-
-      if (verification.status === TokenStatuses.Revoked) {
-        return await this.inviteRepository.inactivateInviteAsync({
-          id: existingInvite._id.toString(),
-          status: TokenStatuses.Expired,
-        });
-      }
-
-      return false;
+    if (verification.status === TokenStatuses.Pending) {
+      console.log('Invite token was pending');
+      return true;
     }
 
-    console.log('Invite token was successful');
-    // Update the invite details
-    existingInvite.status = TokenStatuses.Accepted;
+    if (verification.status === TokenStatuses.Expired) {
+      console.log('Invite token was expired');
+      return await this.resendInviteonExpiretokensAsync(existingInvite);
+    }
 
-    const decodedToken = verification.payload;
-    const wasListUpdated = await this.addInvitedUserToChoreListAsync(
-      decodedToken.email,
-      decodedToken.listId,
-      decodedToken.role,
-    );
+    if (verification.status === TokenStatuses.Revoked) {
+      console.log('Invite token was revoked');
+      return await this.inviteRepository.inactivateInviteAsync({
+        id: existingInvite._id.toString(),
+        status: TokenStatuses.Revoked,
+      });
+    }
 
-    if (!wasListUpdated) {
-      console.error(
-        `Couldn't add user to the chore list ${decodedToken.listId}`,
+    if (verification.status === TokenStatuses.Accepted) {
+      // Update the invite details
+      console.log('Invite token was successful');
+      existingInvite.status = verification.status;
+      const decodedToken = verification.payload;
+      const wasListUpdated = await this.addInvitedUserToChoreListAsync(
+        decodedToken.email,
+        decodedToken.listId,
+        decodedToken.role,
       );
-      return false;
+
+      if (!wasListUpdated) {
+        console.error(
+          `Couldn't add user to the chore list ${decodedToken.listId}`,
+        );
+        return false;
+      }
+      await existingInvite.save();
     }
-    await existingInvite.save();
     return true;
   };
   // #endregion

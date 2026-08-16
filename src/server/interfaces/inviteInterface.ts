@@ -1,6 +1,6 @@
 import mongoose, { Types } from 'mongoose';
 import { Role } from '../constants/Roles';
-import { TokenStatus } from '../constants/TokenStatuses';
+import { TokenStatus, TokenStatuses } from '../constants/TokenStatuses';
 import { InviteType } from '../constants/InviteType';
 import { IService } from './service';
 
@@ -58,8 +58,11 @@ export interface IInviteTokenPayload {
 }
 
 export type VerifyInviteTokenResult =
-  | { isValid: true; payload: IInviteTokenPayload }
-  | { isValid: false; status: TokenStatus };
+  | {
+      status: typeof TokenStatuses.Accepted | typeof TokenStatuses.Pending;
+      payload: IInviteTokenPayload;
+    }
+  | { status: typeof TokenStatuses.Expired | typeof TokenStatuses.Revoked };
 
 export interface IInviteService extends IService {
   createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;
