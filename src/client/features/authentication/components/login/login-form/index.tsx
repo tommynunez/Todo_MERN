@@ -1,4 +1,4 @@
-import { useLoginForm } from '@/client/features/authentication/hooks/useLoginForm';
+import { useLoginForm } from '@/client/features/authentication/components/login/login-form/useLoginForm';
 import { useEffect } from 'react';
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
 import { Input, Button } from '@/client/shared';

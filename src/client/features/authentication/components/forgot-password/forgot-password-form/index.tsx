@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForgotPasswordForm } from '@/client/features/authentication/hooks/useForgotPasswordForm';
+import { useForgotPasswordForm } from '@/client/features/authentication/components/forgot-password/forgot-password-form/useForgotPasswordForm';
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
 import { Input, Button } from '@/client/shared';
 import { useSnackbar } from '@/client/shared/context/SnackbarContext';

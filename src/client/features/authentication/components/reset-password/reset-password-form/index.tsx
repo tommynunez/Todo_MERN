@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useResetPasswordForm } from '@/client/features/authentication/hooks/useResetPasswordForm';
+import { useResetPasswordForm } from '@/client/features/authentication/components/reset-password/reset-password-form/useResetPasswordForm';
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
 import { Input, Button } from '@/client/shared';
 import { useSnackbar } from '@/client/shared/context/SnackbarContext';

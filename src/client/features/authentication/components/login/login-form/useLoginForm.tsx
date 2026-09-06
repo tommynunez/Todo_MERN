@@ -30,7 +30,7 @@ export const useLoginForm = () => {
     // send request if we have no errors
     if (!isError) {
       const response = await login(emailAddress, password);
-      if (!response.success) {
+      if (!response || !response.success) {
         setHasErrors(true);
       }
     }

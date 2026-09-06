@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSignupForm } from '@/client/features/authentication/hooks/useSignupForm';
+import { useSignupForm } from '@/client/features/authentication/components/signup/signup-form/useSignupForm';
 import { clearErrorIfHasValue } from '@/client/shared/helpers/validator';
 import { Input, Button, P } from '@/client/shared';
 import { useSnackbar } from '@/client/shared/context/SnackbarContext';
