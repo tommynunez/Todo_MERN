@@ -1,10 +1,11 @@
-import { RouteObject, useRoutes } from 'react-router-dom';
-import { UnauthenticatedLayout } from '@components/layout/unauthenticated';
-import { LoginPage } from '@pages/login';
-import { ForgotPasswordPage } from '@pages/forgot-password';
-import { ResetPasswordPage } from '@pages/reset-password';
-import { EmailConfirmationPage } from '@pages/email-confirmation';
-import { HomePage } from './pages/home';
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
+import { UnauthenticatedLayout } from '@/client/shared/components/layout/unauthenticated';
+import { LoginPage } from '@/client/features/authentication/pages/Login';
+import { ForgotPasswordPage } from '@/client/features/authentication/pages/ForgotPassword';
+import { ResetPasswordPage } from '@/client/features/authentication/pages/ResetPassword';
+import { EmailConfirmationPage } from '@/client/features/authentication/pages/EmailConfirmation';
+import { HomePage } from '@/client/features/home/pages/home';
+import { SignUp } from '@/client/features/authentication/pages/Signup';
 
 const unauthenticatedRoutes: RouteObject[] = [
   {
@@ -30,6 +31,14 @@ const unauthenticatedRoutes: RouteObject[] = [
         path: '/confirm-email',
         element: <EmailConfirmationPage />,
       },
+      {
+        path: '/signup',
+        element: <SignUp />,
+      },
+      {
+        path: '*',
+        element: <Navigate to="/" replace />,
+      },
     ],
   },
 ];
@@ -38,6 +47,10 @@ const authenticatedRoutes: RouteObject[] = [
   {
     path: '/dashboard',
     element: <div />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/dashboard" replace />,
   },
 ];
 

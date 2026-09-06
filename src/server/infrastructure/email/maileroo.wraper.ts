@@ -50,10 +50,10 @@ export const sendEmail = async (
       template_data: data,
       subject: template.subject,
     });
-    console.log('Email sent successfully:', response);
+    console.log('Email sent successfully');
     return response;
   } catch (error) {
-    console.error(`Error sending ${emailTemplate} to ${to}:`, error);
+    console.error(`Error sending ${emailTemplate}`);
     throw error;
   }
 };

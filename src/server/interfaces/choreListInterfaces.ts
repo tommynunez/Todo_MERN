@@ -18,6 +18,11 @@ export interface IChoreListAdd {
   owner: Types.ObjectId;
 }
 
+export interface IChoreListAddRequest {
+  title: string;
+  owner: string;
+}
+
 export interface IChoreListUpdate {
   title: string;
   shareWith: Array<IShareWith>;
@@ -29,9 +34,7 @@ export interface IChoreListDelete {
 }
 
 export interface IChoreListService extends IService {
-  insertChorelistAsync: (
-    choreList: IChoreListAdd,
-  ) => Promise<Document | boolean>;
+  insertChorelistAsync: (choreList: IChoreListAddRequest) => Promise<boolean>;
   updateChorelistAsync: (
     id: string,
     choreList: IChoreListUpdate,

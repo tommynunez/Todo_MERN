@@ -17,6 +17,18 @@ export interface IUserAccount extends mongoose.Document {
   deletedDate: Date;
 }
 
+export interface IAuthenticatedUser {
+  _id: string;
+  emailAddress: string;
+  isEmailConfirmed: boolean;
+}
+
+export type IUserAccountDocument = mongoose.Document<unknown, IUserAccount> &
+  IUserAccount &
+  Required<{
+    _id: unknown;
+  }>;
+
 export interface IUserService extends IService {
   signup: (emailAddress: string, password: string) => Promise<boolean>;
   signin: (
@@ -24,14 +36,12 @@ export interface IUserService extends IService {
     password: string,
     user: any,
   ) => Promise<boolean>;
-  getUserbyEmailAddressAsync: (emailAddress: string) => Promise<
-    | (mongoose.Document<unknown, IUserAccount> &
-        IUserAccount &
-        Required<{
-          _id: unknown;
-        }>)
-    | null
-  >;
+  getUserAccountByEmailAddressAsync: (
+    emailAddress: string,
+  ) => Promise<IUserAccount | null>;
+  getUserbyEmailAddressAsync: (
+    emailAddress: string,
+  ) => Promise<IAuthenticatedUser | null>;
   confirmEmailAsync: (emailAddress: string, token: string) => Promise<boolean>;
   sendForgotpasswordEmailAsync: (emailAddress: string) => Promise<boolean>;
   resetPasswordAsync: (
@@ -39,5 +49,5 @@ export interface IUserService extends IService {
     token: string,
     password: string,
     confirmPassword: string,
-  ) => Promise<[success: boolean, user: IUserAccount]>;
+  ) => Promise<[success: boolean, authenticatedUser: IAuthenticatedUser]>;
 }

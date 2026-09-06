@@ -1,7 +1,10 @@
 import { Request, Response, Router } from 'express';
-import mongoose from 'mongoose';
 import TodoService from '../services/todoService';
-import { IUserAccount } from '../interfaces/userInterface';
+import { IAuthenticatedUser } from '../interfaces/userInterface';
+import {
+  validateObjectIdParams,
+  validateObjectIdBody,
+} from '../middleware/validateObjectIdMiddleware';
 
 export const createTodoroutes = (_todoService: TodoService): Router => {
   const router: Router = Router();
@@ -26,7 +29,7 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
     const { search, pageIndex, pageSize } = _request.query;
     try {
       const response = await _todoService.getAllTodosAsync(
-        (_request.user as IUserAccount)._id.toString(),
+        (_request.user as IAuthenticatedUser)._id.toString(),
         search ? search.toString() : '',
         pageIndex ? parseInt(pageIndex.toString(), 10) : 0,
         pageSize ? parseInt(pageSize.toString(), 10) : 10,
@@ -69,24 +72,24 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Example: GET /api/todos/123
    * Response: { response: ITodo, status: 200 }
    */
-  router.get('/:id', async (_request: Request, _response: Response) => {
-    const { id } = _request.params;
+  router.get(
+    '/:id',
+    validateObjectIdParams(['id']),
+    async (_request: Request, _response: Response) => {
+      const { id } = _request.params;
 
-    if (!mongoose.isValidObjectId(id)) {
-      return _response.status(400).json({ errmsg: 'Invalid todo id' });
-    }
-
-    try {
-      const response = await _todoService.getByIdTodosAsync(id.toString());
-      if (response) {
-        return _response.status(200).json({ data: response });
+      try {
+        const response = await _todoService.getByIdTodosAsync(id.toString());
+        if (response) {
+          return _response.status(200).json({ data: response });
+        }
+        _response.status(404);
+      } catch (error) {
+        console.error('Error fetching todo item by ID:', error);
+        return _response.status(500).json({ errmsg: 'Internal server error' });
       }
-      _response.status(404);
-    } catch (error) {
-      console.error('Error fetching todo item by ID:', error);
-      return _response.status(500).json({ errmsg: 'Internal server error' });
-    }
-  });
+    },
+  );
 
   /**
    * Create a new todo item
@@ -97,43 +100,40 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Body: { name: "New Task" }
    * Response: { response: true, status: 201 }
    */
-  router.post('/', async (_request: Request, _response: Response) => {
-    if (!_request.body.choreListId) {
-      _response
-        .status(400)
-        .json({ response: 'A todo needs to be assigned to a chore list' });
-    }
-
-    if (mongoose.isValidObjectId(_request.body.choreListId) === false) {
-      return _response
-        .status(400)
-        .json({ response: 'choreListId is not valid' })
-        .send();
-    }
-
-    try {
-      const user = _request.user as IUserAccount;
-      const response = await _todoService.insertTodoAsync(
-        user._id.toString(),
-        user.emailAddress,
-        _request.body.name,
-        _request.body.choreListId,
-      );
-
-      if (response) {
-        return (
-          _response
-            .status(201)
-            // .location(`/todo/${chore._id}`)
-            .json({ status: response })
-        );
+  router.post(
+    '/',
+    validateObjectIdBody(['choreListId']),
+    async (_request: Request, _response: Response) => {
+      if (!_request.body.choreListId) {
+        return _response
+          .status(400)
+          .json({ response: 'A todo needs to be assigned to a chore list' });
       }
-      return _response.status(500).json({ status: response });
-    } catch (error) {
-      console.error('Error creating todo item:', error);
-      return _response.status(500).json({ errmsg: 'Internal server error' });
-    }
-  });
+
+      try {
+        const user = _request.user as IAuthenticatedUser;
+        const response = await _todoService.insertTodoAsync(
+          user._id.toString(),
+          user.emailAddress,
+          _request.body.name,
+          _request.body.choreListId,
+        );
+
+        if (response) {
+          return (
+            _response
+              .status(201)
+              // .location(`/todo/${chore._id}`)
+              .json({ status: response })
+          );
+        }
+        return _response.status(500).json({ status: response });
+      } catch (error) {
+        console.error('Error creating todo item:', error);
+        return _response.status(500).json({ errmsg: 'Internal server error' });
+      }
+    },
+  );
 
   /**
    * Update an existing todo item
@@ -147,29 +147,27 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Body: { name: "Updated Task", completed: true }
    * Response: { response: true, status: 200 }
    */
-  router.put('/:id', async (_request: Request, _response: Response) => {
-    const { id } = _request.params;
+  router.put(
+    '/:id',
+    validateObjectIdParams(['id']),
+    async (_request: Request, _response: Response) => {
+      try {
+        const response = await _todoService.updateTodoAsync(
+          _request.body.name,
+          _request.body.emailAddress,
+          _request.body,
+        );
 
-    if (!mongoose.isValidObjectId(id)) {
-      return _response.status(400).json({ errmsg: 'Invalid todo id' });
-    }
-
-    try {
-      const response = await _todoService.updateTodoAsync(
-        _request.body.name,
-        _request.body.emailAddress,
-        _request.body,
-      );
-
-      if (response) {
-        return _response.status(200).json({ data: response });
+        if (response) {
+          return _response.status(200).json({ data: response });
+        }
+        return _response.status(500).json({ errmsg: 'Internal server error' });
+      } catch (error) {
+        console.error('Error updating todo item:', error);
+        return _response.status(500).json({ errmsg: 'Internal server error' });
       }
-      return _response.status(500).json({ errmsg: 'Internal server error' });
-    } catch (error) {
-      console.error('Error updating todo item:', error);
-      return _response.status(500).json({ errmsg: 'Internal server error' });
-    }
-  });
+    },
+  );
 
   /**
    * Delete a todo item by ID
@@ -179,26 +177,26 @@ export const createTodoroutes = (_todoService: TodoService): Router => {
    * Example: DELETE /api/todos/123
    * Response: { response: true, status: 200 }
    */
-  router.delete('/:id', async (_request: Request, _response: Response) => {
-    const { id } = _request.params;
+  router.delete(
+    '/:id',
+    validateObjectIdParams(['id']),
+    async (_request: Request, _response: Response) => {
+      const { id } = _request.params;
 
-    if (!mongoose.isValidObjectId(id)) {
-      return _response.status(400).json({ errmsg: 'Invalid todo id' });
-    }
+      try {
+        const response = await _todoService.deleteTodoAsync(id.toString());
 
-    try {
-      const response = await _todoService.deleteTodoAsync(id.toString());
-
-      if (response) {
-        _response.status(200).json({ data: response });
-      } else {
+        if (response) {
+          _response.status(200).json({ data: response });
+        } else {
+          _response.status(500).json({ errmsg: 'Internal server error' });
+        }
+      } catch (error) {
+        console.error('Error deleting todo item:', error);
         _response.status(500).json({ errmsg: 'Internal server error' });
       }
-    } catch (error) {
-      console.error('Error deleting todo item:', error);
-      _response.status(500).json({ errmsg: 'Internal server error' });
-    }
-  });
+    },
+  );
 
   return router;
 };

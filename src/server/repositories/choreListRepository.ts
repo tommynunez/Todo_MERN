@@ -1,10 +1,10 @@
-import { Types } from 'mongoose';
 import {
   IChoreList,
-  IChoreListAdd,
+  IChoreListAddRequest,
   IChoreListUpdate,
 } from '../interfaces/choreListInterfaces';
 import { choreListModel } from '../models/choreListModel';
+import { toObjectId, isValidObjectId } from '../utils/idValidator';
 
 export class ChoreRepository {
   constructor() {}
@@ -15,12 +15,12 @@ export class ChoreRepository {
    * @returns
    */
   insertChorelistAsync = async (
-    choreList: IChoreListAdd,
-  ): Promise<Document | boolean> => {
+    choreList: IChoreListAddRequest,
+  ): Promise<boolean> => {
     try {
       const newChoreList = new choreListModel({
         title: choreList.title,
-        owner: choreList.owner,
+        owner: toObjectId(choreList.owner),
       });
       await newChoreList.save();
       return true;
@@ -41,14 +41,11 @@ export class ChoreRepository {
     choreList: IChoreListUpdate,
   ): Promise<boolean> => {
     try {
-      await choreListModel.findByIdAndUpdate(
-        { _id: new Types.ObjectId(id) },
-        {
-          title: choreList.title,
-          shareWith: choreList.shareWith,
-          updatedDate: choreList.updatedDate,
-        },
-      );
+      await choreListModel.findByIdAndUpdate(toObjectId(id), {
+        title: choreList.title,
+        shareWith: choreList.shareWith,
+        updatedDate: choreList.updatedDate,
+      });
       return true;
     } catch (error) {
       console.error(error);
@@ -64,7 +61,7 @@ export class ChoreRepository {
   deleteChorelistAsync = async (id: string): Promise<boolean> => {
     try {
       const result = await choreListModel.findOneAndDelete({
-        _id: new Types.ObjectId(id),
+        _id: toObjectId(id),
       });
 
       if (result) {
@@ -89,8 +86,8 @@ export class ChoreRepository {
   ): Promise<IChoreList | null> => {
     try {
       const response = await choreListModel.findOne({
-        _id: new Types.ObjectId(id),
-        owner: new Types.ObjectId(owner),
+        _id: toObjectId(id),
+        owner: toObjectId(owner),
       });
       return response;
     } catch (error) {
@@ -117,12 +114,10 @@ export class ChoreRepository {
       const response =
         (await choreListModel
           .find({
-            owner: ownerId,
+            owner: toObjectId(ownerId),
             $or: [
               {
-                _id: Types.ObjectId.isValid(search)
-                  ? new Types.ObjectId(search)
-                  : undefined,
+                _id: isValidObjectId(search) ? toObjectId(search) : undefined,
               },
               { title: { $regex: search, $options: 'i' } },
             ],

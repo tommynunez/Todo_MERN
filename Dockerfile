@@ -1,25 +1,25 @@
 # ---- Stage 1: Build ----
 # Installs all dependencies and builds the React client with Vite.
-FROM node:22-alpine AS builder
+FROM oven/bun:latest AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+COPY package*.json bun.lock* ./
+RUN bun install
 
 COPY . .
-RUN npm run build
+RUN bun run build
 
 # ---- Stage 2: Runner ----
-# Lean production image — only production node_modules and built assets.
-FROM node:22-alpine AS runner
+# Lean production image — only production bun modules and built assets.
+FROM oven/bun:latest AS runner
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+COPY package*.json bun.lock* ./
+RUN bun install --production
 
-# Copy server source (tsx runs it directly at startup)
+# Copy server source (bun runs it directly at startup)
 COPY src/server ./src/server
 COPY tsconfig.json ./
 
@@ -38,4 +38,4 @@ ENV NODE_ENV=production
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
   CMD wget -qO- http://localhost:3000/api/health || exit 1
 
-CMD ["node_modules/.bin/tsx", "./src/server/index.ts"]
+CMD ["bun", "./src/server/index.ts"]

@@ -1,8 +1,7 @@
 import { Router, Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
 import { InviteService } from '../services/inviteService';
 import { IInviteAdd } from '../interfaces/inviteInterface';
-import { IUserAccount } from '../interfaces/userInterface';
+import { IAuthenticatedUser } from '../interfaces/userInterface';
 
 export const createInviteRoutes = (_inviteService: InviteService): Router => {
   const router: Router = Router();
@@ -10,7 +9,7 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
   router.get('/:id', async (_request: Request, _response: Response) => {
     try {
       const response = await _inviteService.getInvitebyIdAsync(
-        new ObjectId(_request.params.id?.toString()),
+        _request.params.id?.toString(),
       );
       if (response) {
         return _response.status(200).json({ data: response });
@@ -23,7 +22,7 @@ export const createInviteRoutes = (_inviteService: InviteService): Router => {
   });
 
   router.post('/invite', async (_request: Request, _response: Response) => {
-    const user = _request.user as IUserAccount;
+    const user = _request.user as IAuthenticatedUser;
     const inviteRequest = {
       ...(_request.body as IInviteAdd),
       inviterName: user?.emailAddress,

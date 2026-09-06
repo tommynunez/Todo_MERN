@@ -1,18 +1,15 @@
-import { useAuthorization } from './client/hooks/useAuthorization';
+import { useAuthorization } from '@/client/shared/hooks/useAuthorization';
 import { AuthenticatedRoutes, UnauthenticatedRoutes } from './client/route';
 import './index.css';
 
 function App() {
-  /* const { isAuthenticated, isLoading } = useAuthorization();
+  const { isAuthenticated, isLoading } = useAuthorization();
 
   if (isLoading) {
     return <div>Loading...</div>;
-  } */
+  }
 
-  return (
-    /* isAuthenticated ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes /> */
-    <UnauthenticatedRoutes />
-  );
+  return isAuthenticated ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes />;
 }
 
 export default App;

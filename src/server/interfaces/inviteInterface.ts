@@ -1,6 +1,6 @@
 import mongoose, { Types } from 'mongoose';
 import { Role } from '../constants/Roles';
-import { TokenStatus } from '../constants/TokenStatuses';
+import { TokenStatus, TokenStatuses } from '../constants/TokenStatuses';
 import { InviteType } from '../constants/InviteType';
 import { IService } from './service';
 
@@ -14,8 +14,18 @@ export interface IInvite extends mongoose.Document {
   token: string;
 }
 
+export interface IInviteRequest {
+  inviterName: string;
+  email: string;
+  listId: string;
+  role: Role;
+  type: InviteType;
+  status: TokenStatus;
+  token: string;
+}
+
 export interface IInviteResponse {
-  listId: Types.ObjectId;
+  listId: string;
   role: Role;
   type: InviteType;
   status: TokenStatus;
@@ -24,7 +34,7 @@ export interface IInviteResponse {
 export interface IInviteAdd {
   inviterName: string;
   email: string;
-  listId: Types.ObjectId;
+  listId: string;
   role: Role;
   type: InviteType;
   status: TokenStatus;
@@ -36,22 +46,27 @@ export interface IInviteUpdate {
 }
 
 export interface IInviteDelete {
-  id: Types.ObjectId;
+  id: string;
   status: TokenStatus;
-  updatedAt: Date;
 }
 
-export interface InvitePayload {
+export interface IInviteTokenPayload {
   listId: string;
   email: string;
   role: Role;
   type: InviteType;
-  status: TokenStatus;
 }
+
+export type VerifyInviteTokenResult =
+  | {
+      status: typeof TokenStatuses.Accepted | typeof TokenStatuses.Pending;
+      payload: IInviteTokenPayload;
+    }
+  | { status: typeof TokenStatuses.Expired | typeof TokenStatuses.Revoked };
 
 export interface IInviteService extends IService {
   createInviteAsync: (invite: IInviteAdd) => Promise<boolean>;
-  getInvitebyIdAsync: (id: Types.ObjectId) => Promise<IInviteResponse | null>;
+  getInvitebyIdAsync: (id: string) => Promise<IInviteResponse | null>;
   inactivateInviteAsync: (inviteDelete: IInviteDelete) => Promise<boolean>;
   verifyInviteandUpdateAsync: (invite: IInviteUpdate) => Promise<boolean>;
 }

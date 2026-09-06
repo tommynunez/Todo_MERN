@@ -1,6 +1,10 @@
-import { Types } from 'mongoose';
-import { ITodo, ITodoAdd, ITodoUpdate } from '../interfaces/todoInterface';
+import {
+  ITodo,
+  ITodoAddRequest,
+  ITodoUpdateRequest,
+} from '../interfaces/todoInterface';
 import { todoModel } from '../models/todoModel';
+import { toObjectId, isValidObjectId } from '../utils/idValidator';
 
 export class TodoRepository {
   constructor() {}
@@ -18,15 +22,15 @@ export class TodoRepository {
     userId,
     name,
     choreListId,
-  }: ITodoAdd): Promise<ITodo | boolean> => {
+  }: ITodoAddRequest): Promise<boolean> => {
     try {
       const todo = new todoModel({
-        userId: new Types.ObjectId(userId),
-        choreListId: new Types.ObjectId(choreListId),
+        userId: toObjectId(userId),
+        choreListId: toObjectId(choreListId),
         name,
       });
-
-      return await todo.save();
+      await todo.save();
+      return true;
     } catch (error) {
       console.error(error);
       return false;
@@ -46,7 +50,7 @@ export class TodoRepository {
     emailAddress,
     name,
     completed,
-  }: ITodoUpdate): Promise<Document | boolean> => {
+  }: ITodoUpdateRequest): Promise<boolean> => {
     try {
       await todoModel.findOneAndUpdate(
         { name },
@@ -75,7 +79,7 @@ export class TodoRepository {
   deleteTodoAsync = async (id: string): Promise<boolean> => {
     try {
       const result = await todoModel.findOneAndDelete({
-        _id: new Types.ObjectId(id),
+        _id: toObjectId(id),
       });
       if (result) {
         return true;
@@ -95,9 +99,9 @@ export class TodoRepository {
    * @throws Will not throw but returns null if database error occurs
    * @async
    */
-  getTodobyIdAsync = async (id?: string): Promise<ITodo | null> => {
+  getTodobyIdAsync = async (id: string): Promise<ITodo | null> => {
     try {
-      const response = await todoModel.findById(id);
+      const response = await todoModel.findById(toObjectId(id));
       return response;
     } catch (error) {
       console.log(error);
@@ -126,14 +130,12 @@ export class TodoRepository {
       const response =
         (await todoModel
           .find({
-            userId,
+            userId: toObjectId(userId),
             $or: [
               {
-                _id: Types.ObjectId.isValid(search)
-                  ? new Types.ObjectId(search)
-                  : undefined,
+                _id: isValidObjectId(search) ? toObjectId(search) : undefined,
               },
-              { title: { $regex: search, $options: 'i' } },
+              { name: { $regex: search, $options: 'i' } },
             ],
           })
           .skip((pageIndex ?? 0) * (pageSize ?? 10))

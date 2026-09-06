@@ -1,4 +1,4 @@
-# Todo_MERN
+# ChoreMate
 
 A full-stack Todo application built with React, TypeScript, Vite and a Node/Express + TypeScript backend using MongoDB.
 
@@ -17,31 +17,26 @@ This repository contains a monorepo-style structure where the client (React + Vi
 From `package.json` (high level):
 
 - Runtime / Frameworks
-
   - Node.js (server)
   - Express
   - React 18
   - Vite
 
 - Language / Tooling
-
   - TypeScript
   - tsx / ts-node (dev)
   - Vite plugins: `@vitejs/plugin-react-swc`, `vite-plugin-svgr`, `vite-plugin-env-compatible`
 
 - Database
-
   - MongoDB (driver) and Mongoose
   - connect-mongo for session storage
 
 - Authentication & Security
-
   - passport, passport-local
   - helmet
   - cookie-parser, express-session
 
 - Dev & Lint
-
   - ESLint with `@typescript-eslint` plugins
   - nodemon (in dependencies), tsx for running TypeScript directly in dev
 

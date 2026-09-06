@@ -7,7 +7,7 @@ import { UserRepository } from '../repositories/userRepository';
 export type PassportCallBackFunction = (
   error: any,
   user?: Express.User | false,
-  options?: IVerifyOptions
+  options?: IVerifyOptions,
 ) => void;
 
 export type ConfigureOptions = {
@@ -24,7 +24,8 @@ export type ConfigureOptions = {
 export const configurePassport = (configOptions: ConfigureOptions) => {
   const { app } = configOptions;
   const passportInstance = configOptions.passportInstance || passport;
-  const userService = configOptions.userModel || new UserService(new UserRepository());
+  const userService =
+    configOptions.userModel || new UserService(new UserRepository());
 
   /**
    * Use the LocalStrategy within Passport.
@@ -49,15 +50,14 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
         passwordField: 'password',
         session: true,
       },
-      (async (
+      async (
         usernameField: string,
         passwordField: string,
         cb: PassportCallBackFunction,
       ) => {
         try {
-          const user = await userService.getUserbyEmailAddressAsync(
-            usernameField,
-          );
+          const user =
+            await userService.getUserAccountByEmailAddressAsync(usernameField);
 
           if (!user) {
             return cb(null, false, {
@@ -86,7 +86,7 @@ export const configurePassport = (configOptions: ConfigureOptions) => {
         } catch (error) {
           return cb(error);
         }
-      }),
+      },
     ),
   );
 

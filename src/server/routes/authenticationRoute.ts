@@ -3,6 +3,7 @@ import passport from 'passport';
 import UserService from '../services/userService';
 import ChorelistService from '../services/choreListService';
 import { authenticatedMiddleware } from '../middleware/authenticatedMiddleware';
+import { toObjectId } from '../utils/idValidator';
 
 export const createAuthenticationroutes = (
   _userService: UserService,
@@ -60,8 +61,8 @@ export const createAuthenticationroutes = (
         throw new Error('User was not created');
       }
     } catch (error) {
-      console.log(error);
-      _response.status(500).json({ errmsg: error?.toString() });
+      console.error(error);
+      return _response.status(500).json({ errmsg: 'Internal server error' });
     }
   });
 
@@ -152,6 +153,16 @@ export const createAuthenticationroutes = (
     },
   );
 
+  /**
+   * Confirm email address
+   * Returns: 200 on success
+   * Example: POST /api/auth/logout
+   * Response: { }
+   * Note: Checks the request token with the token in store
+   * On success user is redirected to the platform
+   * On failure another token will be sent to the user
+   * Ensure's the email address is legit
+   */
   router.post(
     '/confirm/email',
     async (_request: Request, _response: Response, next: NextFunction) => {
@@ -222,13 +233,14 @@ export const createAuthenticationroutes = (
             .json({ errmsg: 'Passwords do not match' });
         }
 
-        const [isPasswordReset, user] = await _userService.resetPasswordAsync(
-          query.token?.toString() || '',
-          _request.body.password,
-        );
+        const [isPasswordReset, authenticatedUser] =
+          await _userService.resetPasswordAsync(
+            query.token?.toString() || '',
+            _request.body.password,
+          );
 
         if (isPasswordReset) {
-          _request.logIn(user, (err: any) => {
+          _request.logIn(authenticatedUser, (err: any) => {
             if (err) {
               console.error('Auto-login after password reset failed:', err);
               return _response.status(500).json({ errmsg: 'Login failed' });
@@ -249,7 +261,6 @@ export const createAuthenticationroutes = (
     '/checkauth',
     authenticatedMiddleware,
     async (_request: Request, _response: Response) => {
-      console.log('User is authenticated', _request.user);
       if (_request.user) {
         return _response.status(200).json({ response: true });
       }

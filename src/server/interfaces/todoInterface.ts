@@ -20,7 +20,13 @@ export interface ITodoAdd {
   choreListId: Types.ObjectId;
 }
 
-export interface ITodoUpdate {
+export interface ITodoAddRequest {
+  userId: string;
+  name: string;
+  choreListId: string;
+}
+
+export interface ITodoUpdateRequest {
   emailAddress: string;
   name: string;
   completed: boolean;
@@ -32,12 +38,12 @@ export interface ITodoService extends IService {
     emailAddress: string,
     name: string,
     choreListId: string,
-  ) => Promise<Document | boolean>;
+  ) => Promise<boolean>;
   updateTodoAsync: (
     emailAddress: string,
     name: string,
     completed: boolean,
-  ) => Promise<Document | boolean>;
+  ) => Promise<boolean>;
   deleteTodoAsync: (id: string) => Promise<boolean>;
   getByIdTodosAsync: (id: string) => Promise<ITodo | null>;
   getAllTodosAsync: (
