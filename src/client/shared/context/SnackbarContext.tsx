@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  ReactNode,
+} from 'react';
 import { Snackbar } from '@/client/shared/components/Snackbar';
 
 interface SnackbarMessage {
@@ -26,28 +33,33 @@ const SnackbarContext = createContext<SnackbarContextType | undefined>(
 export function SnackbarProvider({ children }: { children: ReactNode }) {
   const [snackbars, setSnackbars] = useState<SnackbarMessage[]>([]);
 
-  const showSnackbar = (
-    message: string,
-    options?: Partial<Omit<SnackbarMessage, 'id' | 'message'>>,
-  ) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    const newSnackbar: SnackbarMessage = {
-      id,
-      message,
-      variant: options?.variant || 'info',
-      duration: options?.duration ?? 5000,
-      action: options?.action,
-    };
+  const showSnackbar = useCallback(
+    (
+      message: string,
+      options?: Partial<Omit<SnackbarMessage, 'id' | 'message'>>,
+    ) => {
+      const id = Math.random().toString(36).slice(2, 11);
+      const newSnackbar: SnackbarMessage = {
+        id,
+        message,
+        variant: options?.variant || 'info',
+        duration: options?.duration ?? 5000,
+        action: options?.action,
+      };
 
-    setSnackbars((prev) => [...prev, newSnackbar]);
-  };
+      setSnackbars((prev) => [...prev, newSnackbar]);
+    },
+    [],
+  );
 
-  const removeSnackbar = (id: string) => {
+  const removeSnackbar = useCallback((id: string) => {
     setSnackbars((prev) => prev.filter((s) => s.id !== id));
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({ showSnackbar }), [showSnackbar]);
 
   return (
-    <SnackbarContext.Provider value={{ showSnackbar }}>
+    <SnackbarContext.Provider value={contextValue}>
       {children}
       <div className="fixed top-4 right-4 flex flex-col gap-2 pointer-events-auto z-50">
         {snackbars.map((snackbar) => (

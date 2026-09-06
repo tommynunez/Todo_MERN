@@ -1,4 +1,4 @@
-import { RouteObject, useRoutes } from 'react-router-dom';
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { UnauthenticatedLayout } from '@/client/shared/components/layout/unauthenticated';
 import { LoginPage } from '@/client/features/authentication/pages/Login';
 import { ForgotPasswordPage } from '@/client/features/authentication/pages/ForgotPassword';
@@ -35,6 +35,10 @@ const unauthenticatedRoutes: RouteObject[] = [
         path: '/signup',
         element: <SignUp />,
       },
+      {
+        path: '*',
+        element: <Navigate to="/" replace />,
+      },
     ],
   },
 ];
@@ -43,6 +47,10 @@ const authenticatedRoutes: RouteObject[] = [
   {
     path: '/dashboard',
     element: <div />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/dashboard" replace />,
   },
 ];
 

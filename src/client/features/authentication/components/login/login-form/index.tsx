@@ -25,7 +25,7 @@ export function Form() {
 
   useEffect(() => {
     if (hasErrors) {
-      showSnackbar('Please fix the errors in the form', { variant: 'error' });
+      showSnackbar('', { variant: 'error' });
     }
   }, [hasErrors, showSnackbar]);
 

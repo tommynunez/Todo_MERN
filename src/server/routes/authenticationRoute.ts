@@ -42,7 +42,7 @@ export const createAuthenticationroutes = (
         if (user && user._id) {
           await _chorelistService.insertChorelistAsync({
             title: 'My Chore List',
-            owner: toObjectId(user._id),
+            owner: user._id,
           });
 
           // sign in the user and establish a session
@@ -153,6 +153,16 @@ export const createAuthenticationroutes = (
     },
   );
 
+  /**
+   * Confirm email address
+   * Returns: 200 on success
+   * Example: POST /api/auth/logout
+   * Response: { }
+   * Note: Checks the request token with the token in store
+   * On success user is redirected to the platform
+   * On failure another token will be sent to the user
+   * Ensure's the email address is legit
+   */
   router.post(
     '/confirm/email',
     async (_request: Request, _response: Response, next: NextFunction) => {

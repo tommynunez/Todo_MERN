@@ -26,7 +26,7 @@ export interface IAuthenticationService {
 
 const baseURL = import.meta.env.VITE_API_URL || '';
 const axiosInstance = axios.create({
-  baseURL: `${baseURL}/api/auth`,
+  baseURL: `${baseURL}/api/authentication`,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -81,8 +81,8 @@ export default class AuthenticationService implements IAuthenticationService {
     password: string,
   ): Promise<IAuthenticationResponse> {
     try {
-      const response = await axiosInstance.post('/login', {
-        email,
+      const response = await axiosInstance.post('/signin', {
+        emailAddress: email,
         password,
       });
 

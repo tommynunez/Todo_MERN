@@ -68,7 +68,7 @@ export function AuthorizationProvider({
       if (response.success) {
         // todo: maybe set a token or something
         console.log('Logout successful', response);
-        setIsAuthenticated(true);
+        setIsAuthenticated(false);
       } else {
         setIsAuthenticated(false);
       }
